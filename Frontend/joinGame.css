@@ -20,41 +20,20 @@ color:rgba(60, 22, 104, 0.712);
 font-weight: bold;
 
 }
-input{
-    margin:0 auto;
-    border-color: black;
-    max-width: 10em;
-    padding: 10px;
-    font-size: 0.5em;
-    color:rgb(60, 22, 104);
-    margin:0;
-    background-color:rgba(61, 58, 58, 0.267);
-}
-.forms{
-    margin: 0 auto;
-    margin-top: 1em;
+.buttons{
+    margin-top: 12em;
     text-align: center;
-    font-size: 3em;
-    font-family: 'Work Sans';
-    color:rgba(60, 22, 104, 0.712);
-    font-weight: bold;
-    }
+    align-items: center;
+}
 button{
     min-height: 2em;
     padding: 5px;
-    min-width: 10em;
-    max-width: 15em;
+    min-width: 15em;
+    max-width: 25em;
     margin: 0.5em;
     font-size: 1.5em;
-    border:rgba(73, 28, 124, 0.342);
+    border:rgba(248, 228, 45, 0.753);
     background-color:rgba(60, 22, 104, 0.342);
     border-radius: 10px;
     color: rgba(245, 245, 18, 0.842);
-}
-
-.buttons{
-    margin-top: 5em;
-    text-align: center;
-    align-items: center;
-
 }
