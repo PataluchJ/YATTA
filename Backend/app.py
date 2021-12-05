@@ -55,7 +55,7 @@ def exec_macro():
     return r
 
 
-@app.route('bm/objects/getbyid', methods=['GET'])
+@app.route('/bm/objects/getbyid', methods=['GET'])
 def object_get_by_id():
     json_data = flask.request.json
     try:
@@ -65,7 +65,7 @@ def object_get_by_id():
         return "Error 404: Object not found"
 
 
-@app.route('bm/objects/create', methods=['POST'])
+@app.route('/bm/objects/create', methods=['POST'])
 def object_create():
     json_data = flask.request.json
     try:
@@ -75,7 +75,7 @@ def object_create():
         return "Error: Wrong arguments provided"
 
 
-@app.route('bm/objects/delete', methods=['DELETE'])
+@app.route('/bm/objects/delete', methods=['DELETE'])
 def object_delete():
     json_data = flask.request.json
     try:
@@ -87,7 +87,7 @@ def object_delete():
         return "Error 404: Object not found"
 
 
-@app.route('bm/objects/update_position', methods=['POST'])
+@app.route('/bm/objects/update_position', methods=['POST'])
 def object_update_position():
     json_data = flask.request.json
     try:
@@ -99,7 +99,7 @@ def object_update_position():
         return "Error 404: Object not found"
 
 
-@app.route('bm/objects/update_transformation', methods=['POST'])
+@app.route('/bm/objects/update_transformation', methods=['POST'])
 def object_update_transformation():
     json_data = flask.request.json
     try:
@@ -111,7 +111,7 @@ def object_update_transformation():
         return "Error 404: Object not found"
 
 
-@app.route('bm/tokens/getbyid', methods=['GET'])
+@app.route('/bm/tokens/getbyid', methods=['GET'])
 def token_get_by_id():
     json_data = flask.request.json
     try:
@@ -123,7 +123,7 @@ def token_get_by_id():
         return "Error 404: Object not found"
 
 
-@app.route('bm/tokens/create', methods=['POST'])
+@app.route('/bm/tokens/create', methods=['POST'])
 def token_create():
     json_data = flask.request.json
     try:
@@ -133,7 +133,7 @@ def token_create():
         return "Error: Wrong arguments provided"
 
 
-@app.route('bm/tokens/delete', methods=['DELETE'])
+@app.route('/bm/tokens/delete', methods=['DELETE'])
 def token_delete():
     json_data = flask.request.json
     try:
