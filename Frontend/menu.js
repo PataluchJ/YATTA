@@ -1,3 +1,3 @@
-function clickHost(){
+function enterTheGame(){
     
 }
