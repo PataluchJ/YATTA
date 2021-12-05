@@ -1,2 +1,2 @@
-flast >= 1.1.2
-json >= 2.0.9
+flask
+pymongo
