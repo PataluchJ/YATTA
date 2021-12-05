@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import React from "react";
 import MenuView from "./menuHTMLinJS"
 import Join from "./joinJS"
+import BattleMap from "./battleMap"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
 function menu() {
@@ -34,8 +35,8 @@ function battleMap(){
     console.log("Battle Map");
     return(
         <React.Fragment>
-        <div className="join">
-          <Join />
+        <div className="battleMap">
+          <BattleMap />
         </div>
         </React.Fragment>
 

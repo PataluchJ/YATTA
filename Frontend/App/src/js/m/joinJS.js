@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
+function tryToConnect(){
+    var StringIP = document.getElementById("gmip")
+    var username= document.getElementById("uName")
+    console.log(username);
 
+}
 function giveMeHTML(){
     return(
     <div id = "menuCSS">
@@ -19,7 +24,7 @@ function giveMeHTML(){
                 </div>
             </form>
             <div class = "buttons">
-            <button class="joinButton" onclick="location.href = '../BattleMap/yatta.html';">Enter</button> 
+            <button class="joinButton" onClick={tryToConnect}>Enter</button> 
             <Link to={`/`}>
              <button class="joinButton">Back</button>
              </Link>
