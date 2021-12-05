@@ -1,10 +1,12 @@
+
+import * as PIXI from 'pixi.js'
+import { EventSystem } from '@pixi/events';
 delete PIXI.Renderer.__plugins.interaction;
 const app = new PIXI.Application({width: 1000, height: 900, backgroundColor: 0x000000 });
 document.body.appendChild(app.view);
 
 //import { Viewport } from 'pixi-viewport'
 
-window.onload = main
 
 function main() {
 
@@ -25,7 +27,7 @@ function main() {
     .decelerate()
     */
 
-    app.renderer.addSystem(PIXI.EventSystem, 'events');
+    app.renderer.addSystem(EventSystem, 'events');
     
     app.stage.interactive = true
     app.stage.hitArea = app.renderer.screen;
@@ -41,7 +43,7 @@ function main() {
     //setNewTexture(3, 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Trp-Sword-14226124129-v06.png/800px-Trp-Sword-14226124129-v06.png')
 }
 
-
+export default main;
 function addObject(id, texture, x, y, z, level, layer, scale_x, scale_y, rotate){
     sprite = MyObject.from(texture)
     sprite.anchor.set(0.5)

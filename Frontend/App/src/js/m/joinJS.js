@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom";
 function tryToConnect(){
-    var StringIP = document.getElementById("gmip")
-    var username= document.getElementById("uName")
+    var StringIP = document.getElementById("gmip").value;
+    var username= document.getElementById("uName").value;
     console.log(username);
+    if(username!=null && StringIP!=null) {
 
+
+    }
+    return;
 }
 function giveMeHTML(){
     return(
-    <div id = "menuCSS">
-    <html>
-        <head>
-             
-            <title>YATTA Join Game</title>
-        </head>
-        <body class = "joinBody">
+
+        <div class = "joinBody">
             <header class="joinTitle"> Join Game </header>
             <form class="joinForm">
                 <div class="forms">
@@ -24,16 +23,17 @@ function giveMeHTML(){
                 </div>
             </form>
             <div class = "buttons">
+            <Link to={`/battleMap`}>
             <button class="joinButton" onClick={tryToConnect}>Enter</button> 
+            </Link>
             <Link to={`/`}>
              <button class="joinButton">Back</button>
              </Link>
             </div>
+        </div>
+  
 
-        </body>
-        <script src ="menu.js"></script>
-    </html>
-     </div>   
+  
     );
     }
     export default giveMeHTML;

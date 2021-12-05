@@ -6,6 +6,8 @@ return(
 <head>
 
         <title>YATTA</title>
+        <script src="https://pixijs.download/release/pixi.js"></script>
+         <script src="https://pixijs.download/dev/packages/events.js"></script>
         </head>
   
     <body class= "menuBody">

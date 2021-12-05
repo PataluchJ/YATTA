@@ -2,9 +2,10 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import React from "react";
 import MenuView from "./menuHTMLinJS"
 import Join from "./joinJS"
-import BattleMap from "./battleMap"
+import BattleMap from "./battleMapJS"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
+import "../../css/yatta.css"
 function menu() {
     console.log("Enter");
     return (
