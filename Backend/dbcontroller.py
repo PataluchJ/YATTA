@@ -18,7 +18,6 @@ class Controller():
         self.token_id = 0
         self.obj_id = 0
         self.update_id = -1
-        self.clear_db()
         self.blank_trsf = {
             "scale_x": 1,
             "scale_y": 1,
