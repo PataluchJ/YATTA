@@ -99,7 +99,7 @@ def object_update_position():
         return "Error 404: Object not found"
 
 
-@app.route('bm_object_update_transformation', methods=['POST'])
+@app.route('bm/objects/update_transformation', methods=['POST'])
 def object_update_transformation():
     json_data = flask.request.json
     try:
