@@ -79,16 +79,16 @@ class Wrapper:
     def chat_message_send(self, rec_json) -> str:
         data = json.load(rec_json)
         if not data.keys() >= {'User', 'Character', 'Message'}:
-            return '''{'Success' : false, 'Message': 'Not all variables defined!' }'''
+            raise self.WrongArguments
         self.dbc.add_message(data['User'], data['Character'], data['Message'], False)
-        return '''{'Success': true, 'Message': ''}'''
+        return json.dumps({'Success': True, 'Message': ""})
         
 
     def chat_command_exec(command: str) -> str:
-        return '''{'Success': false, 'Message': 'Not implementet!' }'''
+        return json.dumps({'Success': False, 'Message': "Not implementet"})
 
     def chat_macro_exec(id: int) -> str:
-        return '''{'Success': false, 'Message': 'Not implementet!' }'''
+        return json.dumps({'Success': False, 'Message': "Not implementet"})
 
     # Objects #########
 
@@ -104,7 +104,7 @@ class Wrapper:
             except TypeError:
                 raise self.WrongArguments
 
-        return self.dbc.get_object_by_id(id)
+        return json.dumps(self.dbc.get_object_by_id(id))
 
     def bm_object_create(self, res_json) -> str:
         data = json.loads(res_json)
@@ -120,7 +120,7 @@ class Wrapper:
             except TypeError:
                 raise self.WrongArguments
 
-        return self.dbc.add_object(image_id, data['Position'])
+        return json.dumps(self.dbc.add_object(image_id, data['Position']))
         
     def bm_object_delete(self, res_json) -> str:
         data = json.loads(res_json)
@@ -188,7 +188,7 @@ class Wrapper:
         r = self.dbc.get_token_by_id(id)
         if r is None: 
             raise self.NotExists
-        return r
+        return json.dumps(r)
 
     def bm_token_create(self, res_json) -> str:
         data = json.loads(res_json)
@@ -217,5 +217,5 @@ class Wrapper:
         if r is None:
             raise self.NotExists
         if 'Object_Id' in data:
-            return self.bm_object_delete(data)
-        return r
+            return json.dumps(self.bm_object_delete(data))
+        return json.dumps(r)
