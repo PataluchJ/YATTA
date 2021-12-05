@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
+html{
+height: 100%;
+
+}
+
+<!--
+@media only screen and (min-width: 0px) {
+    body{
+    
+        margin-top: 2.5em;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size:contain;
+        background-image:   url('../img/Ż.png');
+        }
+}
+@media only screen and (min-width: 650px){
+    body{
+    
+        margin-top: 2.5em;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size:contain,contain;
+        
+        background-position: left top,right top;
+        background-image:   url('../img/Ż.png'),url('../img/B.png');
+        }
+}
+
+@media only screen and (min-width: 1281px){
+    body{
+    
+        margin-top: 2.5em;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size:contain,contain,contain;
+        
+        background-position: left top,center top,right top;
+        background-image:  url('../img/Ż.png'), url('../img/B.png'),url('../img/M.png');
+        }
+}
+-->
+body{
+    
+    margin-top: 2.5em;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-image:   url('../img/bcgr.jpg');
+    }
+header{
+display: grid;
+
+text-align: center;
+min-height: 1em;
+font-size: 4em;
+font-family: 'Work Sans';
+background-size:cover;
+background-color: rgba(60, 22, 104, 0.342);
+color:rgba(245, 245, 18, 0.842);
+font-weight: bold;
+
+}
+.buttons{
+    margin-top: 12em;
+    text-align: center;
+    align-items: center;
+}
+button{
+    min-height: 2em;
+    padding: 5px;
+    min-width: 15em;
+    max-width: 25em;
+    margin: 0.5em;
+    font-size: 1.5em;
+    border:rgba(248, 228, 45, 0.753);
+    background-color:rgba(60, 22, 104, 0.342);
+    border-radius: 10px;
+    color: rgba(245, 245, 18, 0.842);
+}

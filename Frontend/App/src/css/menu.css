@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+.menuH{
+    height:100%;
+}
+body{
+    background-repeat:repeat;
+    background-size:cover;
+    background-image:   url('../img/bcgr.jpg');
+    }
+.menuTitle{
+display: grid;
+
+text-align: center;
+min-height: 1em;
+font-size: 4em;
+font-family: 'Work Sans';
+background-size:cover;
+background-color: rgba(60, 22, 104, 0.342);
+color:rgba(245, 245, 18, 0.842);
+font-weight: bold;
+
+}
+.buttons{
+    margin-top: 12em;
+    text-align: center;
+    align-items: center;
+}
+.menuButton{
+    min-height: 2em;
+    padding: 5px;
+    min-width: 15em;
+    max-width: 25em;
+    margin: 0.5em;
+    font-size: 2.5em;
+    border:rgba(248, 228, 45, 0.753);
+    background-color:rgba(60, 22, 104, 0.342);
+    border-radius: 10px;
+    color: rgba(245, 245, 18, 0.842);
+}
