@@ -1,0 +1,9 @@
+.windowMap{
+    display:flex;
+}
+
+.battleMap{
+    display:flex;
+    min-height: 10em;
+    min-width: 10em;
+    }

@@ -37,3 +37,16 @@ font-weight: bold;
     border-radius: 10px;
     color: rgba(245, 245, 18, 0.842);
 }
+.battleMap{
+    display:flex;
+    min-height: 10em;
+    min-width: 10em;
+    width:100%;
+    }
+canvas{
+width:70%;
+}
+.chat{
+    width:30%;
+
+}

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import "../../css/joinGame.css"
+import React from "react";
 function tryToConnect(){
     var StringIP = document.getElementById("gmip").value;
     var username= document.getElementById("uName").value;
@@ -9,25 +11,26 @@ function tryToConnect(){
     }
     return;
 }
+
 function giveMeHTML(){
     return(
 
-        <div class = "joinBody">
-            <header class="joinTitle"> Join Game </header>
-            <form class="joinForm">
-                <div class="forms">
-                <label for="uName">Username:</label><br></br>
-                <input class="joinInput" typ="text" id="uName" name = "uName"></input><br></br>
-                <label for="gmip"> Insert GM IP:</label><br></br>
-                <input class="joinInput" type="text" id="gmip" name = "gmip"></input>
+        <div className = "joinBody">
+            <header className="joinTitle"> Join Game </header>
+            <form className="joinForm">
+                <div className="forms">
+                <label htmlFor="uName">Username:</label><br></br>
+                <input className="joinInput" typ="text" id="uName" name = "uName"></input><br></br>
+                <label htmlFor="gmip"> Insert GM IP:</label><br></br>
+                <input className="joinInput" type="text" id="gmip" name = "gmip"></input>
                 </div>
             </form>
-            <div class = "buttons">
+            <div className = "buttons">
             <Link to={`/battleMap`}>
-            <button class="joinButton" onClick={tryToConnect}>Enter</button> 
+            <button className="joinButton" onClick={tryToConnect}>Enter</button> 
             </Link>
             <Link to={`/`}>
-             <button class="joinButton">Back</button>
+             <button className="joinButton">Back</button>
              </Link>
             </div>
         </div>
@@ -36,4 +39,5 @@ function giveMeHTML(){
   
     );
     }
+
     export default giveMeHTML;

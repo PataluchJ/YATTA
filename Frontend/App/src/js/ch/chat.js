@@ -1,6 +1,6 @@
-import "./chat.scss";
+import "../../css/chat.scss";
 import React, { useState, useEffect, useRef } from "react";
-import { sendMessage, getAllMessages, getMessageByID, getMessageSince } from "../messages/message.js";
+import { sendMessage, getAllMessages, getMessageByID, getMessageSince } from "./message.js";
 
 function Chat({ username }) {
   const [text, setText] = useState("");
@@ -49,7 +49,7 @@ function Chat({ username }) {
   console.log(messages, "mess");
 
   return (
-    <div className="chat">
+    <div className="chat" id= "chat">
       <div className="user-name">
         <h2>
           {username} <span style={{ fontSize: "0.7rem" }} />

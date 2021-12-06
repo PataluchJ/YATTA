@@ -1,12 +1,14 @@
+
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import React from "react";
 import MenuView from "./menuHTMLinJS"
-import Join from "./joinJS"
 import BattleMap from "./battleMapJS"
+import Join from "./joinJS"
+import Chat from "../ch/chat"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
-import "../../css/yatta.css"
-function menu() {
+
+export default  function menu() {
     console.log("Enter");
     return (
         <Router>
@@ -24,7 +26,7 @@ function menu() {
 function menuView(){
     return(
         <React.Fragment>
-        <div className="menu">
+        <div className="menuView">
           <MenuView />
         </div>
 
@@ -32,12 +34,14 @@ function menuView(){
     );
 
 }
-function battleMap(){
-    console.log("Battle Map");
+function battleMap(props){
     return(
         <React.Fragment>
-        <div className="battleMap">
+        <div className="battleMap" id="battleMap">
           <BattleMap />
+        <Chat
+          username={props.match.params.username}
+        />
         </div>
         </React.Fragment>
 
@@ -55,5 +59,3 @@ function joinSite(){
         </React.Fragment>
     );
 }
-
-export default menu;

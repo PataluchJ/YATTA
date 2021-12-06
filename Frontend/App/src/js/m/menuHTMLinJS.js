@@ -1,30 +1,24 @@
 import { Link } from "react-router-dom";
+import React from "react";
+import Join from "./joinJS"
 function giveMeHTML(){
 return(
 
-<html class="menuH">
-<head>
 
-        <title>YATTA</title>
-        <script src="https://pixijs.download/release/pixi.js"></script>
-         <script src="https://pixijs.download/dev/packages/events.js"></script>
-        </head>
-  
-    <body class= "menuBody">
-    <div class="title">
-    <header class="menuTitle"> Yet Another Table Top API </header>
+    <div>
+    <div className="title">
+    <header className="menuTitle"> Yet Another Table Top API </header>
 </div>
-    <div class="buttons">
-        <button class="menuButton" onclick="location.href = '../html/hostGame.html';">Host Game</button> <br></br>
+    <div className="buttons">
+        <Link to={`/host`}>
+        <button className="menuButton">Host Game</button> <br></br>
+        </Link>
         <Link to={`/join`}>
-        <button class="menuButton">Join</button>
+        <button className="menuButton">Join</button>
         </Link>
     </div>
-  
-
-    </body>
-    <script src ="menu.js"></script>
-</html>
+    </div>
 );
 }
+
 export default giveMeHTML;

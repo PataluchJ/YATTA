@@ -1,15 +1,15 @@
-import {main} from "../bm/battlemap.js"
+import main from "../bm/battlemap.js";
+import {Helmet} from "react-helmet";
+import chat from "../ch/chat"
+import React from "react";
+export const BattleMap = () =>{
 
-
-function giveMeHTML(){
-    return(
-
-    <div className="map">  
-            <script src="https://pixijs.download/release/pixi.js"></script>
-         <script src="https://pixijs.download/dev/packages/events.js"></script>
-    <script type="text/javascript" src={main}></script>
-    <script type="text/javascript" src="../bm/MyObject.js"></script>
+    return(  
+    <div className="map" id ="map">
+        <script type="text/javascript" src="../bm/battlemap.js"></script>
     </div>
 );
+
 }
-export default giveMeHTML;
+
+export default BattleMap;

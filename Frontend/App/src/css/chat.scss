@@ -1,4 +1,4 @@
-@import "../globals";
+@import "./globals";
 @mixin scrollbars(
   $size,
   $foreground-color,
@@ -27,11 +27,10 @@
   }
 }
 .chat {
-  display: flex;
-  width: 400px;
+  width: 200px;
   padding: 1rem;
   justify-content: space-between;
-  height: 600px;
+  height: 1000px;
   flex-direction: column;
   background-color: $greyColor;
   .user-name {

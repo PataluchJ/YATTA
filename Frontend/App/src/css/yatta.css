@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
 
-.map{
+.battleMap{
+display:flex;
 min-height: 10em;
 min-width: 10em;
 }
