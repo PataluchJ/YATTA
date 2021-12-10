@@ -35,8 +35,8 @@ class Controller():
         self.update_id = 0 if not temp else self.changes.find().sort(
             "_id", -1).limit(1)[0]["_id"]
 
-        print(self.msg_id, self.macro_id, self.token_id,
-              self.obj_id, self.update_id)
+        # print(self.msg_id, self.macro_id, self.token_id,
+        #       self.obj_id, self.update_id)
 
         self.blank_trsf = {
             "scale_x": 1,
