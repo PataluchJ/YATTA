@@ -7,17 +7,37 @@ class Controller():
     def __init__(self) -> None:
         self.client = MongoClient()
         self.db = self.client.mydb
+
         self.messages = self.db.messages
         self.macros = self.db.macros
         self.tokens = self.db.tokens
         self.objects = self.db.objects
         self.battlemap = self.db.battlemap
         self.changes = self.db.changes
-        self.msg_id = 0
-        self.macro_id = 0
-        self.token_id = 0
-        self.obj_id = 0
-        self.update_id = -1
+
+        temp = self.messages.count_documents({}, limit=1)
+        self.msg_id = 0 if not temp else self.messages.find().sort(
+            "_id", -1).limit(1)[0]["_id"] + 1
+
+        temp = self.macros.count_documents({}, limit=1)
+        self.macro_id = 0 if not temp else self.messages.find().sort(
+            "_id", -1).limit(1)[0]["_id"] + 1
+
+        temp = self.tokens.count_documents({}, limit=1)
+        self.token_id = 0 if not temp else self.messages.find().sort(
+            "_id", -1).limit(1)[0]["_id"] + 1
+
+        temp = self.objects.count_documents({}, limit=1)
+        self.obj_id = 0 if not temp else self.messages.find().sort(
+            "_id", -1).limit(1)[0]["_id"] + 1
+
+        temp = self.changes.count_documents({}, limit=1)
+        self.update_id = 0 if not temp else self.changes.find().sort(
+            "_id", -1).limit(1)[0]["_id"]
+
+        print(self.msg_id, self.macro_id, self.token_id,
+              self.obj_id, self.update_id)
+
         self.blank_trsf = {
             "scale_x": 1,
             "scale_y": 1,
