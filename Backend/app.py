@@ -50,7 +50,7 @@ def messages_get_all():
 
 @app.route('/chat/get_by_id', methods=['GET'])
 def message_get_by_id():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     result = generic_argument_call(wrapper.chat_message_by_id, json_data)
     print("GET message by id with " + str(json_data) + " result code = " + str(result['Status']))
     if result['Status'] == 200:
@@ -62,7 +62,7 @@ def message_get_by_id():
 
 @app.route('/chat/get_since', methods=['GET'])
 def messages_since():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     result = generic_argument_call(wrapper.chat_messages_since, json_data)
     print("GET messages since with " + str(json_data) + " result code = " + str(result['Status']))
     if result['Status'] == 200:
@@ -94,9 +94,9 @@ def exec_macro():
 
 @app.route('/bm/objects/getbyid', methods=['GET'])
 def object_get_by_id():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     result = generic_argument_call(wrapper.bm_object_by_id, json_data)
-    print("GET token by id " + str(json_data) + " result code = " + str(result['Status']))
+    print("GET object by id " + str(json_data) + " result code = " + str(result['Status']))
     if result['Status'] == 200:
         return result['Response']
     else:
@@ -105,29 +105,29 @@ def object_get_by_id():
 
 @app.route('/bm/objects/create', methods=['POST'])
 def object_create():
-    json_data = flask.request.json
-    try:
-        r = wrapper.bm_object_create(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
+    json_data = json.loads(flask.request.data)
+    result = generic_argument_call(wrapper.bm_object_create, json_data)
+    print("POST create object " + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/bm/objects/delete', methods=['DELETE'])
 def object_delete():
-    json_data = flask.request.json
-    try:
-        r = wrapper.bm_object_delete(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
-    except wrapper.NotExists:
-        return "Error 404: Object not found"
+    json_data = json.loads(flask.request.data)
+    result = generic_argument_call(wrapper.bm_object_delete, json_data)
+    print("DELETE delete object " + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/bm/objects/update_position', methods=['POST'])
 def object_update_position():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     try:
         r = wrapper.bm_object_update_position(json_data)
         return r
@@ -139,7 +139,7 @@ def object_update_position():
 
 @app.route('/bm/objects/update_transformation', methods=['POST'])
 def object_update_transformation():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     try:
         r = wrapper.bm_object_update_transformation(json_data)
         return r
@@ -151,7 +151,7 @@ def object_update_transformation():
 
 @app.route('/bm/tokens/getbyid', methods=['GET'])
 def token_get_by_id():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     try:
         r = wrapper.bm_token_by_id(json_data)
         return r
@@ -163,7 +163,7 @@ def token_get_by_id():
 
 @app.route('/bm/tokens/create', methods=['POST'])
 def token_create():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     try:
         r = wrapper.bm_token_create(json_data)
         return r
@@ -173,7 +173,7 @@ def token_create():
 
 @app.route('/bm/tokens/delete', methods=['DELETE'])
 def token_delete():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     try:
         r = wrapper.bm_token_delete(json_data)
         return r
@@ -191,7 +191,7 @@ def update_get_last_id():
 
 @app.route('/update/get_since', methods=['GET'])
 def update_get_since():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     try:
         r = wrapper.update_get_since(json_data)
         return r
