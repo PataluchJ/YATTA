@@ -41,12 +41,13 @@ font-weight: bold;
     display:flex;
     min-height: 10em;
     min-width: 10em;
+    height: 100%;
     width:100%;
     }
 canvas{
 min-width:100em;
 }
 .chat{
+    height: 1048px;
     width:30%;
-
 }
