@@ -1,40 +1,40 @@
 [{
-    "_id": 0,
+    "Id": 0,
     "User": "User 1",
     "Character": "User 1",
     "Text": "Test message 1",
     "Command": false
 },
 {
-    "_id": 1,
+    "Id": 1,
     "User": "User 2",
     "Character": "Character 1",
     "Text": "Test message 2",
     "Command": false
 },
 {
-    "_id": 2,
+    "Id": 2,
     "User": "User 1",
     "Character": "User 1",
     "Text": "Test message 3",
     "Command": false
 },
 {
-    "_id": 3,
+    "Id": 3,
     "User": "User 3",
     "Character": "Character 2",
     "Text": "Test message 4",
     "Command": false
 },
 {
-    "_id": 4,
+    "Id": 4,
     "User": "User 2",
     "Character": "Character 2",
     "Text": "Test message 5",
     "Command": false
 },
 {
-    "_id": 5,
+    "Id": 5,
     "User": "User 2",
     "Character": "Character 2",
     "Text": "Test message 6",
