@@ -2,7 +2,8 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import React, { useState } from "react";
 import MenuView from "./menuHTMLinJS"
-import BattleMap from "./battleMapJS"
+//import BattleMap from "./battleMapJS"
+import BattleMap from "../bm/battlemapReact";
 import Join from "./joinJS"
 import Chat from "../ch/chat"
 import Sheets from "../bm/charSheets"

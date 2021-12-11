@@ -45,10 +45,9 @@ font-weight: bold;
     width:100%;
     }
 canvas{
-width:70%;
-height: 1048px;
+min-width:100em;
 }
 .chat{
     height: 1048px;
     width:30%;
- }
+}
