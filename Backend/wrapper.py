@@ -75,8 +75,8 @@ class Wrapper:
         return {'Messages': [r]}
             
     def chat_message_send(self, data) -> str:
-        self.validate_json(data, ['User', 'Character', 'Message'], [str,str,str])
-        self.dbc.add_message(data['User'], data['Character'], data['Message'], False)
+        self.validate_json(data, ['User', 'Character', 'Text'], [str,str,str])
+        self.dbc.add_message(data['User'], data['Character'], data['Text'], False)
         return {}
         
 
