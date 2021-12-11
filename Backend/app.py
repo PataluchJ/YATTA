@@ -128,81 +128,87 @@ def object_delete():
 @app.route('/bm/objects/update_position', methods=['POST'])
 def object_update_position():
     json_data = json.loads(flask.request.data)
-    try:
-        r = wrapper.bm_object_update_position(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
-    except wrapper.NotExists:
-        return "Error 404: Object not found"
+    result = generic_argument_call(wrapper.bm_object_update_position, json_data)
+    print("POST update object position" + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/bm/objects/update_transformation', methods=['POST'])
 def object_update_transformation():
     json_data = json.loads(flask.request.data)
-    try:
-        r = wrapper.bm_object_update_transformation(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
-    except wrapper.NotExists:
-        return "Error 404: Object not found"
+    result = generic_argument_call(wrapper.bm_object_update_transformation, json_data)
+    print("POST update object transformation" + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/bm/tokens/getbyid', methods=['GET'])
 def token_get_by_id():
     json_data = json.loads(flask.request.data)
-    try:
-        r = wrapper.bm_token_by_id(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error 404: Object not found"
-    except wrapper.NotExists:
-        return "Error 404: Object not found"
+    result = generic_argument_call(wrapper.bm_token_by_id, json_data)
+    print("GET token by id " + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/bm/tokens/create', methods=['POST'])
 def token_create():
     json_data = json.loads(flask.request.data)
-    try:
-        r = wrapper.bm_token_create(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
+    result = generic_argument_call(wrapper.bm_token_create, json_data)
+    print("POST create token " + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/bm/tokens/delete', methods=['DELETE'])
 def token_delete():
     json_data = json.loads(flask.request.data)
-    try:
-        r = wrapper.bm_token_delete(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
-    except wrapper.NotExists:
-        return "Error 404: Object not found"
+    result = generic_argument_call(wrapper.bm_token_delete, json_data)
+    print("DELETE delete token " + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/update/lastid', methods=['GET'])
 def update_get_last_id():
-    r = wrapper.update_last_id()
-    return r
+    result = generic_call(wrapper.update_last_id)
+    print("GET last update " + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/update/get_since', methods=['GET'])
 def update_get_since():
     json_data = json.loads(flask.request.data)
-    try:
-        r = wrapper.update_get_since(json_data)
-        return r
-    except wrapper.WrongArguments:
-        return "Error: Wrong arguments provided"
+    result = generic_argument_call(wrapper.update_get_since, json_data)
+    print("GET update since " + str(json_data) + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 @app.route('/update/get_all_data', methods=['GET'])
 def update_get_all():
-    r = wrapper.update_get_all_data()
-    return r
+    result = generic_call(wrapper.update_get_all_data)
+    print("GET all updates " + " result code = " + str(result['Status']))
+    if result['Status'] == 200:
+        return result['Response']
+    else:
+        flask.abort(result['Status'])
 
 
 if __name__ == '__main__':
