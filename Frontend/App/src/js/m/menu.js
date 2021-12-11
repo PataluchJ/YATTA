@@ -5,8 +5,10 @@ import MenuView from "./menuHTMLinJS"
 import BattleMap from "./battleMapJS"
 import Join from "./joinJS"
 import Chat from "../ch/chat"
+import Sheets from "../bm/charSheets"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
+import "../../css/charSheets.css";
 
 export default  function menu() {
     console.log("Enter");
@@ -38,10 +40,14 @@ function battleMap(props){
     return(
         <React.Fragment>
         <div className="battleMap" id="battleMap">
+            <div className="battleMapAssets" id ="battleMapAssets">
           <BattleMap />
+            <Sheets />
+          </div>
         <Chat
           username={props.match.params.username}
         />
+
         </div>
         </React.Fragment>
 
