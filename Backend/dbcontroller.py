@@ -17,23 +17,23 @@ class Controller():
 
         temp = self.messages.count_documents({}, limit=1)
         self.msg_id = 0 if not temp else self.messages.find().sort(
-            "_id", -1).limit(1)[0]["_id"] + 1
+            "Id", -1).limit(1)[0]["Id"] + 1
 
         temp = self.macros.count_documents({}, limit=1)
-        self.macro_id = 0 if not temp else self.messages.find().sort(
-            "_id", -1).limit(1)[0]["_id"] + 1
+        self.macro_id = 0 if not temp else self.macros.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
 
         temp = self.tokens.count_documents({}, limit=1)
-        self.token_id = 0 if not temp else self.messages.find().sort(
-            "_id", -1).limit(1)[0]["_id"] + 1
+        self.token_id = 0 if not temp else self.tokens.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
 
         temp = self.objects.count_documents({}, limit=1)
-        self.obj_id = 0 if not temp else self.messages.find().sort(
-            "_id", -1).limit(1)[0]["_id"] + 1
+        self.obj_id = 0 if not temp else self.objects.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
 
         temp = self.changes.count_documents({}, limit=1)
-        self.update_id = 0 if not temp else self.changes.find().sort(
-            "_id", -1).limit(1)[0]["_id"]
+        self.update_id = -1 if not temp else self.changes.find().sort(
+            "Id", -1).limit(1)[0]["Id"]
 
         # print(self.msg_id, self.macro_id, self.token_id,
         #       self.obj_id, self.update_id)
@@ -46,17 +46,22 @@ class Controller():
 
     def clear_db(self):
         self.messages.delete_many({})
+        self.msg_id = 0
         self.changes.delete_many({})
+        self.update_id = -1
         self.macros.delete_many({})
+        self.macro_id = 0
         self.tokens.delete_many({})
+        self.token_id = 0
         self.objects.delete_many({})
+        self.obj_id = 0
         self.battlemap.delete_many({})
 
     # MESSAGES
 
     def add_message(self, user: str, character: str, message: str, command: bool):
         post = {
-            "_id": self.msg_id,
+            "Id": self.msg_id,
             "User": user,
             "Character": character,
             "Text": message,
@@ -69,16 +74,20 @@ class Controller():
         results = {"Messages": []}
         all_messages = self.messages.find()
         for message in all_messages:
+            message.pop("_id", None)
             results["Messages"].append(message)
         return results
 
     def get_message_by_id(self, id: int):
-        return self.messages.find_one({"_id": id})
+        message = self.messages.find_one({"Id": id})
+        message.pop("_id", None)
+        return message
 
     def get_messages_since(self, id: int):
         result = {"Messages": []}
-        all_messages = self.messages.find({"_id": {"$gte": id}})
+        all_messages = self.messages.find({"Id": {"$gte": id}})
         for message in all_messages:
+            message.pop("_id", None)
             result["Messages"].append(message)
         return result
 
@@ -92,7 +101,7 @@ class Controller():
 
     def add_token(self, object_id: int, bars: list, auras: list):
         post = {
-            "_id": self.token_id,
+            "Id": self.token_id,
             "Object_id": object_id,
             "Linked_sheet_id": None,
             "Bars": bars,
@@ -111,15 +120,17 @@ class Controller():
         return ids
 
     def get_token_by_id(self, id: int):
-        return self.tokens.find_one({"_id": id})
+        token = self.tokens.find_one({"Id": id})
+        token.pop("_id", None)
+        return token
 
     def delete_token(self, id: int):
-        token = self.tokens.find_one({"_id": id})
+        token = self.tokens.find_one({"Id": id})
         if token:
             obj_id = token["Object_id"]
-            self.tokens.delete_one({"_id": id})
+            self.tokens.delete_one({"Id": id})
             self.battlemap.update_one({}, {"$pull": {"Tokens": id}})
-            self.objects.delete_one({"_id": obj_id})
+            self.objects.delete_one({"Id": obj_id})
             self.battlemap.update_one({}, {"$pull": {"Objects": obj_id}})
             self.update_id += 1
             self.update_last_id()
@@ -131,7 +142,7 @@ class Controller():
 
     def add_object(self, image_id: int, position: dict):
         post = {
-            "_id": self.obj_id,
+            "Id": self.obj_id,
             "Image_id": image_id,
             "Position": position,
             "Transformation": self.blank_trsf
@@ -149,12 +160,14 @@ class Controller():
         return ids
 
     def get_object_by_id(self, id: int):
-        return self.objects.find_one({"_id": id})
+        object_ = self.objects.find_one({"Id": id})
+        object_.pop("_id", None)
+        return object_
 
     def delete_object(self, id: int):
-        obj = self.objects.find_one({"_id": id})
+        obj = self.objects.find_one({"Id": id})
         if obj:
-            self.objects.delete_one({"_id": id})
+            self.objects.delete_one({"Id": id})
             self.battlemap.update_one({}, {"$pull": {"Objects": id}})
             self.update_id += 1
             self.update_last_id()
@@ -163,14 +176,14 @@ class Controller():
         return None
 
     def update_object_position(self, id: int, position: dict):
-        obj = self.objects.find_one({"_id": id})
+        obj = self.objects.find_one({"Id": id})
         if obj:
             self.objects.update_one(
-                {"_id": id}, {"$set": {"Position.Level": position['Level'],
-                                       "Position.Layer": position['Layer'],
-                                       "Position.Coords.x": position['Coords']['x'],
-                                       "Position.Coords.y": position['Coords']['y'],
-                                       "Position.Coords.z_layer": position['Coords']['z_layer']}})
+                {"Id": id}, {"$set": {"Position.Level": position['Level'],
+                                      "Position.Layer": position['Layer'],
+                                      "Position.Coords.x": position['Coords']['x'],
+                                      "Position.Coords.y": position['Coords']['y'],
+                                      "Position.Coords.z_layer": position['Coords']['z_layer']}})
             self.update_id += 1
             self.update_last_id()
             self.add_new_update('object', id, "changed position")
@@ -178,9 +191,9 @@ class Controller():
         return None
 
     def update_object_transformation(self, id: int, tr: dict):
-        obj = self.objects.find_one({"_id": id})
+        obj = self.objects.find_one({"Id": id})
         if obj:
-            self.objects.update_one({"_id": id}, {"$set": {
+            self.objects.update_one({"Id": id}, {"$set": {
                                     "Transformation.scale_x": tr['scale_x'],
                                     "Transformation.scale_y": tr['scale_y'],
                                     "Transformation.rotation": tr['rotation']}})
@@ -195,7 +208,7 @@ class Controller():
     def add_new_update(self, type: str, id: int, description: str):
         """Not intended for external use"""
         post = {
-            "_id": self.update_id,
+            "Id": self.update_id,
             "Type": type,
             "Type_Id": id,
             "Description": description
@@ -208,8 +221,9 @@ class Controller():
 
     def get_updates_since(self, id: int):
         results = {"Updates": []}
-        all_updates = self.changes.find({"_id": {"$gte": id}})
+        all_updates = self.changes.find({"Id": {"$gte": id}})
         for update in all_updates:
+            update.pop("_id", None)
             results["Updates"].append(update)
         return results
 
