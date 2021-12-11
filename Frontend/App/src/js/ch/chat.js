@@ -33,7 +33,7 @@ function Chat({ username }) {
       });
       setMessages([...temp]);
 
-      //sendMessage(id, username, username, text, false);
+      sendMessage( username, username, text, false);
       setText("");
     }
   }, [id]);

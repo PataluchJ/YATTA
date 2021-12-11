@@ -73,7 +73,7 @@ def messages_since():
 
 @app.route('/chat/send_message', methods=['POST'])
 def message_send():
-    json_data = flask.request.json
+    json_data = json.loads(flask.request.data)
     result = generic_argument_call(wrapper.chat_message_send, json_data)
     print("GET send message with " + str(json_data) + " result code = " + str(result['Status']))
     if result['Status'] == 200:

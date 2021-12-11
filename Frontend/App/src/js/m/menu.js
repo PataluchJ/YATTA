@@ -45,7 +45,9 @@ function battleMap(props){
             <Sheets />
           </div>
         <Chat
-          username={props.match.params.username}
+          username="Chelkos"
+          //{props.match.params.username}
+
         />
 
         </div>
