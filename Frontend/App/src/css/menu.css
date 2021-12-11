@@ -44,7 +44,7 @@ font-weight: bold;
     width:100%;
     }
 canvas{
-width:70%;
+min-width:100em;
 }
 .chat{
     width:30%;
