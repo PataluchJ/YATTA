@@ -21,6 +21,18 @@ class Wrapper:
     def __init__(self) -> None:
         self.dbc = dbcontroller.Controller()
 
+    # Utility functiion 
+
+    def validate_json(self, json, key_list, key_types):
+        if json is None:
+            raise self.WrongArguments("Not a valid json")
+        for i in range(0, len(key_list)):
+            if key_list[i] not in json:
+                raise self.WrongArguments("Missing key " + key_list[i])
+            if not isinstance(json[key_list[i]], key_types[i]):
+                raise self.WrongArguments(str(key_list[i]) + " is has wrong type")
+
+
 
     # Update ##########
 
@@ -51,55 +63,21 @@ class Wrapper:
     def chat_messages_all(self) -> str:
         return json.dumps(self.dbc.get_all_messages())
 
-    def chat_messages_since(self, res_json) -> str:
-        data = {}
-        try:
-            data = json.loads(res_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
-        if not 'Id' in data:
-            raise self.WrongArguments("Missing Id argument.")
-        id = data['Id']
-        if not isinstance(id, int):
-            try:
-                id = int(id)
-            except TypeError:
-                raise self.WrongArguments("Wrong argument type.")
-            
-        return json.dumps(self.dbc.get_messages_since(id))
-            
+    def chat_messages_since(self, data) -> str:
+        self.validate_json(data, ['Id'], [int])
+        return self.dbc.get_messages_since(data['Id'] + 1)
 
-    def chat_message_by_id(self, res_json) -> str:
-        data = {}
-        try:
-            data = json.loads(res_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
-        if not 'Id' in data:
-            raise self.WrongArguments("Missing Id argument.")
-        id = data['Id']
-        if not isinstance(id, int):
-            try:
-                id = int(id)
-            except TypeError:
-                raise self.WrongArguments("Wrong argument type.")
-
-        r = self.dbc.get_message_by_id(id)
+    def chat_message_by_id(self, data) -> str:
+        self.validate_json(data, ['Id'], [int])
+        r = self.dbc.get_message_by_id(data['Id'])
         if r is None:
             raise self.NotExists("Message not exist")
-        return json.dumps(({'Messages': [r]}))
+        return {'Messages': [r]}
             
-
-    def chat_message_send(self, rec_json) -> str:
-        data = {}
-        try:
-            data = json.loads(rec_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
-        if not data.keys() >= {'User', 'Character', 'Message'}:
-            raise self.WrongArguments("Missing arguments.")
+    def chat_message_send(self, data) -> str:
+        self.validate_json(data, ['User', 'Character', 'Message'], [str,str,str])
         self.dbc.add_message(data['User'], data['Character'], data['Message'], False)
-        return json.dumps({'Success': True, 'Message': ""})
+        return {}
         
 
     def chat_command_exec(command: str) -> str:
@@ -110,73 +88,34 @@ class Wrapper:
 
     # Objects #########
 
-    def bm_object_by_id(self, res_json) -> str:
-        data = {}
-        try:
-            data = json.loads(res_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
-        if not 'Id' in data:
-            raise self.WrongArguments("Missing Id argument.")
-
-        id = data['Id']
-        if not isinstance(id, int):
-            try:
-                id = int(id)
-            except TypeError:
-                raise self.WrongArguments("Wrong argument type.")
-
-        r =self.dbc.get_object_by_id(id)
+    def bm_object_by_id(self, data) -> str:
+        self.validate_json(data, ['Id'], [int])
+        r = self.dbc.get_object_by_id(data['Id'])
         if r is None:
             raise self.NotExists("Object not exists")
-        return json.dumps(r)
+        return r
 
-    def bm_object_create(self, res_json) -> str:
-        data = {}
-        try:
-            data = json.loads(res_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
-        if not( data.keys() >= {'Image_Id', 'Position'} \
-            and data['Position'].keys() >= {'Level', 'Layer', 'Coords'} \
-            and data['Position']['Coords'].keys() >= {'x', 'y', 'z_layer'}):
-            raise self.WrongArguments("Missing arguments.")
+    def bm_object_create(self, data) -> str:
+        self.validate_json(data, ['Image_Id','Position'], [int, dict])
+        self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
+        self.validate_json(data['Position']['Coords'], ['x','y','z_layer'], [float, float, int])
+        return self.dbc.add_object(data['Image_Id'], data['Position'])
         
-        image_id = data['Image_Id']
-        if not isinstance(image_id, int):
-            try:
-                image_id = int(image_id)
-            except TypeError:
-                raise self.WrongArguments("Wrong argument type.")
-
-        return json.dumps(self.dbc.add_object(image_id, data['Position']))
-        
-    def bm_object_delete(self, res_json) -> str:
-        data = {}
-        try:
-            data = json.loads(res_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
-        if not data.keys() >= {'Id'}:
-            raise self.WrongArguments("Missing Id argument.")
-        id = data['Id']
-        if not isinstance(id, int):
-            try:
-                id = int(id)
-            except TypeError:
-                raise self.WrongArguments("Wrong argument type.")
-        r = self.dbc.delete_object(id)
+    def bm_object_delete(self, data) -> str:
+        self.validate_json(data, ['Id'], [int])
+        r = self.dbc.delete_object(data['Id'])
         if r is None:
             raise self.NotExists("Object not exists.")
         else:
-            return json.dumps({'Update_Id' : r})
+            return {'Update_Id' : r}
 
-    def bm_object_update_position(self, res_json) -> str:
-        data = {}
-        try:
-            data = json.loads(res_json)
-        except Exception as e:
-            raise self.WrongArguments("Not a valid JSON.")
+    def bm_object_update_position(self, data) -> str:
+        self.validate_json(data, ['Id', 'Position'], [int, dict])
+        self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
+        self.validate_json(data['Position']['Coords'], ['x','y','z_layer'],[float, float,int])
+
+        if data is None:
+            raise self.WrongArguments("Not a valid json")
         if not (data.keys() >= {'Id', 'Position'} \
             and data['Position'].keys() >= {'Level', 'Layer', 'Coords'}\
             and data['Position']['Coords'].keys() >= {'x', 'y', 'z_layer'}):
