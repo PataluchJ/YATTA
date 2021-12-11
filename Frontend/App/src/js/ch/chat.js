@@ -3,11 +3,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { sendMessage, getAllMessages, getMessageByID, getMessageSince } from "./message.js";
 
 function Chat({ username }) {
+  const [user, setUser] = useState(username);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
   const [id, setId] = useState(0);
   const [logged, setLogged] = useState(false);
 
+  if (user !== "") {
+    localStorage.setItem('username', user);
+  }
+
+  useEffect(() => {
+    setUser(localStorage.getItem('username'));
+  }, []);
 
   useEffect(() => {
     // const allMessagesJSON = getAllMessages();
@@ -27,24 +35,18 @@ function Chat({ username }) {
 
       let temp = messages;
       temp.push({
-        username: username,
-        character: username,
+        username: user,
+        character: user,
         text: text,
       });
       setMessages([...temp]);
 
-      //sendMessage( username, username, text, false);
+      sendMessage( username, username, text, false);
       setText("");
     }
   }, [id]);
 
   const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(scrollToBottom, [messages]);
 
   console.log(messages, "mess");
 
@@ -52,12 +54,12 @@ function Chat({ username }) {
     <div className="chat" id= "chat">
       <div className="user-name">
         <h2>
-          {username} <span style={{ fontSize: "0.7rem" }} />
+          {user} <span style={{ fontSize: "0.7rem" }} />
         </h2>
       </div>
       <div className="chat-message">
         {messages.map((i) => {
-          if (i.username === username) {
+          if (i.username === user) {
             return (
               <div className="message mess-right">
                 <p>{i.text}</p>
