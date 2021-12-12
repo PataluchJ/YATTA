@@ -8,7 +8,7 @@ function Chat({ username }) {
   const [messages, setMessages] = useState([]);
   const [newMess, setNewMess] = useState(0);
   const [logged, setLogged] = useState(false);
-  const [id, setId] = useState(0);
+  const id = useRef(0);
 
   if (user !== "") {
     localStorage.setItem('username', user);
@@ -16,7 +16,6 @@ function Chat({ username }) {
 
   useEffect(() => {
     setUser(localStorage.getItem('username'));
-    setMessages([]);
     getAllMessages().then(data=>{
       console.log(data)
 
@@ -29,24 +28,24 @@ function Chat({ username }) {
           text: item.Text
         });
       });
-      setId(data.Messages.length);
-      console.log("data Messages length " + data.Messages.length)
-      console.log("message id " + id)
+      id.current = data.Messages.length;
+      console.log("data Messages length " + data.Messages.length);
+      console.log("message id " + id.current);
       setMessages([...temp]);
 
     });
     
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Trying to get message sincy with id=: " + (id - 1))
-      getMessageSince(id - 1).then(data=>{
+      console.log("Trying to get message since with id=: " + (id.current - 1))
+      getMessageSince(id.current - 1).then(data=>{
         console.log("DATA TEST:")
         console.log(data)
         if(data == null)
           return;
-        let temp = messages;
+        let temp = [];
         data.Messages.forEach(function(item, index, array) {
         temp.push({
           id: item.Id,
@@ -54,11 +53,11 @@ function Chat({ username }) {
           character: item.Character,
           text: item.Text
         });
-        setId(id + 1);
+        id.current++;
       });
-      setMessages([...temp]);
+      setMessages(prev => prev.concat(temp));
     });
-    }, 5000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -82,7 +81,7 @@ function Chat({ username }) {
         character: user,
         text: text,
       });
-      setMessages([...temp]);
+      id.current++;
 
       sendMessage(user, user, text, false);
       setText("");
