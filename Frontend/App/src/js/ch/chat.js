@@ -16,14 +16,9 @@ function Chat({ username }) {
 
   useEffect(() => {
     setUser(localStorage.getItem('username'));
-    const interval = setInterval(() => {
-
-    console.log("TEST 1")
     setMessages([]);
     getAllMessages().then(data=>{
-      console.log("TEST 2")
       console.log(data)
-      console.log("TEST 3")
 
       let temp = [];
       data.Messages.forEach(function(item, index, array) {
@@ -41,30 +36,31 @@ function Chat({ username }) {
 
     });
     
-    }, 2000);
-    return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     console.log("message since id: " + (id - 1))
-  //     getMessageSince(id - 1).then(data=>{
-  
-  //       let temp = messages;
-  //       data.Messages.forEach(function(item, index, array) {
-  //         temp.push({
-  //           id: item.Id,
-  //           username: item.User,
-  //           character: item.Character,
-  //           text: item.Text
-  //         });
-  //         setId(id + 1);
-  //       });
-  //       setMessages([...temp]);
-  //     });
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("Trying to get message sincy with id=: " + (id - 1))
+      getMessageSince(id - 1).then(data=>{
+        console.log("DATA TEST:")
+        console.log(data)
+        if(data == null)
+          return;
+        let temp = messages;
+        data.Messages.forEach(function(item, index, array) {
+        temp.push({
+          id: item.Id,
+          username: item.User,
+          character: item.Character,
+          text: item.Text
+        });
+        setId(id + 1);
+      });
+      setMessages([...temp]);
+    });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     setLogged(true)
