@@ -16,19 +16,27 @@ function Chat({ username }) {
   useEffect(() => {
     setUser(localStorage.getItem('username'));
 
-    const allMessages = getAllMessages();
+    console.log("TEST 1")
+    //const allMessages = getAllMessages();
+    getAllMessages().then(data=>{
+      console.log("TEST 2")
+      console.log(data)
+      console.log("TEST 3")
 
-    let temp = messages;
-    allMessages.Messages.forEach(function(item, index, array) {
-      temp.push({
-        username: item.User,
-        character: item.Character,
-        text: item.Text
+      let temp = messages;
+      data.Messages.forEach(function(item, index, array) {
+        temp.push({
+          username: item.User,
+          character: item.Character,
+          text: item.Text
+        });
+
       });
 
-    });
+      setMessages([...temp]);
 
-    setMessages([...temp]);
+    });
+    
 
   }, [user]);
 

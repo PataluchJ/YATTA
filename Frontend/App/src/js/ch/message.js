@@ -19,16 +19,16 @@ async function sendMessage(username, character, message, command) {
 
 async function getAllMessages() {
    
-    fetch('http://127.0.0.1:5000/chat/getall')
-    .then(res => res.json())
-    .then(data => {
-        console.log(data)
-      return JSON.parse(data)
-    })
-    .catch(rejected => {
-        console.log(rejected);
-    });
-    return null
+    try{
+        let response = await fetch('http://127.0.0.1:5000/chat/getall');
+        let responseJSON = await response.json();
+        console.log("FETCHED")
+        console.log(responseJSON)
+        return responseJSON
+    } catch(error) {
+        console.log("FAILED TO FETCH")
+        console.log(error)
+    }
 };
 
 async function getMessageByID(id) {
