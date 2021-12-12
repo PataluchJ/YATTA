@@ -8,6 +8,7 @@ function Chat({ username }) {
   const [messages, setMessages] = useState([]);
   const [id, setId] = useState(0);
   const [logged, setLogged] = useState(false);
+  const [databaseid, setDatabaseid] = useState(0);
 
   if (user !== "") {
     localStorage.setItem('username', user);
@@ -30,7 +31,7 @@ function Chat({ username }) {
           character: item.Character,
           text: item.Text
         });
-
+        setDatabaseid(databaseid + 1);
       });
 
       setMessages([...temp]);
@@ -39,6 +40,28 @@ function Chat({ username }) {
     
 
   }, [user]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getMessageSince(databaseid).then(data=>{
+        console.log("TEST 2")
+        console.log(data)
+        console.log("TEST 3")
+  
+        let temp = messages;
+        data.Messages.forEach(function(item, index, array) {
+          temp.push({
+            username: item.User,
+            character: item.Character,
+            text: item.Text
+          });
+          setDatabaseid(databaseid + 1);
+        });
+        setMessages([...temp]);
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     setLogged(true)
