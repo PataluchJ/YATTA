@@ -110,7 +110,7 @@ class Controller():
         self.tokens.insert_one(post)
         self.update_id += 1
         self.update_last_id()
-        self.add_new_update('token', self.token_id, "added")
+        self.add_new_update('Token', self.token_id, "added")
         self.battlemap.update_one({}, {"$push": {"Tokens": self.token_id}})
         self.token_id += 1
         ids = {
@@ -134,7 +134,7 @@ class Controller():
             self.battlemap.update_one({}, {"$pull": {"Objects": obj_id}})
             self.update_id += 1
             self.update_last_id()
-            self.add_new_update('token', id, "removed")
+            self.add_new_update('Token', id, "removed")
             return self.update_id
         return None
 
@@ -150,7 +150,7 @@ class Controller():
         self.objects.insert_one(post)
         self.update_id += 1
         self.update_last_id()
-        self.add_new_update('object', self.obj_id, "added")
+        self.add_new_update('Object', self.obj_id, "added")
         self.battlemap.update_one({}, {"$push": {"Objects": self.obj_id}})
         self.obj_id += 1
         ids = {
@@ -171,7 +171,7 @@ class Controller():
             self.battlemap.update_one({}, {"$pull": {"Objects": id}})
             self.update_id += 1
             self.update_last_id()
-            self.add_new_update('object', self.obj_id, "removed")
+            self.add_new_update('Object', self.obj_id, "removed")
             return self.update_id
         return None
 
@@ -186,7 +186,7 @@ class Controller():
                                       "Position.Coords.z_layer": position['Coords']['z_layer']}})
             self.update_id += 1
             self.update_last_id()
-            self.add_new_update('object', id, "changed position")
+            self.add_new_update('Object', id, "changed position")
             return self.update_id
         return None
 
@@ -199,7 +199,7 @@ class Controller():
                                     "Transformation.rotation": tr['rotation']}})
             self.update_id += 1
             self.update_last_id()
-            self.add_new_update('object', id, "transformed")
+            self.add_new_update('Object', id, "transformed")
             return self.update_id
         return None
 
@@ -209,9 +209,11 @@ class Controller():
         """Not intended for external use"""
         post = {
             "Id": self.update_id,
-            "Type": type,
-            "Type_Id": id,
-            "Description": description
+            "Where": type,
+            "Reference_Id": id
+            # "Type": type,
+            # "Type_Id": id,
+            # "Description": description
         }
         self.changes.insert_one(post)
 
