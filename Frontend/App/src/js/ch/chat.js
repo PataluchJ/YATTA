@@ -17,7 +17,7 @@ function Chat({ username }) {
     setUser(localStorage.getItem('username'));
 
     console.log("TEST 1")
-    //const allMessages = getAllMessages();
+    setMessages([]);
     getAllMessages().then(data=>{
       console.log("TEST 2")
       console.log(data)
@@ -61,7 +61,7 @@ function Chat({ username }) {
       });
       setMessages([...temp]);
 
-      sendMessage( username, username, text, false);
+      sendMessage( user, user, text, false);
       setText("");
     }
   }, [id]);
