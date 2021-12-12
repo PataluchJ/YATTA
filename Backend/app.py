@@ -1,16 +1,22 @@
 import flask
 import wrapper
 import json
+from flask_cors import CORS, cross_origin
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 wrapper = wrapper.Wrapper()
 
 def generic_argument_call(function, json_data):
     try:
         r = function(json_data)
         response = flask.jsonify(r)
-        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "*")
+        response.headers.add("Access-Control-Allow-Methods", "*")
+        
         return {'Status': 200, 'Response': response}
     except wrapper.WrongArguments as e:
         print("Error " + e.message)
@@ -48,7 +54,7 @@ def messages_get_all():
         flask.abort(result['Status'])
 
 
-@app.route('/chat/get_by_id', methods=['GET'])
+@app.route('/chat/get_by_id', methods=['POST'])
 def message_get_by_id():
     json_data = json.loads(flask.request.data)
     result = generic_argument_call(wrapper.chat_message_by_id, json_data)
@@ -60,7 +66,7 @@ def message_get_by_id():
 
 
 
-@app.route('/chat/get_since', methods=['GET'])
+@app.route('/chat/get_since', methods=['POST'])
 def messages_since():
     json_data = json.loads(flask.request.data)
     result = generic_argument_call(wrapper.chat_messages_since, json_data)
