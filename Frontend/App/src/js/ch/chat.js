@@ -15,12 +15,24 @@ function Chat({ username }) {
 
   useEffect(() => {
     setUser(localStorage.getItem('username'));
-  }, []);
+
+    const allMessages = getAllMessages();
+
+    let temp = messages;
+    allMessages.Messages.forEach(function(item, index, array) {
+      temp.push({
+        username: item.User,
+        character: item.Character,
+        text: item.Text
+      });
+
+    });
+
+    setMessages([...temp]);
+
+  }, [user]);
 
   useEffect(() => {
-    // const allMessagesJSON = getAllMessages();
-    // const allMessages = JSON.parse(allMessagesJSON);
-
     setLogged(true)
   }, [logged]);
 
