@@ -35,18 +35,27 @@ async function getMessageByID(id) {
     var url = new URL('http://127.0.0.1:5000/chat/get_by_id?')
     var param = {Id: id}
     url.search = new URLSearchParams(param).toString;
-    const response = await fetch(url);
-
+    const response = await fetch(url, {
+        method: "GET",
+        mode: 'no-cors'
+    });
     return response.json();  
 };
 
 async function getMessageSince(id) {
-    var url = new URL('http://127.0.0.1:5000/chat/get_since?')
-    var param = {Id: id}
-    url.search = new URLSearchParams(param).toString;
-    const response = await fetch(url);
-    console.log(response)
-    return response.json();  
+    try{
+        var url = new URL('http://127.0.0.1:5000/chat/get_since')
+        var param = {Id: id}
+        url.search = new URLSearchParams(param).toString;
+        const response = await fetch(url);
+        let responseJSON = await response.json();
+        console.log("FETCHED")
+        console.log(responseJSON)
+        return responseJSON
+    } catch(error) {
+        console.log("FAILED TO FETCH")
+        console.log(error)
+    }
 };
 
 module.exports = {

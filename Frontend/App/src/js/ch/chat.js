@@ -6,9 +6,9 @@ function Chat({ username }) {
   const [user, setUser] = useState(username);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
-  const [id, setId] = useState(0);
+  const [newMess, setNewMess] = useState(0);
   const [logged, setLogged] = useState(false);
-  const [databaseid, setDatabaseid] = useState(0);
+  const [id, setId] = useState(0);
 
   if (user !== "") {
     localStorage.setItem('username', user);
@@ -16,6 +16,7 @@ function Chat({ username }) {
 
   useEffect(() => {
     setUser(localStorage.getItem('username'));
+    const interval = setInterval(() => {
 
     console.log("TEST 1")
     setMessages([]);
@@ -24,52 +25,54 @@ function Chat({ username }) {
       console.log(data)
       console.log("TEST 3")
 
-      let temp = messages;
+      let temp = [];
       data.Messages.forEach(function(item, index, array) {
         temp.push({
+          id: item.Id,
           username: item.User,
           character: item.Character,
           text: item.Text
         });
-        setDatabaseid(databaseid + 1);
       });
-
+      setId(data.Messages.length);
+      console.log("data Messages length " + data.Messages.length)
+      console.log("message id " + id)
       setMessages([...temp]);
 
     });
     
-
-  }, [user]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getMessageSince(databaseid).then(data=>{
-        console.log("TEST 2")
-        console.log(data)
-        console.log("TEST 3")
-  
-        let temp = messages;
-        data.Messages.forEach(function(item, index, array) {
-          temp.push({
-            username: item.User,
-            character: item.Character,
-            text: item.Text
-          });
-          setDatabaseid(databaseid + 1);
-        });
-        setMessages([...temp]);
-      });
-    }, 1000);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     console.log("message since id: " + (id - 1))
+  //     getMessageSince(id - 1).then(data=>{
+  
+  //       let temp = messages;
+  //       data.Messages.forEach(function(item, index, array) {
+  //         temp.push({
+  //           id: item.Id,
+  //           username: item.User,
+  //           character: item.Character,
+  //           text: item.Text
+  //         });
+  //         setId(id + 1);
+  //       });
+  //       setMessages([...temp]);
+  //     });
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     setLogged(true)
   }, [logged]);
 
-  const idSetter = () => {
+  const newMessSetter = () => {
     if (text !== "") {
-      setId(id + 1);
+      setNewMess(newMess + 1);
     }
   }
 
@@ -78,16 +81,17 @@ function Chat({ username }) {
 
       let temp = messages;
       temp.push({
+        id: id,
         username: user,
         character: user,
         text: text,
       });
       setMessages([...temp]);
 
-      sendMessage( user, user, text, false);
+      sendMessage(user, user, text, false);
       setText("");
     }
-  }, [id]);
+  }, [newMess]);
 
   const messagesEndRef = useRef(null);
 
@@ -129,11 +133,11 @@ function Chat({ username }) {
           onChange={(e) => setText(e.target.value)}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              idSetter();
+              newMessSetter();
             }
           }}
         ></input>
-        <button onClick={idSetter}>Send</button>
+        <button onClick={newMessSetter}>Send</button>
       </div>
     </div>
   );
