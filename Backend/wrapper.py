@@ -35,98 +35,78 @@ class Wrapper:
 
     # Update ##########
 
-    def get_all_data(self) -> str:
-        return self.dbc.get_all_data()
+    def get_all_data(self,data):
+        self.validate_json(data, ['Room'], [str])
+        btInfo = self.dbc.get_all_data(data['Room'])
+        messages = self.dbc.get_all_messages(data['Room'])
+        return {'Messages': messages['Messages'], 'Battlemap': btInfo}
+    
+    def new_room(self, data):
+        self.validate_json(data, ['Name', 'Battlemap'], [str,str])
+        self.dbc.add_new_room(data['Name'])
+        self.dbc.create_battlemap(data['Name'], data['Battlemap'], [])
+        self.dbc.set_battlemap(data['Name'], data['Battlemap'])
 
     # Chat ############
 
-    def chat_messages_all(self) -> str:
+    def chat_messages_all(self):
         return self.dbc.get_all_messages()
-
-    def chat_messages_since(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        return self.dbc.get_messages_since(data['Id'] + 1)
-
-    def chat_message_by_id(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        r = self.dbc.get_message_by_id(data['Id'])
-        if r is None:
-            raise self.NotExists("Message not exist")
-        return {'Messages': [r]}
             
-    def chat_message_send(self, data) -> str:
-        self.validate_json(data, ['User', 'Character', 'Text'], [str,str,str])
-        self.dbc.add_message(data['User'], data['Character'], data['Text'], False)
-        return {}
+    def chat_message_send(self, data):
+        self.validate_json(data, ['User', 'Character', 'Text', 'Room'], [str,str,str,str])
+        self.dbc.add_message(data['Room'], data['User'], data['Character'], data['Text'], False)
+        return {'User': data['User'], 'Character': data['Character'], 'Text': data['Text'], 'Command': False}
         
 
-    def chat_command_exec(command: str) -> str:
+    def chat_command_exec(command: str):
         return {'Success': False, 'Message': "Not implementet"}
 
-    def chat_macro_exec(id: int) -> str:
+    def chat_macro_exec(id: int):
         return {'Success': False, 'Message': "Not implementet"}
 
     # Objects #########
 
-    def bm_object_by_id(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        r = self.dbc.get_object_by_id(data['Id'])
-        if r is None:
-            raise self.NotExists("Object not exists")
-        return r
-
-    def bm_object_create(self, data) -> str:
-        self.validate_json(data, ['Image_Id','Position'], [int, dict])
+    def bm_object_create(self, data):
+        self.validate_json(data, ['Image_Id','Position','Room'], [int, dict,str])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
         self.validate_json(data['Position']['Coords'], ['x','y','z_layer'], [float, float, int])
-        return self.dbc.add_object(data['Image_Id'], data['Position'])
+        return self.dbc.add_object(data['Room'], data['Image_Id'], data['Position'])
         
-    def bm_object_delete(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        r = self.dbc.delete_object(data['Id'])
-        if r is None:
-            raise self.NotExists("Object not exists.")
-        else:
-            return {'Update_Id' : r}
+    def bm_object_delete(self, data):
+        self.validate_json(data, ['Id','Room'], [int,str])
+        success = self.dbc.delete_object(data['Room'], data['Id'])
+        if success is True:
+            return {"Id": data["Id"]}
+        raise self.Failure("Object delete position failed at bdcontroller")
 
-    def bm_object_update_position(self, data) -> str:
+    def bm_object_update_position(self, data):
         self.validate_json(data, ['Id', 'Position'], [int, dict])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
         self.validate_json(data['Position']['Coords'], ['x','y','z_layer'],[float, float,int])
 
-        r = self.dbc.update_object_position(id, data['Position'])
-        if r in None:
-            raise self.NotExists("Object not exists.")
-        return {'Update_Id': r}
+        success = self.dbc.update_object_position(data['Room'], data['Id'], data['Position'])
+        if success in True:
+            return {'Id' : data['Id'], 'Position': data['Position']}
+        raise self.Failure("Object update position failed at bdcontroller")
 
-    def bm_object_update_transformation(self, data) -> str:
-        self.validate_json(data, ['Id', 'Transformation'], [int, dict])
+    def bm_object_update_transformation(self, data):
+        self.validate_json(data, ['Id', 'Transformation','Room'], [int, dict,str])
         self.validate_json(data['Transformation'], ['scale_x', 'scale_y', 'rotation'], [float,float,float])
-        r = self.dbc.update_object_transformation(data['Id'], data['Transformation'])
-        if r in None:
-            raise self.NotExists("Object not exists.")
-        return {'Update_Id': r}
+        success = self.dbc.update_object_transformation(data['Room'], data['Id'], data['Transformation'])
+        if success in True:
+            return {'Id': data['Id'], 'Transformation' : data['Transformation']}
+        raise self.Failure("Object update transformation failed at bdcontroller")
 
     # Tokens ##########
 
-    def bm_token_by_id(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        r = self.dbc.get_token_by_id(data['Id'])
-        if r is None: 
-            raise self.NotExists("Token not exists.")
+    def bm_token_create(self, data):
+        self.validate_json(data, ['Id', 'Room'], [int,str])
+        r = self.dbc.add_token(data['Room'], data['Id'], [], [])
         return r
 
-    def bm_token_create(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        r = self.dbc.add_token(id, [], [])
-        return r
-
-    def bm_token_delete(self, data) -> str:
-        self.validate_json(data, ['Token_Id'], [int])
-        r = self.dbc.delete_token(data['Token_Id'])
-        if r is None:
-            raise self.NotExists("Token not exists.")
-        if 'Object_Id' in data:
-            self.validate_json(data, ['Object_Id'], [int])
-            return self.bm_object_delete(data['Object_Id'])
-        return r
+    def bm_token_delete(self, data):
+        self.validate_json(data, ['Token_Id', 'Room'], [int,str])
+        success = self.dbc.delete_token(data['Room'], data['Token_Id'])
+        if success is True: 
+            return {"Id": data['Token_Id']}
+        raise self.Failure("Token delete failed at bdcontroller")
