@@ -1,6 +1,5 @@
 import json 
 import dbcontroller
-import commandParser
 
 class Wrapper:
 
@@ -21,7 +20,7 @@ class Wrapper:
 
     def __init__(self) -> None:
         self.dbc = dbcontroller.Controller()
-        self.parser = commandParser.CommandParser()
+        #self.parser = commandParser.CommandParser()
 
     # Utility functiion 
 
