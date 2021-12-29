@@ -6,11 +6,12 @@ import MenuView from "./menuHTMLinJS"
 import BattleMap from "../bm/battlemapReact";
 import Join from "./joinJS"
 import Chat from "../ch/chat"
+import Second from "../bm/secondMenu"
 import Sheets from "../bm/charSheets"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
 import "../../css/charSheets.css";
-
+import "../../css/tables.css";
 function Menu() {
     const [username, setUsername] = useState("");
 
@@ -46,13 +47,13 @@ class Map extends React.Component {
             <div className="battleMap" id="battleMap">
                 <div className="battleMapAssets" id ="battleMapAssets">
             <BattleMap />
-                <Sheets />
+                <Second />
             </div>
             <Chat
-            username={this.props.username}
+           // username={this.props.username}
             //{props.match.params.username}
 
-            />
+           />
 
             </div>
             </React.Fragment>

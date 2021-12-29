@@ -45,9 +45,15 @@ font-weight: bold;
     width:100%;
     }
 canvas{
-min-width:100em;
+    min-width:60%;
+    max-height: 60%;
 }
 .chat{
-    height: 1048px;
+    min-height: 70%;
     width:30%;
+}
+
+.battlemapAssets{
+    width: 20em;
+
 }

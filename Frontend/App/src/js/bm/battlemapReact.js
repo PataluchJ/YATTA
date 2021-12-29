@@ -131,7 +131,7 @@ class PixiComponent extends React.Component {
 
     render() {
         console.log("render")
-        this.app = new PIXI.Application()
+        this.app = new PIXI.Application({width: window.screen.width*0.7, height: window.screen.height*0.6})
         let component = this;
         this.app.renderer.addSystem(EventSystem, 'events')
         this.app.stage.interactive = true
