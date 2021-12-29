@@ -1,4 +1,3 @@
-import pymongo
 from pymongo import MongoClient
 
 
@@ -8,35 +7,7 @@ class Controller():
         self.client = MongoClient()
         self.db = self.client.mydb
 
-        self.messages = self.db.messages
-        self.macros = self.db.macros
-        self.tokens = self.db.tokens
-        self.objects = self.db.objects
-        self.battlemap = self.db.battlemap
-        self.changes = self.db.changes
-
-        temp = self.messages.count_documents({}, limit=1)
-        self.msg_id = 0 if not temp else self.messages.find().sort(
-            "Id", -1).limit(1)[0]["Id"] + 1
-
-        temp = self.macros.count_documents({}, limit=1)
-        self.macro_id = 0 if not temp else self.macros.find().sort(
-            "Id", -1).limit(1)[0]["Id"] + 1
-
-        temp = self.tokens.count_documents({}, limit=1)
-        self.token_id = 0 if not temp else self.tokens.find().sort(
-            "Id", -1).limit(1)[0]["Id"] + 1
-
-        temp = self.objects.count_documents({}, limit=1)
-        self.obj_id = 0 if not temp else self.objects.find().sort(
-            "Id", -1).limit(1)[0]["Id"] + 1
-
-        temp = self.changes.count_documents({}, limit=1)
-        self.update_id = -1 if not temp else self.changes.find().sort(
-            "Id", -1).limit(1)[0]["Id"]
-
-        # print(self.msg_id, self.macro_id, self.token_id,
-        #       self.obj_id, self.update_id)
+        self.rooms = self.db.rooms
 
         self.blank_trsf = {
             "scale_x": 1,
@@ -44,49 +15,53 @@ class Controller():
             "rotation": 0
         }
 
-    def clear_db(self):
-        self.messages.delete_many({})
-        self.msg_id = 0
-        self.changes.delete_many({})
-        self.update_id = -1
-        self.macros.delete_many({})
-        self.macro_id = 0
-        self.tokens.delete_many({})
-        self.token_id = 0
-        self.objects.delete_many({})
-        self.obj_id = 0
-        self.battlemap.delete_many({})
+    def add_new_room(self, name: str) -> None:
+        post = {
+            "room_name": name,
+            "messages": [],
+            "msg_id": 0,
+            "tokens": [],
+            "token_id": 0,
+            "objects": [],
+            "object_id": 0,
+            "macros": [],
+            "macro_id": 0,
+            "changes": [],
+            "update_id": 0,
+            "battlemap": {}
+        }
+        self.rooms.insert_one(post)
 
     # MESSAGES
 
-    def add_message(self, user: str, character: str, message: str, command: bool):
+    def add_message(self, room: str, user: str, character: str, message: str, command: bool):
         post = {
-            "Id": self.msg_id,
+            "Id": self.rooms.find_one({"room_name": room})["msg_id"],
             "User": user,
             "Character": character,
             "Text": message,
             "Command": command
         }
-        self.msg_id += 1
-        self.messages.insert_one(post)
+        self.rooms.update_one({"room_name": room}, {"$inc": {"msg_id": 1}})
+        self.rooms.update_one({"room_name": room}, {"$push": {"messages": post}})
 
-    def get_all_messages(self):
+    def get_all_messages(self, room: str):
         results = {"Messages": []}
-        all_messages = self.messages.find()
+        all_messages = self.rooms.find_one({"room_name": room})["messages"]
         for message in all_messages:
             message.pop("_id", None)
             results["Messages"].append(message)
         return results
 
-    def get_message_by_id(self, id: int):
-        message = self.messages.find_one({"Id": id})
+    def get_message_by_id(self, room: str, id: int):
+        message = self.rooms.find_one({"room_name": room})["messages"][id]
         message.pop("_id", None)
         return message
 
-    def get_messages_since(self, id: int):
+    def get_messages_since(self, room: str, id: int):
         result = {"Messages": []}
-        all_messages = self.messages.find({"Id": {"$gte": id}})
-        for message in all_messages:
+        messages = self.rooms.find_one({"room_name": room})["messages"][id:]
+        for message in messages:
             message.pop("_id", None)
             result["Messages"].append(message)
         return result
@@ -99,164 +74,182 @@ class Controller():
 
     # TOKENS
 
-    def add_token(self, object_id: int, bars: list, auras: list):
+    def add_token(self, room: str, object_id: int, bars: list, auras: list):
         post = {
-            "Id": self.token_id,
+            "Id": self.rooms.find_one({"room_name": room})["token_id"],
             "Object_id": object_id,
             "Linked_sheet_id": None,
             "Bars": bars,
             "Auras": auras
         }
-        self.tokens.insert_one(post)
-        self.update_id += 1
-        self.update_last_id()
-        self.add_new_update('Token', self.token_id, "added")
-        self.battlemap.update_one({}, {"$push": {"Tokens": self.token_id}})
-        self.token_id += 1
         ids = {
-            "Token_Id": self.token_id-1,
-            "Update_Id": self.update_id
+            "Token_Id": post["Id"],
+            "Update_Id": self.rooms.find_one({"room_name": room})["update_id"]
         }
+
+        self.add_new_update(room, 'Token', self.rooms.find_one({"room_name": room})["token_id"], "added")
+        
+        self.rooms.update_one({"room_name": room}, {"$inc": {"token_id": 1, "update_id": 1}})
+        self.rooms.update_one({"room_name": room}, {"$push": {"tokens": post}})
+        self.update_last_id(room)
+        self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Tokens": post["Id"]}})
+
         return ids
 
-    def get_token_by_id(self, id: int):
-        token = self.tokens.find_one({"Id": id})
-        token.pop("_id", None)
-        return token
+    def get_token_by_id(self, room: str, id: int):
+        tokens = self.rooms.find_one({"room_name": room})["tokens"]
+        result = None
+        for token in tokens:
+            if token["Id"] == id:
+                result = token
+        result.pop("_id", None)
+        return result
 
-    def delete_token(self, id: int):
-        token = self.tokens.find_one({"Id": id})
-        if token:
-            obj_id = token["Object_id"]
-            self.tokens.delete_one({"Id": id})
-            self.battlemap.update_one({}, {"$pull": {"Tokens": id}})
-            self.objects.delete_one({"Id": obj_id})
-            self.battlemap.update_one({}, {"$pull": {"Objects": obj_id}})
-            self.update_id += 1
-            self.update_last_id()
-            self.add_new_update('Token', id, "removed")
-            return self.update_id
+    def delete_token(self, room: str, id: int):
+        tokens = self.rooms.find_one({"room_name": room})["tokens"]
+        result = None
+        for token in tokens:
+            if token["Id"] == id:
+                result = token
+        if result:
+            self.rooms.update_one({"room_name": room}, {"$pull": {"tokens": result}})
+            self.add_new_update(room, 'Token', id, "removed")
+            self.rooms.update_one({"room_name": room}, {"$pull": {"battlemap.Tokens": id}})
+            self.update_last_id(room)
+            self.rooms.update_one({"room_name": room}, {"$inc": {"update_id": 1}})
+            obj_id = result["Object_id"]
+            self.delete_object(room, obj_id)
+            return self.rooms.find_one({"room_name": room})["update_id"]-1
         return None
 
     # OBJECTS
 
-    def add_object(self, image_id: int, position: dict):
+    def add_object(self, room: str, image_id: int, position: dict):
         post = {
-            "Id": self.obj_id,
+            "Id": self.rooms.find_one({"room_name": room})["object_id"],
             "Image_id": image_id,
             "Position": position,
             "Transformation": self.blank_trsf
         }
-        self.objects.insert_one(post)
-        self.update_id += 1
-        self.update_last_id()
-        self.add_new_update('Object', self.obj_id, "added")
-        self.battlemap.update_one({}, {"$push": {"Objects": self.obj_id}})
-        self.obj_id += 1
         ids = {
-            "Object_Id": self.obj_id-1,
-            "Update_Id": self.update_id
+            "Object_Id": post["Id"],
+            "Update_Id": self.rooms.find_one({"room_name": room})["update_id"]
         }
+
+        self.add_new_update(room, 'Object', post["Id"], "added")
+
+        self.rooms.update_one({"room_name": room}, {"$inc": {"object_id": 1, "update_id": 1}})
+        self.rooms.update_one({"room_name": room}, {"$push": {"objects": post}})
+        self.update_last_id(room)
+        self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Objects": post["Id"]}})
+        
         return ids
 
-    def get_object_by_id(self, id: int):
-        object_ = self.objects.find_one({"Id": id})
-        object_.pop("_id", None)
-        return object_
+    def get_object_by_id(self, room: str, id: int):
+        objects = self.rooms.find_one({"room_name": room})["objects"]
+        result = None
+        for obj in objects:
+            if objects["Id"] == id:
+                result = obj
+        result.pop("_id", None)
+        return result
 
-    def delete_object(self, id: int):
-        obj = self.objects.find_one({"Id": id})
-        if obj:
-            self.objects.delete_one({"Id": id})
-            self.battlemap.update_one({}, {"$pull": {"Objects": id}})
-            self.update_id += 1
-            self.update_last_id()
-            self.add_new_update('Object', self.obj_id, "removed")
-            return self.update_id
+    def delete_object(self, room: str, id: int):
+        objects = self.rooms.find_one({"room_name": room})["objects"]
+        result = None
+        for obj in objects:
+            if obj["Id"] == id:
+                result = obj
+        if result:
+            self.rooms.update_one({"room_name": room}, {"$pull": {"objects": result}})
+            self.add_new_update(room, 'Object', id, "removed")
+            self.rooms.update_one({"room_name": room}, {"$pull": {"battlemap.Objects": id}})
+            self.update_last_id(room)
+            self.rooms.update_one({"room_name": room}, {"$inc": {"update_id": 1}})
+            return self.rooms.find_one({"room_name": room})["update_id"]-1
         return None
 
-    def update_object_position(self, id: int, position: dict):
-        obj = self.objects.find_one({"Id": id})
-        if obj:
-            self.objects.update_one(
-                {"Id": id}, {"$set": {"Position.Level": position['Level'],
-                                      "Position.Layer": position['Layer'],
-                                      "Position.Coords.x": position['Coords']['x'],
-                                      "Position.Coords.y": position['Coords']['y'],
-                                      "Position.Coords.z_layer": position['Coords']['z_layer']}})
-            self.update_id += 1
-            self.update_last_id()
-            self.add_new_update('Object', id, "changed position")
-            return self.update_id
+    def update_object_position(self, room: str, id: int, position: dict):
+        objects = self.rooms.find_one({"room_name": room})["objects"]
+        result = None
+        for obj in objects:
+            if obj["Id"] == id:
+                result = obj
+        if result:
+            self.rooms.update_one({"room_name": room}, {"$pull": {"objects": result}})
+            result['Position']['Level'] = position['Level']
+            result['Position']['Layer'] = position['Layer']
+            result['Position']['Coords']['x'] = position['Coords']['x']
+            result['Position']['Coords']['y'] = position['Coords']['y']
+            result['Position']['Coords']['z_layer'] = position['Coords']['z_layer']
+            self.rooms.update_one({"room_name": room}, {"$push": {"objects": result}})
+            self.rooms.update_one({"room_name": room}, {"$inc": {"update_id": 1}})
+            self.update_last_id(room)
+            self.add_new_update(room, 'Object', id, "changed position")
+            return self.rooms.find_one({"room_name": room})['update_id']-1
         return None
 
-    def update_object_transformation(self, id: int, tr: dict):
-        obj = self.objects.find_one({"Id": id})
-        if obj:
-            self.objects.update_one({"Id": id}, {"$set": {
-                                    "Transformation.scale_x": tr['scale_x'],
-                                    "Transformation.scale_y": tr['scale_y'],
-                                    "Transformation.rotation": tr['rotation']}})
-            self.update_id += 1
-            self.update_last_id()
-            self.add_new_update('Object', id, "transformed")
-            return self.update_id
+    def update_object_transformation(self, room: str, id: int, tr: dict):
+        objects = self.rooms.find_one({"room_name": room})["objects"]
+        result = None
+        for obj in objects:
+            if obj["Id"] == id:
+                result = obj
+        if result:
+            self.rooms.update_one({"room_name": room}, {"$pull": {"objects": result}})
+            result["Transformation"]["scale_x"] = tr['scale_x']
+            result["Transformation"]["scale_y"] = tr['scale_y']
+            result["Transformation"]["rotation"] = tr['rotation']
+            self.rooms.update_one({"room_name": room}, {"$push": {"objects": result}})
+            self.rooms.update_one({"room_name": room}, {"$inc": {"update_id": 1}})
+            self.update_last_id(room)
+            self.add_new_update(room, 'Object', id, "transformed")
+            return self.rooms.find_one({"room_name": room})['update_id']-1
         return None
 
     # UDPATE LIST
 
-    def add_new_update(self, type: str, id: int, description: str):
+    def add_new_update(self, room: str, type: str, id: int, description: str):
         """Not intended for external use"""
         post = {
-            "Id": self.update_id,
+            "Id": self.rooms.find_one({"room_name": room})["update_id"],
             "Where": type,
             "Reference_Id": id
-            # "Type": type,
-            # "Type_Id": id,
-            # "Description": description
         }
-        self.changes.insert_one(post)
+        self.rooms.update_one({"room_name": room}, {"$push": {"changes": post}})
 
-    def get_last_update_id(self):
-        result = {"Last_Id": self.update_id}
+    def get_last_update_id(self, room: str):
+        result = {"Last_Id": self.rooms.find_one({"room_name": room})["update_id"]-1}
         return result
 
-    def get_updates_since(self, id: int):
+    def get_updates_since(self, room: str, id: int):
         results = {"Updates": []}
-        all_updates = self.changes.find({"Id": {"$gte": id}})
-        for update in all_updates:
+        updates = self.rooms.find_one({"room_name": room})["changes"][id:]
+        for update in updates:
             update.pop("_id", None)
             results["Updates"].append(update)
         return results
 
     # BATTLEMAP
 
-    def create_battlemap(self, name: str, lvl_names: list):
+    def create_battlemap(self, room: str, name: str, lvl_names: list):
         post = {
             "Name": name,
             "Levels_names": lvl_names,
             "Objects": [],
             "Tokens": [],
-            "Last_update": self.update_id
+            "Last_update": self.rooms.find_one({"room_name": room})["update_id"]-1
         }
-        self.battlemap.insert_one(post)
+        self.rooms.update_one({"room_name": room}, {"$set": {"battlemap": post}})
 
-    def update_last_id(self):
+    def update_last_id(self, room: str):
         """Not intended for external use"""
-        self.battlemap.update_one(
-            {}, {"$set": {"Last_update": self.update_id}})
+        self.rooms.update_one({"room_name": room}, {"$inc": {"battlemap.Last_update": 1}})
 
-    def get_all_data(self):
-        all_tokens = self.tokens.find()
-        tokens = []
-        for token in all_tokens:
-            tokens.append(token)
-        all_objects = self.objects.find()
-        objects = []
-        for object in all_objects:
-            objects.append(object)
-
-        bmap = self.battlemap.find_one()
+    def get_all_data(self, room: str):
+        tokens = self.rooms.find_one({"room_name": room})["tokens"]
+        objects = self.rooms.find_one({"room_name": room})["objects"]
+        bmap = self.rooms.find_one({"room_name": room})["battlemap"]
 
         result = {
             "Battlemap": {
