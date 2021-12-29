@@ -62,12 +62,11 @@ class Controller():
             "Bars": bars,
             "Auras": auras
         }
-        id = post["Id"],
 
         self.rooms.update_one({"room_name": room}, {"$inc": {"token_id": 1}})
         self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Tokens": post}})
 
-        return id
+        return post
 
     def delete_token(self, room: str, id: int):
         tokens = self.rooms.find_one({"room_name": room})['battlemap']['Tokens']
@@ -79,8 +78,8 @@ class Controller():
             self.rooms.update_one({"room_name": room}, {"$pull": {"battlemap.Tokens": result}})
             obj_id = result["Object_id"]
             self.delete_object(room, obj_id)
-            return 1
-        return -1
+            return True
+        return False
 
     # OBJECTS
 
@@ -91,12 +90,11 @@ class Controller():
             "Position": position,
             "Transformation": self.blank_trsf
         }
-        id = post["Id"],
 
         self.rooms.update_one({"room_name": room}, {"$inc": {"object_id": 1}})
         self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Objects": post}})
         
-        return id
+        return post
 
     def delete_object(self, room: str, id: int):
         objects = self.rooms.find_one({"room_name": room})["battlemap"]["Objects"]
@@ -106,8 +104,8 @@ class Controller():
                 result = obj
         if result:
             self.rooms.update_one({"room_name": room}, {"$pull": {"battlemap.Objects": result}})
-            return 1
-        return -1
+            return True
+        return False
 
     def update_object_position(self, room: str, id: int, position: dict):
         objects = self.rooms.find_one({"room_name": room})["battlemap"]["Objects"]
@@ -123,8 +121,8 @@ class Controller():
             result['Position']['Coords']['y'] = position['Coords']['y']
             result['Position']['Coords']['z_layer'] = position['Coords']['z_layer']
             self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Objects": result}})
-            return 1
-        return -1
+            return True
+        return False
 
     def update_object_transformation(self, room: str, id: int, tr: dict):
         objects = self.rooms.find_one({"room_name": room})["battlemap"]["Objects"]
@@ -138,8 +136,8 @@ class Controller():
             result["Transformation"]["scale_y"] = tr['scale_y']
             result["Transformation"]["rotation"] = tr['rotation']
             self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Objects": result}})
-            return 1
-        return -1
+            return True
+        return False
 
 
     # BATTLEMAP
@@ -169,6 +167,5 @@ class Controller():
                 break
 
     def get_all_data(self, room: str):
-        bmap = self.rooms.find_one({"room_name": room})["battlemap"]
-        result = {"Battlemap": bmap}
-        return result
+        res = self.rooms.find_one({"room_name": room})['battlemap']
+        return res
