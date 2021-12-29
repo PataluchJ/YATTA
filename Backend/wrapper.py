@@ -1,5 +1,6 @@
 import json 
 import dbcontroller
+import commandParser
 
 class Wrapper:
 
@@ -20,6 +21,7 @@ class Wrapper:
 
     def __init__(self) -> None:
         self.dbc = dbcontroller.Controller()
+        self.parser = commandParser.CommandParser()
 
     # Utility functiion 
 
@@ -34,31 +36,8 @@ class Wrapper:
 
     # Update ##########
 
-    def remove_duplicats(self, updates):
-        current = updates['Updates']
-        new = []
-
-        for u in reversed(current):
-            exists = False
-            for n in new:
-                if n['Where'] == u['Where'] and n['Reference_Id'] == u['Reference_Id']:
-                    exists = True
-                    #print("Exists : " + str(n) + " " + str(u))
-            if not exists:
-                new.append(u)
-
-        return new[::-1]
-
-    def update_last_id(self) -> str:
-        return self.dbc.update_last_id()
-
-    def update_get_since(self, data) -> str:
-        self.validate_json(data, ['Id'], [int])
-        return self.remove_duplicats(self.dbc.get_updates_since(data['Id']+1))
- 
-
-    def update_get_all_data(self) -> str:
-        return self.remove_duplicats(self.dbc.get_all_data())
+    def get_all_data(self) -> str:
+        return self.dbc.get_all_data()
 
     # Chat ############
 
