@@ -1,0 +1,270 @@
+import pymongo
+from pymongo import MongoClient
+
+
+class Controller():
+
+    def __init__(self) -> None:
+        self.client = MongoClient()
+        self.db = self.client.mydb
+
+        self.messages = self.db.messages
+        self.macros = self.db.macros
+        self.tokens = self.db.tokens
+        self.objects = self.db.objects
+        self.battlemap = self.db.battlemap
+        self.changes = self.db.changes
+
+        temp = self.messages.count_documents({}, limit=1)
+        self.msg_id = 0 if not temp else self.messages.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
+
+        temp = self.macros.count_documents({}, limit=1)
+        self.macro_id = 0 if not temp else self.macros.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
+
+        temp = self.tokens.count_documents({}, limit=1)
+        self.token_id = 0 if not temp else self.tokens.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
+
+        temp = self.objects.count_documents({}, limit=1)
+        self.obj_id = 0 if not temp else self.objects.find().sort(
+            "Id", -1).limit(1)[0]["Id"] + 1
+
+        temp = self.changes.count_documents({}, limit=1)
+        self.update_id = -1 if not temp else self.changes.find().sort(
+            "Id", -1).limit(1)[0]["Id"]
+
+        # print(self.msg_id, self.macro_id, self.token_id,
+        #       self.obj_id, self.update_id)
+
+        self.blank_trsf = {
+            "scale_x": 1,
+            "scale_y": 1,
+            "rotation": 0
+        }
+
+    def clear_db(self):
+        self.messages.delete_many({})
+        self.msg_id = 0
+        self.changes.delete_many({})
+        self.update_id = -1
+        self.macros.delete_many({})
+        self.macro_id = 0
+        self.tokens.delete_many({})
+        self.token_id = 0
+        self.objects.delete_many({})
+        self.obj_id = 0
+        self.battlemap.delete_many({})
+
+    # MESSAGES
+
+    def add_message(self, user: str, character: str, message: str, command: bool):
+        post = {
+            "Id": self.msg_id,
+            "User": user,
+            "Character": character,
+            "Text": message,
+            "Command": command
+        }
+        self.msg_id += 1
+        self.messages.insert_one(post)
+
+    def get_all_messages(self):
+        results = {"Messages": []}
+        all_messages = self.messages.find()
+        for message in all_messages:
+            message.pop("_id", None)
+            results["Messages"].append(message)
+        return results
+
+    def get_message_by_id(self, id: int):
+        message = self.messages.find_one({"Id": id})
+        message.pop("_id", None)
+        return message
+
+    def get_messages_since(self, id: int):
+        result = {"Messages": []}
+        all_messages = self.messages.find({"Id": {"$gte": id}})
+        for message in all_messages:
+            message.pop("_id", None)
+            result["Messages"].append(message)
+        return result
+
+    # MACROS
+
+    def add_macro(self, macro: str):
+        # TODO
+        pass
+
+    # TOKENS
+
+    def add_token(self, object_id: int, bars: list, auras: list):
+        post = {
+            "Id": self.token_id,
+            "Object_id": object_id,
+            "Linked_sheet_id": None,
+            "Bars": bars,
+            "Auras": auras
+        }
+        self.tokens.insert_one(post)
+        self.update_id += 1
+        self.update_last_id()
+        self.add_new_update('Token', self.token_id, "added")
+        self.battlemap.update_one({}, {"$push": {"Tokens": self.token_id}})
+        self.token_id += 1
+        ids = {
+            "Token_Id": self.token_id-1,
+            "Update_Id": self.update_id
+        }
+        return ids
+
+    def get_token_by_id(self, id: int):
+        token = self.tokens.find_one({"Id": id})
+        token.pop("_id", None)
+        return token
+
+    def delete_token(self, id: int):
+        token = self.tokens.find_one({"Id": id})
+        if token:
+            obj_id = token["Object_id"]
+            self.tokens.delete_one({"Id": id})
+            self.battlemap.update_one({}, {"$pull": {"Tokens": id}})
+            self.objects.delete_one({"Id": obj_id})
+            self.battlemap.update_one({}, {"$pull": {"Objects": obj_id}})
+            self.update_id += 1
+            self.update_last_id()
+            self.add_new_update('Token', id, "removed")
+            return self.update_id
+        return None
+
+    # OBJECTS
+
+    def add_object(self, image_id: int, position: dict):
+        post = {
+            "Id": self.obj_id,
+            "Image_id": image_id,
+            "Position": position,
+            "Transformation": self.blank_trsf
+        }
+        self.objects.insert_one(post)
+        self.update_id += 1
+        self.update_last_id()
+        self.add_new_update('Object', self.obj_id, "added")
+        self.battlemap.update_one({}, {"$push": {"Objects": self.obj_id}})
+        self.obj_id += 1
+        ids = {
+            "Object_Id": self.obj_id-1,
+            "Update_Id": self.update_id
+        }
+        return ids
+
+    def get_object_by_id(self, id: int):
+        object_ = self.objects.find_one({"Id": id})
+        object_.pop("_id", None)
+        return object_
+
+    def delete_object(self, id: int):
+        obj = self.objects.find_one({"Id": id})
+        if obj:
+            self.objects.delete_one({"Id": id})
+            self.battlemap.update_one({}, {"$pull": {"Objects": id}})
+            self.update_id += 1
+            self.update_last_id()
+            self.add_new_update('Object', self.obj_id, "removed")
+            return self.update_id
+        return None
+
+    def update_object_position(self, id: int, position: dict):
+        obj = self.objects.find_one({"Id": id})
+        if obj:
+            self.objects.update_one(
+                {"Id": id}, {"$set": {"Position.Level": position['Level'],
+                                      "Position.Layer": position['Layer'],
+                                      "Position.Coords.x": position['Coords']['x'],
+                                      "Position.Coords.y": position['Coords']['y'],
+                                      "Position.Coords.z_layer": position['Coords']['z_layer']}})
+            self.update_id += 1
+            self.update_last_id()
+            self.add_new_update('Object', id, "changed position")
+            return self.update_id
+        return None
+
+    def update_object_transformation(self, id: int, tr: dict):
+        obj = self.objects.find_one({"Id": id})
+        if obj:
+            self.objects.update_one({"Id": id}, {"$set": {
+                                    "Transformation.scale_x": tr['scale_x'],
+                                    "Transformation.scale_y": tr['scale_y'],
+                                    "Transformation.rotation": tr['rotation']}})
+            self.update_id += 1
+            self.update_last_id()
+            self.add_new_update('Object', id, "transformed")
+            return self.update_id
+        return None
+
+    # UDPATE LIST
+
+    def add_new_update(self, type: str, id: int, description: str):
+        """Not intended for external use"""
+        post = {
+            "Id": self.update_id,
+            "Where": type,
+            "Reference_Id": id
+            # "Type": type,
+            # "Type_Id": id,
+            # "Description": description
+        }
+        self.changes.insert_one(post)
+
+    def get_last_update_id(self):
+        result = {"Last_Id": self.update_id}
+        return result
+
+    def get_updates_since(self, id: int):
+        results = {"Updates": []}
+        all_updates = self.changes.find({"Id": {"$gte": id}})
+        for update in all_updates:
+            update.pop("_id", None)
+            results["Updates"].append(update)
+        return results
+
+    # BATTLEMAP
+
+    def create_battlemap(self, name: str, lvl_names: list):
+        post = {
+            "Name": name,
+            "Levels_names": lvl_names,
+            "Objects": [],
+            "Tokens": [],
+            "Last_update": self.update_id
+        }
+        self.battlemap.insert_one(post)
+
+    def update_last_id(self):
+        """Not intended for external use"""
+        self.battlemap.update_one(
+            {}, {"$set": {"Last_update": self.update_id}})
+
+    def get_all_data(self):
+        all_tokens = self.tokens.find()
+        tokens = []
+        for token in all_tokens:
+            tokens.append(token)
+        all_objects = self.objects.find()
+        objects = []
+        for object in all_objects:
+            objects.append(object)
+
+        bmap = self.battlemap.find_one()
+
+        result = {
+            "Battlemap": {
+                "Name": bmap["Name"],
+                "Levels_Names": bmap["Levels_names"],
+                "Objects": objects,
+                "Tokens": tokens
+            },
+            "Last_update": bmap["Last_update"]
+        }
+        return result

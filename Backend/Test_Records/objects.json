@@ -1,0 +1,58 @@
+[
+    {
+        "Id": 0,
+        "Image_Id": 0,
+        "Position": {
+            "Level": 0,
+            "Layer": 0,
+            "Coords": {
+                "x": 0.0,
+                "y": 0.0,
+                "z_layer": 0
+            }
+            
+        },
+        "Transformation": {
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0
+        }
+    },
+    {
+        "Id": 1,
+        "Image_Id": 1,
+        "Position": {
+            "Level": 0,
+            "Layer": 0,
+            "Coords": {
+                "x": 1.0,
+                "y": 1.0,
+                "z_layer": 1
+            }
+        },
+        "Transformation": {
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0
+        }
+    },
+    {
+        "Id": 2,
+        "Image_Id": 2,
+        "Position": {
+            "Level": 0,
+            "Layer": 0,
+            "Coords": {
+                "x": 1.0,
+                "y": 1.5,
+                "z_layer": 2
+            }
+        },
+        "Transformation": {
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "rotation": 0.0
+        }
+    }
+]
+
