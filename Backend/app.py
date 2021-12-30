@@ -6,8 +6,10 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-cors = CORS(app)
+app.config['SECRET_KEY'] = 'secretkey'
 app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
 socketio = SocketIO(app,async_mode='eventlet')
 
 wrapper = wrapper.Wrapper()
