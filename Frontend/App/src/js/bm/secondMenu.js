@@ -1,18 +1,33 @@
-function secondMenu(){
+
+import { useState, useEffect,useContext } from "react";
+import React from "react";
+import {SocketContext} from '../m/menu';
+function SecondMenu({gameData}){
+    const [gD,setGameData]= useState("");
+    const socket = useContext(SocketContext);
+    useEffect(() => {
+        socket.on("join",data=>{setGameData(data);} );
+            
+          },[]);
+
+        console.log("GAME DATA");
+        console.log(gD);
+   
+   
 return(
     <table className="mainTable">
-        <column className="colOne">
+        <tr className="colOne">
         <td>Postac 1</td>
-        </column>
-        <column className="colTwo">
+        </tr>
+        <tr className="colTwo">
         <td>Umiejki</td>
-        </column>
-        <column  className="colThree">
+        </tr>
+        <tr  className="colThree">
 
-        </column>
-        <column  className="colFour">
+        </tr>
+        <tr  className="colFour">
 
-        </column>
+        </tr>
 
 
     </table>
@@ -22,4 +37,4 @@ return(
 
 
 }
-export default secondMenu;
+export default SecondMenu;

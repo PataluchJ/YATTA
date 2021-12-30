@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import "../../css/joinGame.css"
+import { useState, useEffect,useContext } from "react";
 import React from "react";
-import {socket} from "./menu";
+import {SocketContext} from './menu';
 // function tryToConnect(setUsername) {
 //     var roomID = document.getElementById("roomID").value ? document.getElementById("roomID").value : "";
 //     var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
@@ -13,8 +14,11 @@ import {socket} from "./menu";
 //     setUsername(username);
 //     return;
 // }
+var currGameInfo;
 
-function giveMeHTML({ setUsername }) {
+
+function GiveMeHTML({ setUsername }) {
+    const socket = useContext(SocketContext);
         return(
             <div className = "joinBody">
                 <header className="joinTitle"> Join Game </header>
@@ -27,21 +31,22 @@ function giveMeHTML({ setUsername }) {
                     </div>
                 </form>
                 <div className = "buttons">
-                <Link to={`/battleMap`}>
+                <Link to={"/battlemap"}>
                 <button className="joinButton" onClick={() => {
                         var roomID = document.getElementById("roomID").value ? document.getElementById("roomID").value : "";
                         var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
                         console.log(username);
-                        if(username!=null && roomID!=null) {
+                        if(username!=="" && roomID!=="") {
                             setUsername(username);
                             var roomData = "{\"Room\":\""+roomID+"\"}";
                             var jsonF = JSON.parse(roomData);
+                            
                             socket.emit('join',jsonF);
-                    
+                            
+                            
                         }
                         
-                }}>Enter</button> 
-                </Link>
+                }}>Enter</button> </Link>
                 <Link to={`/`}>
                  <button className="joinButton">Back</button>
                  </Link>
@@ -49,5 +54,5 @@ function giveMeHTML({ setUsername }) {
             </div>
         );
 }
-
-export default giveMeHTML;
+export {currGameInfo};
+export default GiveMeHTML;
