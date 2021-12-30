@@ -14,13 +14,16 @@ import "../../css/menu.css"
 import "../../css/joinGame.css"
 import "../../css/charSheets.css";
 import "../../css/tables.css";
+
+
 const ENDPOINT = "localhost:5000";
+var socket;
 function Menu() {
     const [username, setUsername] = useState("");
 
     console.log("Enter: " + username);
     useEffect(() => {
-   const socket = socketIOClient(ENDPOINT);   // >>>>> Not Working
+    socket = socketIOClient(ENDPOINT);   // >>>>> Not Working
    // const socket = io.connect(ENDPOINT, { rejectUnauthorized: false }); //{ transports:["websocket"]}
     console.log("connected", socket);
 
@@ -32,6 +35,7 @@ function Menu() {
     //   setResponse(data);
     // });
     }, []);
+
     return (
         <Router>
         <div className="menu">
@@ -45,6 +49,7 @@ function Menu() {
         </Router>
     );
 }
+export {socket};
 // function menuView(){
 //     return(
 //         <React.Fragment>

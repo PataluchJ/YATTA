@@ -14,7 +14,7 @@ function Chat({ username }) {
     localStorage.setItem('username', user);
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     setUser(localStorage.getItem('username'));
     getAllMessages().then(data=>{
       console.log(data)
@@ -37,7 +37,7 @@ function Chat({ username }) {
     
   }, [user]);
 
-  useEffect(() => {
+ /* useEffect(() => {
     const interval = setInterval(() => {
       console.log("Trying to get message since with id=: " + (id.current - 1))
       getMessageSince(id.current - 1).then(data=>{
@@ -59,7 +59,7 @@ function Chat({ username }) {
     });
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     setLogged(true)
