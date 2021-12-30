@@ -27,6 +27,14 @@ class Controller():
         }
         self.rooms.insert_one(post)
 
+    def get_all_rooms(self) -> list:
+        """Returns a list contatining names of all available rooms"""
+        all_rooms = self.rooms.find()
+        names = []
+        for room in all_rooms:
+            names.append(room["room_name"])
+        return names
+
     # MESSAGES
 
     def add_message(self, room: str, user: str, character: str, message: str, command: bool):
@@ -159,12 +167,30 @@ class Controller():
                 break
 
     def set_battlemap(self, room: str, name: str):
+        # Apply changes made to previous battlemap to its counterpart in battlemaps list
+        curr_bmap = self.rooms.find_one({"room_name": room})["battlemap"]
+        if curr_bmap:
+            bmaps = self.rooms.find_one({"room_name": room})["battlemaps"]
+            for bmap in bmaps:
+                if bmap["Name"] == curr_bmap["Name"]:
+                    self.rooms.update_one({"room_name": room}, {"$pull": {"battlemaps": bmap}})
+                    self.rooms.update_one({"room_name": room}, {"$push": {"battlemaps": curr_bmap}})
+                    break
+        
+        #Change current battlemap
         bmaps = self.rooms.find_one({"room_name": room})["battlemaps"]
         for bmap in bmaps:
             if bmap["Name"] == name:
-                print(bmap)
                 self.rooms.update_one({"room_name": room}, {"$set": {"battlemap": bmap}})
                 break
+
+    def get_all_battlemaps(self, room: str) -> list:
+        "Returns a list containing all available battlemap names in a given room"
+        bmaps = self.rooms.find_one({"room_name": room})["battlemaps"]
+        names = []
+        for bmap in bmaps:
+            names.append(bmap["Name"])
+        return names
 
     def get_all_data(self, room: str):
         res = self.rooms.find_one({"room_name": room})['battlemap']
