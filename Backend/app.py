@@ -53,6 +53,10 @@ def ont_disconnect():
 
 @socketio.on('join')
 def on_join(json_data):
+    if 'Room' not in json_data:
+        print("Join request with missing room data")
+        return
+    print("Join request for room ", json_data['Room'])
     join_room(json_data['Room'])
     result = generic_argument_call(wrapper.get_all_data,json_data)
     if(result['Status'] == 200):
@@ -61,26 +65,34 @@ def on_join(json_data):
 
 @socketio.on('leave')
 def on_leave(json_data):
+    if 'Room' not in json_data:
+        print("Leave request with missing room data")
+        return
+    print('Leave request for room ', json_data['Room'])
     leave_room(json_data['room'])
 
 @socketio.on('live_games')
 def on_live_games():
+    print("Live games request")
     result = generic_call(wrapper.get_game_list)
     if(result['Status'] == 200):
         emit('live_games', result['Json'])
 
 @socketio.on('create')
 def on_create(json_data):
+    print("Room creation request with ", json_data)
     generic_argument_call(wrapper.new_room, json_data)
     on_join({'Room': json_data['Name']})
 
 @socketio.on("delete")
 def on_delete(json_data):
+    print("Room delete request with " , json_data)
     generic_argument_call(wrapper.delete_room, json_data)
     emit('kick', to=json_data['Room'])
 
 @socketio.on('send_message')
 def message_send(json_data):
+    print("Send message request with ", json_data)
     result = generic_argument_call(wrapper.chat_message_send, json_data)
     if result['Status'] == 200:
         emit('new_message', result['Json'], to=json_data['Room'])
