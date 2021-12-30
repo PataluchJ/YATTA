@@ -62,7 +62,9 @@ def on_leave(json_data):
 
 @socketio.on('live_games')
 def on_live_games():
-    emit('live_games', {"Games": ['Test']})
+    result = generic_call(wrapper.get_game_list)
+    if(result['Status'] == 200):
+        emit('live_games', result['Json'])
 
 @socketio.on('create')
 def on_create(json_data):
