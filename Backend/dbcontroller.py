@@ -186,6 +186,12 @@ class Controller():
             if bmap["Name"] == name:
                 self.rooms.update_one({"room_name": room}, {"$set": {"battlemap": bmap}})
                 break
+    
+    def add_level(self, room: str, lvl_name: str):
+        self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Levels_names": lvl_name}})
+
+    def delete_level(self, room: str, lvl_name: str):
+        self.rooms.update_one({"room_name": room}, {"$pull": {"battlemap.Levels_names": lvl_name}})
 
     def get_all_battlemaps(self, room: str) -> list:
         "Returns a list containing all available battlemap names in a given room"
