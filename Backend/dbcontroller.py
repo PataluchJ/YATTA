@@ -35,6 +35,9 @@ class Controller():
             names.append(room["room_name"])
         return names
 
+    def delete_room(self, room: str):
+        self.rooms.delete_one({"room_name": room})
+
     # MESSAGES
 
     def add_message(self, room: str, user: str, character: str, message: str, command: bool):
