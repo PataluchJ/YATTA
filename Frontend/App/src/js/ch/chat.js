@@ -1,8 +1,11 @@
 import "../../css/chat.scss";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { sendMessage, getAllMessages, getMessageByID, getMessageSince } from "./message.js";
+import {SocketContext} from '../m/menu';
 
 function Chat({ username }) {
+  const socket = useContext(SocketContext);
+
   const [user, setUser] = useState(username);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -14,27 +17,23 @@ function Chat({ username }) {
     localStorage.setItem('username', user);
   }
 
-  /*useEffect(() => {
+  useEffect(() => {
     setUser(localStorage.getItem('username'));
-    getAllMessages().then(data=>{
-      console.log(data)
-
-      let temp = [];
-      data.Messages.forEach(function(item, index, array) {
-        temp.push({
-          id: item.Id,
-          username: item.User,
-          character: item.Character,
-          text: item.Text
-        });
-      });
-      id.current = data.Messages.length;
-      console.log("data Messages length " + data.Messages.length);
-      console.log("message id " + id.current);
-      setMessages([...temp]);
-
-    });
     
+    socket.on("join", data => {
+      let temp = [];
+        data.Messages.forEach(function(item, index, array) {
+          temp.push({
+            id: item.Id,
+            username: item.User,
+            character: item.Character,
+            text: item.Text
+          });
+        });
+        id.current = data.Messages.length;
+
+      setMessages([...temp]);
+    });
   }, [user]);
 
  /* useEffect(() => {
@@ -83,7 +82,11 @@ function Chat({ username }) {
       });
       id.current++;
 
-      sendMessage(user, user, text, false);
+      var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
+      var jsonF = JSON.parse(msg);
+      
+      socket.emit('send_message', jsonF);
+
       setText("");
     }
   }, [newMess]);

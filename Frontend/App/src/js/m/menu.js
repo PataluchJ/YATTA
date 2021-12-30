@@ -61,7 +61,7 @@ class Map extends React.Component {
                 <Second />
             </div>
             <Chat
-           // username={this.props.username}
+            username={this.props.username}
             //{props.match.params.username}
 
            />
