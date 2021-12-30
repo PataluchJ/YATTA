@@ -10,7 +10,8 @@ app.config['SECRET_KEY'] = 'secretkey'
 app.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-socketio = SocketIO(app,async_mode='eventlet')
+
+socketio = SocketIO(app,async_mode='eventlet',cors_allowed_origins="*")
 
 wrapper = wrapper.Wrapper()
 
