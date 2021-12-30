@@ -73,9 +73,8 @@ def on_create(json_data):
 
 @socketio.on("delete")
 def on_delete(json_data):
-    pass
-    #generic_argument_call(wrapper.delete_room, json_data)
-
+    generic_argument_call(wrapper.delete_room, json_data)
+    emit('kick', to=json_data['Room'])
 
 @socketio.on('send_message')
 def message_send(json_data):

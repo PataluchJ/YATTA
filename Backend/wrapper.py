@@ -49,6 +49,11 @@ class Wrapper:
         self.dbc.create_battlemap(data['Name'], data['Battlemap'], [])
         self.dbc.set_battlemap(data['Name'], data['Battlemap'])
 
+    def delete_room(self, data):
+        '''Deletes room'''
+        self.validate_json(data,['Room'], [str])
+        self.dbc.delete_room(data['Room'])
+
     def get_game_list(self):
         '''Return list of avaible rooms'''
         res = self.dbc.get_all_rooms()
