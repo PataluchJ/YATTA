@@ -1,6 +1,5 @@
 import "../../css/chat.scss";
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { sendMessage, getAllMessages, getMessageByID, getMessageSince } from "./message.js";
 import {SocketContext} from '../m/menu';
 
 function Chat({ username }) {
@@ -34,31 +33,22 @@ function Chat({ username }) {
 
       setMessages([...temp]);
     });
-  }, [user]);
 
- /* useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("Trying to get message since with id=: " + (id.current - 1))
-      getMessageSince(id.current - 1).then(data=>{
-        console.log("DATA TEST:")
-        console.log(data)
-        if(data == null)
-          return;
-        let temp = [];
-        data.Messages.forEach(function(item, index, array) {
-        temp.push({
-          id: item.Id,
-          username: item.User,
-          character: item.Character,
-          text: item.Text
-        });
-        id.current++;
+    socket.on("new_message", data => {
+
+      let temp = [];
+      temp.push({
+        id: id,
+        username: data.User,
+        character: data.Character,
+        text: data.Text,
       });
+      id.current++;
+
       setMessages(prev => prev.concat(temp));
-    });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);*/
+    })
+
+  }, [user]);
 
   useEffect(() => {
     setLogged(true)
@@ -73,15 +63,6 @@ function Chat({ username }) {
   useEffect(() => {
     if (text !== "") {
 
-      let temp = messages;
-      temp.push({
-        id: id,
-        username: user,
-        character: user,
-        text: text,
-      });
-      id.current++;
-
       var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
       var jsonF = JSON.parse(msg);
       
@@ -92,8 +73,6 @@ function Chat({ username }) {
   }, [newMess]);
 
   const messagesEndRef = useRef(null);
-
-  console.log(messages, "mess");
 
   return (
     <div className="chat" id= "chat">
