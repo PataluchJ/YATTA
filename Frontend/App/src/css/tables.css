@@ -15,7 +15,7 @@ td{
     font:bolder;
 }
 .colOne{
-    display: flex;
+    display: block;
     width: 100%;
     height: 100%;
 
@@ -24,7 +24,7 @@ td{
     padding: 5px;
 }
 .colTwo{
-    display: flex;
+    display: block;
     width: 100%;
     height: 100%;
     background-image:  url('../img/M.png');
@@ -32,7 +32,7 @@ td{
     padding: 5px;
 }
 .colThree{
-    display: flex;
+    display: block;
     width: 100%;
     height: 100%;
     background-image:  url('../img/Ż.png');
@@ -40,7 +40,7 @@ td{
     padding: 5px;
 }
 .colFour{
-    display: flex;
+    display: block;
     width: 100%;
     height: 100%;
     background-image:  url('../img/S.png');

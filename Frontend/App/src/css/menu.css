@@ -57,3 +57,8 @@ canvas{
     width: 20em;
 
 }
+td{
+    height: auto;
+    width: 100%;
+
+}
