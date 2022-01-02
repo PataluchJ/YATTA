@@ -79,7 +79,7 @@ class PixiComponent extends React.Component {
         this.TokenContainer.addChild(sprite)
     }   
     addGrid(){
-        let texture = PIXI.Texture.from(gridImage)
+        let texture = PIXI.Texture.from(gridImage, {width: 1000, height: 1000})
         let rectangle = new PIXI.Rectangle(200, 200, 600, 600)
         
         console.log(texture)
