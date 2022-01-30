@@ -27,7 +27,7 @@ function HostHTML({ setUsername }){
                         console.log(username);
                         if(username!=="" && roomID!=="" && battlemap!=="" ) {
                             setUsername(username);
-                            var roomData = "{\"Room\":\""+roomID+"\",\"Battlemap\":"+battlemap+"\"}";
+                            var roomData = "{\"Name\":\""+roomID+"\",\"Battlemap\":\""+battlemap+"\"}";
                             var jsonF = JSON.parse(roomData);
                             
                             socket.emit('create',jsonF);
