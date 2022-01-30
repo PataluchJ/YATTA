@@ -1,5 +1,6 @@
 import json 
 import dbcontroller
+import random
 
 class Wrapper:
 
@@ -72,8 +73,26 @@ class Wrapper:
         return {'User': data['User'], 'Character': data['Character'], 'Text': data['Text'], 'Command': False}
         
 
-    def chat_command_exec(command: str):
-        return {'Success': False, 'Message': "Not implementet"}
+    def chat_command_exec(self, data):
+        self.validate_json(data, ['User', 'Character', 'Command', 'Room'], [str,str,str,str])
+        command = data['Command']
+        a = command.split('d',2)
+        b = a[1].split('+',2)
+        try:
+            n = int(a[0])
+            d = int(b[0])
+            m = 0
+            if len(b)>1:
+                m = int(b[1])
+            rsum = 0
+            for i in range(n):
+                roll = random.randint(1,d)
+                rsum += roll
+            rsum += m 
+            self.dbc.add_message(data['Room'], data['User'], data['Character'], "Rolled:" + str(rsum), True)
+            return {'User': data['User'], 'Character': data['Character'], 'Text': "Rolled:" + str(rsum), 'Command': True}
+        except Exception as e:
+            raise self.WrongArguments("Not a valid command") 
 
     def chat_macro_exec(id: int):
         return {'Success': False, 'Message': "Not implementet"}
