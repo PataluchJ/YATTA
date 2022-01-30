@@ -2,10 +2,11 @@ import "../../css/chat.scss";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
 
-function Chat({ username }) {
+function Chat({ username, roomID }) {
   const socket = useContext(SocketContext);
 
   const [user, setUser] = useState(username);
+  const [room, setRoom] = useState(roomID);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
   const [newMess, setNewMess] = useState(0);
@@ -14,10 +15,12 @@ function Chat({ username }) {
 
   if (user !== "") {
     localStorage.setItem('username', user);
+    localStorage.setItem('roomID', room);
   }
 
   useEffect(() => {
     setUser(localStorage.getItem('username'));
+    setRoom(localStorage.getItem('roomID'));
     
     socket.on("join", data => {
       let temp = [];
@@ -78,11 +81,11 @@ function Chat({ username }) {
     if (text !== "") {
       
       if (text.startsWith("/")) {
-        var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Command":"' + text + '"}';
+        var msg = '{"Room":"' + room + '", "User":"' + user + '","Character":"' + user + '","Command":"' + text + '"}';
       var jsonF = JSON.parse(msg);
         socket.emit('exec_command', jsonF);
       } else {
-        var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
+        var msg = '{"Room":"' + room + '", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
       var jsonF = JSON.parse(msg);
         socket.emit('send_message', jsonF);
       }

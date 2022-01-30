@@ -22,6 +22,7 @@ export var currGameData;
 
 function Menu() {
     const [username, setUsername] = useState("");
+    const [roomID, setRoomID] = useState("");
 
     console.log("Enter: " + username);
     return (
@@ -31,8 +32,8 @@ function Menu() {
         <div className="menu">
             <Switch>
                 <Route path="/" exact component={MenuView}/>
-                <Route path="/battlemap" render={(props) => <Map  username={username}{...props} /> } />
-                <Route path="/join" render={(props) => <Join setUsername={setUsername} {...props} /> } />
+                <Route path="/battlemap" render={(props) => <Map  username={username} roomID={roomID} {...props} /> } />
+                <Route path="/join" render={(props) => <Join setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
                 <Route path="/host" render={(props) => <Host setUsername={setUsername} {...props} /> } />
             </Switch>
         </div>
@@ -63,6 +64,7 @@ class Map extends React.Component {
             </div>
             <Chat
             username={this.props.username}
+            roomID={this.props.roomID}
             //{props.match.params.username}
 
            />

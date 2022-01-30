@@ -17,7 +17,7 @@ import {SocketContext} from './menu';
 var currGameInfo;
 
 
-function GiveMeHTML({ setUsername }) {
+function GiveMeHTML({ setUsername, setRoomID }) {
     const socket = useContext(SocketContext);
         return(
             <div className = "joinBody">
@@ -37,6 +37,7 @@ function GiveMeHTML({ setUsername }) {
                         var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
                         console.log(username);
                         setUsername(username);
+                        setRoomID(roomID);
                         if(username!=="" && roomID!=="") {
                            
                             var roomData = "{\"Room\":\""+roomID+"\"}";
