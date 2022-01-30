@@ -89,9 +89,10 @@ class Wrapper:
                 roll = random.randint(1,d)
                 rsum += roll
             rsum += m 
-            self.dbc.add_message(data['Room'], data['User'], data['Character'], "Rolled:" + str(rsum), False)
+            self.dbc.add_message(data['Room'], data['User'], data['Character'], "Rolled:" + str(rsum), True)
+            return {'User': data['User'], 'Character': data['Character'], 'Text': "Rolled:" + str(rsum), 'Command': True}
         except Exception as e:
-            return 
+            raise self.WrongArguments("Not a valid command") 
 
     def chat_macro_exec(id: int):
         return {'Success': False, 'Message': "Not implementet"}

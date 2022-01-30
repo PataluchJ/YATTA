@@ -88,9 +88,10 @@ def message_send(json_data):
 
 
 @socketio.on('exec_command')
-def exec_command():
-    pass
-
+def exec_command(json_data):
+    result = generic_argument_call(wrapper.chat_command_exec, json_data)
+    if result['Status'] == 200:
+        emit('new_message', result['Json'], to=json_data['Room'])
 
 @socketio.on('exec_macro')
 def exec_macro():
