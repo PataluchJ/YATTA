@@ -48,6 +48,20 @@ function Chat({ username }) {
       setMessages(prev => prev.concat(temp));
     })
 
+    socket.on("exec_results", data => {
+
+      let temp = [];
+      temp.push({
+        id: id,
+        username: data.User,
+        character: data.Character,
+        text: data.Results,
+      });
+      id.current++;
+
+      setMessages(prev => prev.concat(temp));
+    })
+
   }, [user]);
 
   useEffect(() => {
@@ -62,11 +76,16 @@ function Chat({ username }) {
 
   useEffect(() => {
     if (text !== "") {
-
-      var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
-      var jsonF = JSON.parse(msg);
       
-      socket.emit('send_message', jsonF);
+      if (text.startsWith("/")) {
+        var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Command":"' + text + '"}';
+      var jsonF = JSON.parse(msg);
+        socket.emit('exec_command', jsonF);
+      } else {
+        var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
+      var jsonF = JSON.parse(msg);
+        socket.emit('send_message', jsonF);
+      }
 
       setText("");
     }
