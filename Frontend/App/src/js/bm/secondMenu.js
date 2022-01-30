@@ -1,4 +1,3 @@
-
 import { useState, useEffect,useContext } from "react";
 import React from "react";
 import {SocketContext} from '../m/menu';
@@ -96,8 +95,8 @@ return(
                         </tr>
                     );
 
+
                 })
-            
 
             }
         </tr>
