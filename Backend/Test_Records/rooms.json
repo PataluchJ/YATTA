@@ -1,0 +1,26 @@
+{
+    "room_name":"Test",
+    "messages":
+    [
+        {"User":"Test","Character":"Test Character","Text":"Test message","Command":false}
+    ],
+    "token_id":0,
+    "object_id":0,
+    "macros":[],
+    "battlemap":
+    {
+        "Name":"Default",
+        "Levels_names":["Ground"],
+        "Objects":[],
+        "Tokens":[]
+    },
+    "battlemaps":
+    [
+        {
+            "Name":"Default","Levels_names":["Ground"],
+            "Objects":[],
+            "Tokens":[]
+        }
+    ]
+    
+}

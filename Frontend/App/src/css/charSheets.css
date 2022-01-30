@@ -1,11 +1,23 @@
-.battlemapAssets{
-    width: 20em;
 
-
-}
 .spaceForAssets{
 
     height: 10em;
     width: 100%;
     background-color: white;
+}
+td{
+    height: auto;
+    min-width: 100%;
+
+}
+.e{
+    display: block;
+    min-width: 100%;
+    margin: 2px;
+    text-align: center;
+    height: fit-content;
+    background-color: rgba(0, 0, 255, 0.411);
+    font-size:large;
+    font-family: 'Work Sans';
+    font:bolder;
 }

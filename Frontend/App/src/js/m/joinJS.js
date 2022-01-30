@@ -1,20 +1,24 @@
 import { Link } from "react-router-dom";
 import "../../css/joinGame.css"
+import { useState, useEffect,useContext } from "react";
 import React from "react";
-
+import {SocketContext} from './menu';
 // function tryToConnect(setUsername) {
-//     var StringIP = document.getElementById("gmip").value ? document.getElementById("gmip").value : "";
+//     var roomID = document.getElementById("roomID").value ? document.getElementById("roomID").value : "";
 //     var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
 //     console.log(username);
-//     if(username!=null && StringIP!=null) {
+//     if(username!=null && roomID!=null) {
 
 
 //     }
 //     setUsername(username);
 //     return;
 // }
+var currGameInfo;
 
-function giveMeHTML({ setUsername }) {
+
+function GiveMeHTML({ setUsername }) {
+    const socket = useContext(SocketContext);
         return(
             <div className = "joinBody">
                 <header className="joinTitle"> Join Game </header>
@@ -22,23 +26,28 @@ function giveMeHTML({ setUsername }) {
                     <div className="forms">
                     <label htmlFor="uName">Username:</label><br></br>
                     <input className="joinInput" typ="text" id="uName" name = "uName"></input><br></br>
-                    <label htmlFor="gmip"> Insert GM IP:</label><br></br>
-                    <input className="joinInput" type="text" id="gmip" name = "gmip"></input>
+                    <label htmlFor="roomID"> Insert room id:</label><br></br>
+                    <input className="joinInput" type="text" id="roomID" name = "roomID"></input>
                     </div>
                 </form>
                 <div className = "buttons">
-                <Link to={`/battleMap`}>
+                <Link to={"/battlemap"}>
                 <button className="joinButton" onClick={() => {
-                        var StringIP = document.getElementById("gmip").value ? document.getElementById("gmip").value : "";
+                        var roomID = document.getElementById("roomID").value ? document.getElementById("roomID").value : "";
                         var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
                         console.log(username);
-                        if(username!=null && StringIP!=null) {
-                    
-                    
-                        }
                         setUsername(username);
-                }}>Enter</button> 
-                </Link>
+                        if(username!=="" && roomID!=="") {
+                           
+                            var roomData = "{\"Room\":\""+roomID+"\"}";
+                            var jsonF = JSON.parse(roomData);
+                            
+                            socket.emit('join',jsonF);
+                            
+                            
+                        }
+                        
+                }}>Enter</button> </Link>
                 <Link to={`/`}>
                  <button className="joinButton">Back</button>
                  </Link>
@@ -46,5 +55,5 @@ function giveMeHTML({ setUsername }) {
             </div>
         );
 }
-
-export default giveMeHTML;
+export {currGameInfo};
+export default GiveMeHTML;

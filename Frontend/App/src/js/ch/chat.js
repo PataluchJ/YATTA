@@ -1,8 +1,10 @@
 import "../../css/chat.scss";
-import React, { useState, useEffect, useRef } from "react";
-import { sendMessage, getAllMessages, getMessageByID, getMessageSince } from "./message.js";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import {SocketContext} from '../m/menu';
 
 function Chat({ username }) {
+  const socket = useContext(SocketContext);
+
   const [user, setUser] = useState(username);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -16,50 +18,37 @@ function Chat({ username }) {
 
   useEffect(() => {
     setUser(localStorage.getItem('username'));
-    getAllMessages().then(data=>{
-      console.log(data)
+    
+    socket.on("join", data => {
+      let temp = [];
+        data.Messages.forEach(function(item, index, array) {
+          temp.push({
+            id: item.Id,
+            username: item.User,
+            character: item.Character,
+            text: item.Text
+          });
+        });
+        id.current = data.Messages.length;
+
+      setMessages([...temp]);
+    });
+
+    socket.on("new_message", data => {
 
       let temp = [];
-      data.Messages.forEach(function(item, index, array) {
-        temp.push({
-          id: item.Id,
-          username: item.User,
-          character: item.Character,
-          text: item.Text
-        });
+      temp.push({
+        id: id,
+        username: data.User,
+        character: data.Character,
+        text: data.Text,
       });
-      id.current = data.Messages.length;
-      console.log("data Messages length " + data.Messages.length);
-      console.log("message id " + id.current);
-      setMessages([...temp]);
+      id.current++;
 
-    });
-    
-  }, [user]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("Trying to get message since with id=: " + (id.current - 1))
-      getMessageSince(id.current - 1).then(data=>{
-        console.log("DATA TEST:")
-        console.log(data)
-        if(data == null)
-          return;
-        let temp = [];
-        data.Messages.forEach(function(item, index, array) {
-        temp.push({
-          id: item.Id,
-          username: item.User,
-          character: item.Character,
-          text: item.Text
-        });
-        id.current++;
-      });
       setMessages(prev => prev.concat(temp));
-    });
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    })
+
+  }, [user]);
 
   useEffect(() => {
     setLogged(true)
@@ -74,23 +63,16 @@ function Chat({ username }) {
   useEffect(() => {
     if (text !== "") {
 
-      let temp = messages;
-      temp.push({
-        id: id,
-        username: user,
-        character: user,
-        text: text,
-      });
-      id.current++;
+      var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
+      var jsonF = JSON.parse(msg);
+      
+      socket.emit('send_message', jsonF);
 
-      sendMessage(user, user, text, false);
       setText("");
     }
   }, [newMess]);
 
   const messagesEndRef = useRef(null);
-
-  console.log(messages, "mess");
 
   return (
     <div className="chat" id= "chat">
