@@ -13,7 +13,7 @@ function HostHTML({ setUsername }){
                     <label htmlFor="uName">Username:</label><br></br>
                     <input className="hostInput" typ="text" id="uName" name = "uName"></input><br></br>
                     <label htmlFor="roomID"> Insert room id:</label><br></br>
-                    <input className="hostInput" type="text" id="roomID" name = "roomID"></input>
+                    <input className="hostInput" type="text" id="roomID" name = "roomID"></input><br></br>
                     <label htmlFor="roomID"> Insert battlemap id:</label><br></br>
                     <input className="hostInput" type="text" id="battlemapName" name = "battlemapName"></input>
                     </div>
