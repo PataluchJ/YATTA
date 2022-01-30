@@ -45,6 +45,7 @@ class Wrapper:
     
     def new_room(self, data):
         '''Create new room with a battlemap with given names.'''
+        print("Creating room")
         self.validate_json(data, ['Name', 'Battlemap'], [str,str])
         self.dbc.add_new_room(data['Name'])
         self.dbc.create_battlemap(data['Name'], data['Battlemap'], [])
@@ -75,9 +76,14 @@ class Wrapper:
 
     def chat_command_exec(self, data):
         self.validate_json(data, ['User', 'Character', 'Command', 'Room'], [str,str,str,str])
-        command = data['Command']
-        a = command.split('d',2)
+        text = data['Command']
+        command = text.split(' ', 2)
+        if command[0] != '/roll':
+            raise self.WrongArguments("Not a roll command")
+        a = command[1].split('d',2)
         b = a[1].split('+',2)
+        print(a)
+        print(b)
         try:
             n = int(a[0])
             d = int(b[0])
@@ -92,6 +98,7 @@ class Wrapper:
             self.dbc.add_message(data['Room'], data['User'], data['Character'], "Rolled:" + str(rsum), True)
             return {'User': data['User'], 'Character': data['Character'], 'Text': "Rolled:" + str(rsum), 'Command': True}
         except Exception as e:
+            print(e)
             raise self.WrongArguments("Not a valid command") 
 
     def chat_macro_exec(id: int):
