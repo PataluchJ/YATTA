@@ -5,7 +5,6 @@ height: 100%;
 
 }
 
-<!--
 @media only screen and (min-width: 0px) {
     body{
     
@@ -80,3 +79,55 @@ button{
     border-radius: 10px;
     color: rgba(245, 245, 18, 0.842);
 }
+.hostTitle{
+    text-align: center;
+    font-size: 7em;
+    font-family: 'Work Sans';
+    color:rgba(60, 22, 104, 0.712);
+    font-weight: bold;
+    
+    }
+    .forms{
+        margin-top: 1em;
+        text-align: center;
+        align-items: center;
+    }
+    .hostInput{
+        font-size: 0.75em;
+        color:rgba(60, 22, 104, 0.712);
+        border-color:rgba(0, 0, 0, 0.623);
+        background-color:rgba(18, 11, 83, 0.233);
+    
+    }
+    .hostForm{
+        font-family: 'Work Sans';
+        padding: 5px;
+        min-width: 15em;
+        max-width: 25em;
+        margin: 0 auto;
+        margin-bottom: 1em;
+        font-size: 4em;
+        font-weight: bold;
+        border:rgba(248, 228, 45, 0.753);
+        border-radius: 10px;
+        color: rgba(60, 22, 104, 0.712);
+        
+    }
+    
+    .buttons{
+        margin-top: 2em;
+        text-align: center;
+        align-items: center;
+    }
+    .hostButton{
+        min-height: 2em;
+        padding: 5px;
+        min-width: 15em;
+        max-width: 25em;
+        margin: 0.5em;
+        font-size: 1.5em;
+        border:rgba(248, 228, 45, 0.753);
+        background-color:rgba(60, 22, 104, 0.342);
+        border-radius: 10px;
+        color: rgba(245, 245, 18, 0.842);
+    }

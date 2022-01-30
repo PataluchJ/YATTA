@@ -8,6 +8,7 @@ import MenuView from "./menuHTMLinJS"
 import BattleMap from "../bm/battlemapReact";
 import Join from "./joinJS"
 import Chat from "../ch/chat"
+import Host from "../m/hostJS"
 import Second from "../bm/secondMenu"
 import Sheets from "../bm/charSheets"
 import "../../css/menu.css"
@@ -32,7 +33,7 @@ function Menu() {
                 <Route path="/" exact component={MenuView}/>
                 <Route path="/battlemap" render={(props) => <Map  username={username}{...props} /> } />
                 <Route path="/join" render={(props) => <Join setUsername={setUsername} {...props} /> } />
-
+                <Route path="/host" render={(props) => <Host setUsername={setUsername} {...props} /> } />
             </Switch>
         </div>
         </Router>
