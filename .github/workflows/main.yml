@@ -5,6 +5,9 @@ name: CI
 # Controls when the workflow will run
 on:
   # Allows you to run this workflow manually from the Actions tab
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -13,9 +16,11 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: [self-hosted]
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Build program
+        run: echo Program_Builded
+  test:
+    runs-on: [self-hosted]
+    steps:
+      - name: Test current code 
+        run: echo Program_Tested
