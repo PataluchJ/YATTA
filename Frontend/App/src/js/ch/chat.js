@@ -76,13 +76,14 @@ function Chat({ username }) {
 
   useEffect(() => {
     if (text !== "") {
-
-      var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
-      var jsonF = JSON.parse(msg);
       
       if (text.startsWith("/")) {
+        var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Command":"' + text + '"}';
+      var jsonF = JSON.parse(msg);
         socket.emit('exec_command', jsonF);
       } else {
+        var msg = '{"Room":"Test", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
+      var jsonF = JSON.parse(msg);
         socket.emit('send_message', jsonF);
       }
 
