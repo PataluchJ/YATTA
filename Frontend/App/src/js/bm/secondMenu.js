@@ -36,6 +36,18 @@ opisy["Święta Księga"] = ["Odblokowuje dostęp do zaklęć kapłana"];
 opisy["Kula Tornami"] = ["Wylecz maksymalnie dwóch towarzyszy 3d4, zasięg 4"];
 opisy["Święty Młot"] = ["Zadaj obrażenia 2d6, zasięg 1"];
 opisy["Trzytonowa Tunika"] = ["Negacja obrażeń fizycznych i magicznych 3"];
+opisy["Szarża"] = ["Porusz się o 2 pola, zadaj 2d6 obrażeń"];
+opisy["Podwójne uderzenie"] = ["Zadaj dwukrotnie większą ilość obrażeń następnym atakiem"];
+opisy["Magiczny pocisk"] = ["Zadaj 1d12 obrażeń magicznych, zasięg 4"];
+opisy["Czarodziejska bariera"] = ["Zaneguj 2d6 magicznych obrażeń"];
+opisy["Zatrucie szkieletu"] = ["Twoja broń zadaje 2d4 więcej obrażeń przez 3 następne tury"];
+opisy["Ballada o JW"] = ["Twoi towarzysze w promieniu 2 pól zadają 2d4 więcej obrażeń. Trwa 3 tury"];
+opisy["Ballada o spalonej synagodze"] = ["Twoi towarzysze w promieniu 2 pól mogą przemieścić się o 2 pola więcej. Trwa 2 tury"];
+opisy["Ballada wrześniowa"]=["Przeciwnicy w promieniu 3 pól tracą 3pkt dowolnej defensywy"];
+opisy["Dotyk który leczy"]=["Ulecz towarzysza w promieniu 3 pól o 3d4"];
+opisy["Święte słowo"]=["Twoi towarzysze w promieniu 3 leczą się o 2d3 przy zadawaniu obrażeń. Trwa 3 tury"];
+opisy["Aura prawości"]=["Pasywnie zwiększa negację obrażeń fizycznych o 2pkt wszystkich sojuszników w promieniu 3 pól"];
+opisy["Czas młota"]=["Dokonujesz egzekucji przeciwników mających poniżej 3hp przy zadawaniu obrażeń. Trwa 3 tury"];
 function setIt(i,setItem){
     setItem(i);
 }
