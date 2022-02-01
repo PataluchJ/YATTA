@@ -1,6 +1,7 @@
 import "../../css/chat.scss";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
+import BattleMap from "../bm/battlemapReact";
 
 function Chat({ username, roomID }) {
   const socket = useContext(SocketContext);
@@ -64,6 +65,7 @@ function Chat({ username, roomID }) {
 
       setMessages(prev => prev.concat(temp));
     })
+    
 
   }, [user]);
 

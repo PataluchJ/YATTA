@@ -108,7 +108,7 @@ class Wrapper:
 
     def bm_object_create(self, data):
         '''Creates new object.'''
-        self.validate_json(data, ['Image_Id','Position','Room'], [int, dict,str])
+        self.validate_json(data, ['Image_Id','Position','Room'], [int, dict, str])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
         self.validate_json(data['Position']['Coords'], ['x','y','z_layer'], [float, float, int])
         return self.dbc.add_object(data['Room'], data['Image_Id'], data['Position'])
@@ -123,12 +123,14 @@ class Wrapper:
 
     def bm_object_update_position(self, data):
         '''Updates object position and return dictionary with new position ready to be send to other players'''
-        self.validate_json(data, ['Id', 'Position'], [int, dict])
+        self.validate_json(data, ['Id', 'Position', 'Room'], [int, dict, str])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
         self.validate_json(data['Position']['Coords'], ['x','y','z_layer'],[float, float,int])
-
+        #print(data)
+        
         success = self.dbc.update_object_position(data['Room'], data['Id'], data['Position'])
-        if success in True:
+         
+        if success:  
             return {'Id' : data['Id'], 'Position': data['Position']}
         raise self.Failure("Object update position failed at bdcontroller")
 
@@ -137,7 +139,7 @@ class Wrapper:
         self.validate_json(data, ['Id', 'Transformation','Room'], [int, dict,str])
         self.validate_json(data['Transformation'], ['scale_x', 'scale_y', 'rotation'], [float,float,float])
         success = self.dbc.update_object_transformation(data['Room'], data['Id'], data['Transformation'])
-        if success in True:
+        if success is True:
             return {'Id': data['Id'], 'Transformation' : data['Transformation']}
         raise self.Failure("Object update transformation failed at bdcontroller")
 

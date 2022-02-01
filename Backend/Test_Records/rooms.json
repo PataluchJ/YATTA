@@ -11,7 +11,110 @@
     {
         "Name":"Default",
         "Levels_names":["Ground"],
-        "Objects":[],
+        "Objects":[
+            {
+                "Id":1,
+                "Image_Id": 1,
+                "Position": {
+                    "Level": 0,
+                    "Layer": -1,
+                    "Coords": {
+                        "x": 310.0, 
+                        "y": 190.0, 
+                        "z_layer": -1 
+                    }
+                },
+                "Transformation": {
+                    "scale_x": 0.05,
+                    "scale_y": 0.05, 
+                    "rotation": 0}
+            },
+            {
+                "Id":2,
+                "Image_Id": 2,
+                "Position": {
+                    "Level": 0,
+                    "Layer": -1,
+                    "Coords": {
+                        "x": 310.0, 
+                        "y": 130.0, 
+                        "z_layer": -1 
+                    }
+                },
+                "Transformation": {
+                    "scale_x": 0.05,
+                    "scale_y": 0.05, 
+                    "rotation": 0}
+            },
+            {
+                "Id":3,
+                "Image_Id": 3,
+                "Position": {
+                    "Level": 0,
+                    "Layer": -1,
+                    "Coords": {
+                        "x": 310.0, 
+                        "y": 250.0, 
+                        "z_layer": -1 
+                    }
+                },
+                "Transformation": {
+                    "scale_x": 0.07,
+                    "scale_y": 0.07, 
+                    "rotation": 0}
+            },
+            {
+                "Id":4,
+                "Image_Id": 4,
+                "Position": {
+                    "Level": 0,
+                    "Layer": -1,
+                    "Coords": {
+                        "x": 490.0, 
+                        "y": 490.0, 
+                        "z_layer": -1 
+                    }
+                },
+                "Transformation": {
+                    "scale_x": 0.14,
+                    "scale_y": 0.14, 
+                    "rotation": 0}
+            },
+            {
+                "Id":5,
+                "Image_Id": 5,
+                "Position": {
+                    "Level": 0,
+                    "Layer": -1,
+                    "Coords": {
+                        "x": 550.0, 
+                        "y": 490.0, 
+                        "z_layer": -1 
+                    }
+                },
+                "Transformation": {
+                    "scale_x": 0.05,
+                    "scale_y": 0.05, 
+                    "rotation": 0}
+            },
+            {
+                "Id":6,
+                "Image_Id": 6,
+                "Position": {
+                    "Level": 0,
+                    "Layer": -1,
+                    "Coords": {
+                        "x": 310.0, 
+                        "y": 490.0, 
+                        "z_layer": -1 
+                    }
+                },
+                "Transformation": {
+                    "scale_x": 0.11,
+                    "scale_y": 0.11, 
+                    "rotation": 0}
+            } 
+        ],
         "Tokens":[]
     },
     "battlemaps":

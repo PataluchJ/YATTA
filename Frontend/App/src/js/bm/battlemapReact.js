@@ -5,7 +5,17 @@ import { Viewport } from 'pixi-viewport'
 import { Layer, Group, Stage } from '@pixi/layers'
 import  gridImage  from '../../img/squre.png'
 import  testbg  from '../../img/testbg.jpg'
+
+import  img_Bard  from '../../img/PZ icons/Bard.jpg'
+import  img_Kapłan  from '../../img/PZ icons/Kapłan.jpg'
+import  img_Łotrzyk  from '../../img/PZ icons/Łotrzyk.jpg'
+import  img_Mag  from '../../img/PZ icons/Mag.jpg'
+import  img_Paladyn  from '../../img/PZ icons/Paladyn.jpg'
+import  img_Woj  from '../../img/PZ icons/Woj.jpg'
+
+import { socket } from '../m/menu';
 delete PIXI.Renderer.__plugins.interaction
+
 
 //holds MyTextures
 var textureArray = {};
@@ -26,6 +36,8 @@ class MyTexture extends PIXI.Texture{
 
 class PixiComponent extends React.Component {
    
+    
+
     constructor(){
         console.log("constructor")
         super()
@@ -115,7 +127,14 @@ class PixiComponent extends React.Component {
         });
     }
     setNewPosition(id, x, y, z){
-        this.viewport.children.forEach(function (arrayItem) {
+        this.TokenContainer.children.forEach(function (arrayItem) {
+            if(arrayItem.id === id){
+                arrayItem.x = x
+                arrayItem.y = y
+                arrayItem.z = z
+            }        
+        });
+        this.ObjectContainer.children.forEach(function (arrayItem) {
             if(arrayItem.id === id){
                 arrayItem.x = x
                 arrayItem.y = y
@@ -166,13 +185,12 @@ class PixiComponent extends React.Component {
             }        
         });
     }
-
   
     // movement
     onDragStart(e) {
     
         console.log("onDragStart()")
-        console.log(pressedKeys)
+        //console.log(pressedKeys)
         // only when "Shift" is not pressed
         if(!pressedKeys['16']){
             
@@ -186,16 +204,16 @@ class PixiComponent extends React.Component {
         if(!pressedKeys['16']){
             this.selectedTarget.alpha = 1
             this.app.stage.removeAllListeners()
+
+            let room = localStorage.getItem('roomID')
+            console.log(room)
+            var msg = '{"Room":"' + room + '", "Id":'+ this.selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + this.selectedTarget.x  + ', "y":' + this.selectedTarget.y + ', "z_layer": 1 }}}';
+            console.log(msg)
+            var jsonF = JSON.parse(msg);
+            socket.emit('object_move', jsonF); 
         }
         
-       // sendNewObjectPostion(
-       //     this.selectedTarget.id,
-       //     this.selectedTarget.x,
-       //     this.selectedTarget.y, 
-       //     this.selectedTarget.z,
-       //     this.selectedTarget.level,
-       //     this.selectedTarget.layer
-       //     )
+   
     }
     onDragMove(e) {
         this.selectedTarget.parent.toLocal(e.global, null, this.selectedTarget.position)
@@ -205,7 +223,7 @@ class PixiComponent extends React.Component {
         console.log("render()")
         this.app = new PIXI.Application({width: window.screen.width*0.175, height: window.screen.height*0.15, backgroundColor: '0x121212', antialias: false, resolution: 4})
         let component = this;
-
+       
         // stage
         this.app.stage = new Stage();
 
@@ -249,18 +267,36 @@ class PixiComponent extends React.Component {
         this.viewport.addChild(this.ObjectContainer)
         this.viewport.addChild(this.gridContainer)
 
+
+        // socket listeners
+        socket.on("new_position", data => {
+            console.log("socket.on(new_position)")
+            this.setNewPosition(data.Id, data.Position.Coords.x, data.Position.Coords.y, data.Position.Coords.z_layer)
+          })
+
         // temp for testing
-        this.addTexture(0, 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Trp-Sword-14226124129-v06.png/800px-Trp-Sword-14226124129-v06.png')
-        this.addTexture(1, testbg)
-        this.addToken(1, 0, 190, 130, -1, 0, -1, 0.05, 0.05, 0);
-        this.addToken(3, 0, 190, 70, -1, 0, -1, 0.05, 0.05, 0);
-        this.addObject(2, 1, 600, 600, 1, 0, 1, 1, 1, 0);
-        //this.removeObject(2)
+
+        this.addTexture(0, testbg)
+        this.addTexture(1, img_Bard)
+        this.addTexture(2, img_Kapłan)
+        this.addTexture(3, img_Łotrzyk)
+        this.addTexture(4, img_Mag)
+        this.addTexture(5, img_Paladyn)
+        this.addTexture(6, img_Woj)
+
+        this.addToken(1, 1, 310, 190, -1, 0, -1, 0.05, 0.05, 0);
+        this.addToken(2, 2, 310, 130, -1, 0, -1, 0.05, 0.05, 0);
+        this.addToken(3, 3, 310, 250, -1, 0, -1, 0.07, 0.07, 0);
+
+        this.addToken(4, 4, 490, 490, -1, 0, -1, 0.14, 0.14, 0);
+        this.addToken(5, 5, 550, 490, -1, 0, -1, 0.05, 0.05, 0);
+        this.addToken(6, 6, 310, 490, -1, 0, -1, 0.11, 0.11, 0);
+
+        //bg
+        this.addObject(0, 0, 600, 600, 1, 0, 1, 1, 1, 0);
 
         // add grid
         this.addGrid()
-        //console.log(this.viewport)
-
 
         return (
             <div ref={(thisDiv) => { component.gameCanvas = thisDiv }} />

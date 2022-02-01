@@ -119,8 +119,10 @@ class Controller():
         return False
 
     def update_object_position(self, room: str, id: int, position: dict):
+        
         objects = self.rooms.find_one({"room_name": room})["battlemap"]["Objects"]
         result = None
+       
         for obj in objects:
             if obj["Id"] == id:
                 result = obj

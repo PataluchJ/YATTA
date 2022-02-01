@@ -116,7 +116,8 @@ def object_delete(json_data):
 def object_update_position(json_data):
     result = generic_argument_call(wrapper.bm_object_update_position, json_data)
     if result['Status'] == 200:
-        emit('object_move', result['Json'], to=json_data['Room'])
+        #print("Sending new posisions", result['Json'])
+        emit('new_position', result['Json'], to=json_data['Room'])
 
 @socketio.on('object_transform')
 def object_update_transformation(json_data):
