@@ -12,7 +12,7 @@ class TestWrapper(unittest.TestCase):
 
     def test_commands(self):
         r = wp.chat_command_exec({'User':'Test', 'Character':'Test', 'Command':'/roll 1d1', 'Room':'None'})
-        self.assertEqual('FAIL Rolled:1', r['Text'])
+        self.assertEqual('Rolled:1', r['Text'])
 
 if __name__ == '__main__':
     unittest.main()
