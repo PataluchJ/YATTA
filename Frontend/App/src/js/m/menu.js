@@ -34,7 +34,7 @@ function Menu() {
                 <Route path="/" exact component={MenuView}/>
                 <Route path="/battlemap" render={(props) => <Map  username={username} roomID={roomID} {...props} /> } />
                 <Route path="/join" render={(props) => <Join setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
-                <Route path="/host" render={(props) => <Host setUsername={setUsername} {...props} /> } />
+                <Route path="/host" render={(props) => <Host setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
             </Switch>
         </div>
         </Router>

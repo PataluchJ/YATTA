@@ -274,8 +274,42 @@ class PixiComponent extends React.Component {
             this.setNewPosition(data.Id, data.Position.Coords.x, data.Position.Coords.y, data.Position.Coords.z_layer)
           })
 
-        // temp for testing
-
+        socket.on("object_new", data => {
+            data = JSON.parse(data)
+            console.log("socket.on(object_new)")
+            console.log(data)
+            if(data.Position.Layer == -1){
+                this.addToken(
+                    data.Id,
+                    data.Image_Id,
+                    data.Position.Coords.x,
+                    data.Position.Coords.y,
+                    data.Position.Coords.z,
+                    data.Position.Level,
+                    data.Position.Layer,
+                    data.Transformation.scale_x,
+                    data.Transformation.scale_y,
+                    data.Transformation.rotation
+                )
+            }
+            else{
+                this.addObject(
+                    data.Id,
+                    data.Image_Id,
+                    data.Position.Coords.x,
+                    data.Position.Coords.y,
+                    data.Position.Coords.z,
+                    data.Position.Level,
+                    data.Position.Layer,
+                    data.Transformation.scale_x,
+                    data.Transformation.scale_y,
+                    data.Transformation.rotation
+                )
+            }
+         
+        })
+        
+        //textures
         this.addTexture(0, testbg)
         this.addTexture(1, img_Bard)
         this.addTexture(2, img_Kapłan)
@@ -284,16 +318,18 @@ class PixiComponent extends React.Component {
         this.addTexture(5, img_Paladyn)
         this.addTexture(6, img_Woj)
 
-        this.addToken(1, 1, 310, 190, -1, 0, -1, 0.05, 0.05, 0);
-        this.addToken(2, 2, 310, 130, -1, 0, -1, 0.05, 0.05, 0);
-        this.addToken(3, 3, 310, 250, -1, 0, -1, 0.07, 0.07, 0);
+        // temp for testing
 
-        this.addToken(4, 4, 490, 490, -1, 0, -1, 0.14, 0.14, 0);
-        this.addToken(5, 5, 550, 490, -1, 0, -1, 0.05, 0.05, 0);
-        this.addToken(6, 6, 310, 490, -1, 0, -1, 0.11, 0.11, 0);
+        //this.addToken(1, 1, 310, 190, -1, 0, -1, 0.05, 0.05, 0);
+        //this.addToken(2, 2, 310, 130, -1, 0, -1, 0.05, 0.05, 0);
+        //this.addToken(3, 3, 310, 250, -1, 0, -1, 0.07, 0.07, 0);
+
+        //this.addToken(4, 4, 490, 490, -1, 0, -1, 0.14, 0.14, 0);
+        //this.addToken(5, 5, 550, 490, -1, 0, -1, 0.05, 0.05, 0);
+        //this.addToken(6, 6, 310, 490, -1, 0, -1, 0.11, 0.11, 0);
 
         //bg
-        this.addObject(0, 0, 600, 600, 1, 0, 1, 1, 1, 0);
+        //this.addObject(0, 0, 600, 600, 1, 0, 1, 1, 1, 0);
 
         // add grid
         this.addGrid()

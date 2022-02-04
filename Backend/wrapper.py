@@ -78,29 +78,103 @@ class Wrapper:
         self.validate_json(data, ['User', 'Character', 'Command', 'Room'], [str,str,str,str])
         text = data['Command']
         command = text.split(' ', 2)
-        if command[0] != '/roll':
-            raise self.WrongArguments("Not a roll command")
-        a = command[1].split('d',2)
-        b = a[1].split('+',2)
-        print(a)
-        print(b)
-        try:
-            n = int(a[0])
-            d = int(b[0])
-            m = 0
-            if len(b)>1:
-                m = int(b[1])
-            rsum = 0
-            for i in range(n):
-                roll = random.randint(1,d)
-                rsum += roll
-            rsum += m 
-            self.dbc.add_message(data['Room'], data['User'], data['Character'], "Rolled:" + str(rsum), True)
-            return {'User': data['User'], 'Character': data['Character'], 'Text': "Rolled:" + str(rsum), 'Command': True}
-        except Exception as e:
-            print(e)
-            raise self.WrongArguments("Not a valid command") 
-
+        if command[0] == '/roll':
+            
+            a = command[1].split('d',2)
+            b = a[1].split('+',2)
+            print(a)
+            print(b)
+            try:
+                n = int(a[0])
+                d = int(b[0])
+                m = 0
+                if len(b)>1:
+                    m = int(b[1])
+                rsum = 0
+                for i in range(n):
+                    roll = random.randint(1,d)
+                    rsum += roll
+                rsum += m 
+                self.dbc.add_message(data['Room'], data['User'], data['Character'], "Rolled:" + str(rsum), True)
+                return {'User': data['User'], 'Character': data['Character'], 'Text': "Rolled:" + str(rsum), 'Command': True}
+            except Exception as e:
+                print(e)
+                raise self.WrongArguments("Not a valid command") 
+        if command[0] == '/add':
+            temp = {
+                    "Id":1,
+                    "Image_Id": 1,
+                    "Position": {
+                        "Level": 0,
+                        "Layer": -1,
+                        "Coords": {
+                            "x": 310.0, 
+                            "y": 190.0, 
+                            "z_layer": -1 
+                        }
+                    },
+                    "Transformation": {
+                        "scale_x": 0.05,
+                        "scale_y": 0.05, 
+                        "rotation": 0
+                        }
+                    }
+            if command[1] == 'bard':
+                createdObject = self.dbc.add_object(data['Room'], 1, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                temp_json = json.dumps(temp)    
+                return {'inner_json': temp_json, 'cmd': "add"}
+            if command[1] == 'kaplan':
+                temp['Image_Id'] = 2
+                createdObject = self.dbc.add_object(data['Room'], 2, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                y = json.dumps(temp)    
+                return {'inner_json': y, 'cmd': "add"}
+            if command[1] == 'lotrzyk':
+                temp['Image_Id'] = 3
+                temp['Transformation']['scale_x'] = 0.07
+                temp['Transformation']['scale_y'] = 0.07
+                createdObject = self.dbc.add_object(data['Room'], 3, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                y = json.dumps(temp)    
+                return {'inner_json': y, 'cmd': "add"}
+            if command[1] == 'mag':
+                temp['Image_Id'] = 4
+                temp['Transformation']['scale_x'] = 0.14
+                temp['Transformation']['scale_y'] = 0.14
+                createdObject = self.dbc.add_object(data['Room'], 4, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                y = json.dumps(temp)    
+                return {'inner_json': y, 'cmd': "add"}
+            if command[1] == 'paladyn':
+                temp['Image_Id'] = 5
+                temp['Transformation']['scale_x'] = 0.05
+                temp['Transformation']['scale_y'] = 0.05
+                createdObject = self.dbc.add_object(data['Room'], 5, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                y = json.dumps(temp)    
+                return {'inner_json': y, 'cmd': "add"}
+            if command[1] == 'wojownik':   
+                temp['Image_Id'] = 6
+                temp['Transformation']['scale_x'] = 0.11
+                temp['Transformation']['scale_y'] = 0.11
+                createdObject = self.dbc.add_object(data['Room'], 6, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                y = json.dumps(temp)    
+                return {'inner_json': y, 'cmd': "add"} 
+            if command[1] == "map":
+                temp['Image_Id'] = 0
+                temp['Transformation']['scale_x'] = 1
+                temp['Transformation']['scale_y'] = 1
+                temp['Position']['Layer'] = 1
+                temp['Position']['Coords']['x'] = 600
+                temp['Position']['Coords']['y'] = 600
+                createdObject = self.dbc.add_object(data['Room'], 6, temp['Position'], temp['Transformation'])
+                temp['Id'] = createdObject['Id']
+                y = json.dumps(temp)    
+                return {'inner_json': y, 'cmd': "add"} 
+        raise self.WrongArguments("Not a valid command")
+              
     def chat_macro_exec(id: int):
         return {'Success': False, 'Message': "Not implementet"}
 
@@ -125,7 +199,7 @@ class Wrapper:
         '''Updates object position and return dictionary with new position ready to be send to other players'''
         self.validate_json(data, ['Id', 'Position', 'Room'], [int, dict, str])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
-        self.validate_json(data['Position']['Coords'], ['x','y','z_layer'],[float, float,int])
+        #self.validate_json(data['Position']['Coords'], ['x','y','z_layer'],[float, float,int])
         #print(data)
         
         success = self.dbc.update_object_position(data['Room'], data['Id'], data['Position'])

@@ -94,17 +94,15 @@ class Controller():
 
     # OBJECTS
 
-    def add_object(self, room: str, image_id: int, position: dict):
+    def add_object(self, room: str, image_id: int, position: dict, transformation: dict):
         post = {
             "Id": self.rooms.find_one({"room_name": room})["object_id"],
             "Image_id": image_id,
             "Position": position,
-            "Transformation": self.blank_trsf
+            "Transformation": transformation
         }
-
         self.rooms.update_one({"room_name": room}, {"$inc": {"object_id": 1}})
         self.rooms.update_one({"room_name": room}, {"$push": {"battlemap.Objects": post}})
-        
         return post
 
     def delete_object(self, room: str, id: int):

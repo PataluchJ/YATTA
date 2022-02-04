@@ -3,7 +3,7 @@ import {SocketContext} from './menu';
 import { Link } from "react-router-dom";
 import "../../css/hostGame.css"
 import { useState, useEffect,useContext } from "react";
-function HostHTML({ setUsername }){
+function HostHTML({ setUsername, setRoomID }){
         const socket = useContext(SocketContext);
         return(
             <div className = "hostBody">
@@ -27,6 +27,7 @@ function HostHTML({ setUsername }){
                         console.log(username);
                         if(username!=="" && roomID!=="" && battlemap!=="" ) {
                             setUsername(username);
+                            setRoomID(roomID);
                             var roomData = "{\"Name\":\""+roomID+"\",\"Battlemap\":\""+battlemap+"\"}";
                             var jsonF = JSON.parse(roomData);
                             

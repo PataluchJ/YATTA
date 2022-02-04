@@ -138,8 +138,9 @@ function Chat({ username, roomID }) {
             }
           }}
         ></input>
-        <button onClick={newMessSetter}>Send</button>
+        
       </div>
+      <button onClick={newMessSetter}>Send</button>
     </div>
   );
 }

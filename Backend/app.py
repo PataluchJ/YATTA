@@ -91,7 +91,16 @@ def message_send(json_data):
 def exec_command(json_data):
     result = generic_argument_call(wrapper.chat_command_exec, json_data)
     if result['Status'] == 200:
-        emit('new_message', result['Json'], to=json_data['Room'])
+        try:
+            print(result['Json']['cmd'])
+            print("sending object_new")
+            temp = result['Json']['inner_json']
+            print("sending", temp )
+            emit('object_new', temp, to=json_data['Room'])
+        except Exception as e:
+            print(e)
+            print("sending new_message")
+            emit('new_message', result['Json'], to=json_data['Room'])
 
 @socketio.on('exec_macro')
 def exec_macro():
