@@ -1,7 +1,7 @@
 import "../../css/chat.scss";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
-import BattleMap from "../bm/battlemapReact";
+import { Link } from "react-router-dom";
 
 function Chat({ username, roomID }) {
   const socket = useContext(SocketContext);
@@ -22,7 +22,13 @@ function Chat({ username, roomID }) {
   useEffect(() => {
     setUser(localStorage.getItem('username'));
     setRoom(localStorage.getItem('roomID'));
-    
+
+    var roomData = "{\"Room\":\""+room+"\"}";
+    var jsonF = JSON.parse(roomData);                    
+    socket.emit('join',jsonF);
+  }, [user, room]);
+
+  useEffect(() => {
     socket.on("join", data => {
       let temp = [];
         data.Messages.forEach(function(item, index, array) {
@@ -50,7 +56,7 @@ function Chat({ username, roomID }) {
       id.current++;
 
       setMessages(prev => prev.concat(temp));
-    })
+    });
 
     socket.on("exec_results", data => {
 
@@ -64,10 +70,14 @@ function Chat({ username, roomID }) {
       id.current++;
 
       setMessages(prev => prev.concat(temp));
-    })
-    
+    });
 
-  }, [user]);
+    return () => {
+      socket.off("join");
+      socket.off("new_message");
+      socket.off("exec_results");
+    }
+  });
 
   useEffect(() => {
     setLogged(true)
@@ -79,16 +89,22 @@ function Chat({ username, roomID }) {
     }
   }
 
+  const logOutButton = () => {
+    setLogged(false);
+  }
+
   useEffect(() => {
     if (text !== "") {
-      
+      var msg;
+      var jsonF;
+
       if (text.startsWith("/")) {
-        var msg = '{"Room":"' + room + '", "User":"' + user + '","Character":"' + user + '","Command":"' + text + '"}';
-      var jsonF = JSON.parse(msg);
+        msg = '{"Room":"' + room + '", "User":"' + user + '","Character":"' + user + '","Command":"' + text + '"}';
+        jsonF = JSON.parse(msg);
         socket.emit('exec_command', jsonF);
       } else {
-        var msg = '{"Room":"' + room + '", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
-      var jsonF = JSON.parse(msg);
+        msg = '{"Room":"' + room + '", "User":"' + user + '","Character":"' + user + '","Text":"' + text + '"}';
+        jsonF = JSON.parse(msg);
         socket.emit('send_message', jsonF);
       }
 
@@ -141,6 +157,10 @@ function Chat({ username, roomID }) {
         
       </div>
       <button onClick={newMessSetter}>Send</button>
+
+      <Link to={`/`}>
+      <button onClick={logOutButton}>Logout</button>
+      </Link>
     </div>
   );
 }
