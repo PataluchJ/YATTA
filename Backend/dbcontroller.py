@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import tostring
 from pymongo import MongoClient
 
 
@@ -19,13 +20,14 @@ class Controller():
             "room_name": name,
             "messages": [],
             "token_id": 0,
+            "char_sheet_id": 0,
             "object_id": 0,
             "macros": [],
+            "char_sheets": [],
             "images": {},
             "battlemap": {},
             "battlemaps": []
         }
-
         self.rooms.insert_one(post)
 
     def get_all_rooms(self) -> list:
@@ -221,3 +223,21 @@ class Controller():
     def get_image_by_name(self, room: str, img_name: str):
         images = self.rooms.find_one({"room_name": room})["images"]
         return images[img_name]
+
+
+    ### CHARACTER SHEETS
+
+    def add_character_sheet(self, room: str, sheet: dict):
+        sheet_id = self.rooms.find_one({"room_name": room})["char_sheet_id"]
+        self.rooms.update_one({"room_name": room}, {"$set": {f"char_sheets.{sheet_id}": sheet}})
+        self.rooms.update_one({"room_name": room}, {"$inc": {"char_sheet_id": 1}})
+
+    def delete_character_sheet(self, room: str, id: int):
+        self.rooms.update_one({"room_name": room}, {"$unset": {f"char_sheets.{id}": ""}})
+
+    def get_all_character_sheets(self, room: str):
+        return self.rooms.find_one({"room_name": room})["char_sheets"]
+
+    def get_character_sheet_by_id(self, room: str, id: int):
+        char_sheets = self.rooms.find_one({"room_name": room})["char_sheets"]
+        return char_sheets[str(id)]
