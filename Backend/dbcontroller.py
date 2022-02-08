@@ -6,9 +6,7 @@ class Controller():
     def __init__(self) -> None:
         self.client = MongoClient()
         self.db = self.client.mydb
-
         self.rooms = self.db.rooms
-        self.images = self.db.images
 
         self.blank_trsf = {
             "scale_x": 1,
@@ -23,15 +21,12 @@ class Controller():
             "token_id": 0,
             "object_id": 0,
             "macros": [],
+            "images": {},
             "battlemap": {},
             "battlemaps": []
         }
-        img_post = {
-            "room_name": name,
-            "images": []
-        }
+
         self.rooms.insert_one(post)
-        self.images.insert_one(img_post)
 
     def get_all_rooms(self) -> list:
         """Returns a list contatining names of all available rooms"""
@@ -100,10 +95,10 @@ class Controller():
 
     # OBJECTS
 
-    def add_object(self, room: str, image_id: int, position: dict, transformation: dict):
+    def add_object(self, room: str, image_name: str, position: dict, transformation: dict):
         post = {
             "Id": self.rooms.find_one({"room_name": room})["object_id"],
-            "Image_id": image_id,
+            "Image_id": image_name,
             "Position": position,
             "Transformation": transformation
         }
@@ -215,11 +210,14 @@ class Controller():
     ### IMAGES
 
     def add_image(self, room: str, img_data, img_name: str):
-        post = {
-            "img": img_data,
-            "img_name": img_name
-        }
-        self.images.update_one({"room_name": room}, {"$push": {"images": post}})
+        self.rooms.update_one({"room_name": room}, {"$set": {f"images.{img_name}": img_data}})
 
-    def get_images(self, room: str):
-        return self.images.find({"room_name": room})["images"]
+    def delete_image(self, room: str, img_name: str):
+        self.rooms.update_one({"room_name": room}, {"$unset": {f"images.{img_name}": ""}})
+
+    def get_all_images(self, room: str):
+        return self.rooms.find_one({"room_name": room})["images"]
+
+    def get_image_by_name(self, room: str, img_name: str):
+        images = self.rooms.find_one({"room_name": room})["images"]
+        return images[img_name]
