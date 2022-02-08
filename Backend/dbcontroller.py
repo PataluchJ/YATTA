@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import tostring
 from pymongo import MongoClient
 
 
@@ -6,7 +7,6 @@ class Controller():
     def __init__(self) -> None:
         self.client = MongoClient()
         self.db = self.client.mydb
-
         self.rooms = self.db.rooms
 
         self.blank_trsf = {
@@ -20,8 +20,11 @@ class Controller():
             "room_name": name,
             "messages": [],
             "token_id": 0,
+            "char_sheet_id": 0,
             "object_id": 0,
             "macros": [],
+            "char_sheets": [],
+            "images": {},
             "battlemap": {},
             "battlemaps": []
         }
@@ -94,10 +97,10 @@ class Controller():
 
     # OBJECTS
 
-    def add_object(self, room: str, image_id: int, position: dict, transformation: dict):
+    def add_object(self, room: str, image_name: str, position: dict, transformation: dict):
         post = {
             "Id": self.rooms.find_one({"room_name": room})["object_id"],
-            "Image_id": image_id,
+            "Image_id": image_name,
             "Position": position,
             "Transformation": transformation
         }
@@ -204,3 +207,37 @@ class Controller():
     def get_all_data(self, room: str):
         res = self.rooms.find_one({"room_name": room})['battlemap']
         return res
+
+
+    ### IMAGES
+
+    def add_image(self, room: str, img_data, img_name: str):
+        self.rooms.update_one({"room_name": room}, {"$set": {f"images.{img_name}": img_data}})
+
+    def delete_image(self, room: str, img_name: str):
+        self.rooms.update_one({"room_name": room}, {"$unset": {f"images.{img_name}": ""}})
+
+    def get_all_images(self, room: str):
+        return self.rooms.find_one({"room_name": room})["images"]
+
+    def get_image_by_name(self, room: str, img_name: str):
+        images = self.rooms.find_one({"room_name": room})["images"]
+        return images[img_name]
+
+
+    ### CHARACTER SHEETS
+
+    def add_character_sheet(self, room: str, sheet: dict):
+        sheet_id = self.rooms.find_one({"room_name": room})["char_sheet_id"]
+        self.rooms.update_one({"room_name": room}, {"$set": {f"char_sheets.{sheet_id}": sheet}})
+        self.rooms.update_one({"room_name": room}, {"$inc": {"char_sheet_id": 1}})
+
+    def delete_character_sheet(self, room: str, id: int):
+        self.rooms.update_one({"room_name": room}, {"$unset": {f"char_sheets.{id}": ""}})
+
+    def get_all_character_sheets(self, room: str):
+        return self.rooms.find_one({"room_name": room})["char_sheets"]
+
+    def get_character_sheet_by_id(self, room: str, id: int):
+        char_sheets = self.rooms.find_one({"room_name": room})["char_sheets"]
+        return char_sheets[str(id)]

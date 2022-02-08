@@ -1,4 +1,5 @@
 import "../../css/chat.scss";
+
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
 import { Link } from "react-router-dom";
@@ -22,10 +23,13 @@ function Chat({ username, roomID }) {
   useEffect(() => {
     setUser(localStorage.getItem('username'));
     setRoom(localStorage.getItem('roomID'));
+    setLogged(true);
 
     var roomData = "{\"Room\":\""+room+"\"}";
     var jsonF = JSON.parse(roomData);                    
     socket.emit('join',jsonF);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, room]);
 
   useEffect(() => {
@@ -79,10 +83,6 @@ function Chat({ username, roomID }) {
     }
   });
 
-  useEffect(() => {
-    setLogged(true)
-  }, [logged]);
-
   const newMessSetter = () => {
     if (text !== "") {
       setNewMess(newMess + 1);
@@ -91,6 +91,8 @@ function Chat({ username, roomID }) {
 
   const logOutButton = () => {
     setLogged(false);
+    localStorage.removeItem('username');
+    localStorage.removeItem('roomID');
   }
 
   useEffect(() => {
@@ -110,6 +112,8 @@ function Chat({ username, roomID }) {
 
       setText("");
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newMess]);
 
   const messagesEndRef = useRef(null);
@@ -156,10 +160,13 @@ function Chat({ username, roomID }) {
         ></input>
         
       </div>
-      <button onClick={newMessSetter}>Send</button>
-
+      <button className="chatButtons" onClick={newMessSetter}>Send</button>
+      <Link to={`/creator`}>
+      <button className="chatButtons">Create new character sheet</button>
+      </Link>
+      <button className="chatButtons">Add object</button>
       <Link to={`/`}>
-      <button onClick={logOutButton}>Logout</button>
+      <button className="chatButtons" onClick={logOutButton}>Logout</button>
       </Link>
     </div>
   );

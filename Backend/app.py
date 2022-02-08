@@ -57,15 +57,13 @@ def on_join(json_data):
     result = generic_argument_call(wrapper.get_all_data, json_data)
     if(result['Status'] == 200):
         emit('join', result['Json'])
-        print("SENDING JOIN INFO" + str(result['Json']));
-        return 200
 
 @socketio.on('get_all_room_data')
 def on_getAll(json_data):
     result = generic_argument_call(wrapper.get_all_data, json_data)
     if(result['Status'] == 200):
         emit('all_data', result['Json'])
-        print("SENDING ALL ROOM DATA");
+        print("SENDING ALL ROOM DATA")
         return 200
 
 @socketio.on('leave')
@@ -129,7 +127,6 @@ def object_delete(json_data):
 def object_update_position(json_data):
     result = generic_argument_call(wrapper.bm_object_update_position, json_data)
     if result['Status'] == 200:
-        #print("Sending new posisions", result['Json'])
         emit('new_position', result['Json'], to=json_data['Room'])
 
 @socketio.on('object_transform')
@@ -150,5 +147,29 @@ def token_delete(json_data):
     if result['Status'] == 200:
         emit('token_delete', json_data, to=json_data['Room'])
 
+@socketio.on('image_new')
+def image_new(json_data):
+    result = generic_argument_call(wrapper.img_new, json_data)
+    if result['Status'] == 200:
+        emit('image_new', result['Json'], to=json_data['Room'])
+
+@socketio.on('image_delete')
+def image_delete(json_data):
+    result = generic_argument_call(wrapper.img_delete, json_data)
+    if result['Status'] == 200:
+        emit('image_delete', result['Json'], to=json_data['Room'])
+
+@socketio.on('image_get')
+def image_get(json_data):
+    result = generic_argument_call(wrapper.img_get, json_data)
+    if result['Status'] == 200:
+        emit('image_get', result['Json'], to=json_data['Room'])
+
+@socketio.on("sheets_get")
+def sheet_get_all(json_data):
+    result = generic_call(wrapper.sheets_get_all)
+    if result['Status'] == 200:
+        emit('image_get', result['Json'], to=json_data['Room'])
+        
 if __name__ == '__main__':
     socketio.run(app)
