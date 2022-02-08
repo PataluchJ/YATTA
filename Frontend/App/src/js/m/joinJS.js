@@ -22,11 +22,12 @@ function GiveMeHTML({ setUsername, setRoomID }) {
         return(
             <div className = "joinBody">
                 <header className="joinTitle"> Join Game </header>
+                <div className="restJoin">
                 <form className="joinForm">
                     <div className="forms">
-                    <label htmlFor="uName">Username:</label><br></br>
+                    <label htmlFor="uName" className="jTitle">Username:</label><br></br>
                     <input className="joinInput" typ="text" id="uName" name = "uName"></input><br></br>
-                    <label htmlFor="roomID"> Insert room id:</label><br></br>
+                    <label htmlFor="roomID" className="jTitle"> Insert room id:</label><br></br>
                     <input className="joinInput" type="text" id="roomID" name = "roomID"></input>
                     </div>
                 </form>
@@ -52,6 +53,7 @@ function GiveMeHTML({ setUsername, setRoomID }) {
                 <Link to={`/`}>
                  <button className="joinButton">Back</button>
                  </Link>
+                </div>
                 </div>
             </div>
         );

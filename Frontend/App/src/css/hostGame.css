@@ -57,7 +57,7 @@ min-height: 1em;
 font-size: 4em;
 font-family: 'Work Sans';
 background-size:cover;
-background-color: rgba(60, 22, 104, 0.342);
+background-color: rgba(128, 126, 150, 0.473);
 color:rgba(245, 245, 18, 0.842);
 font-weight: bold;
 
@@ -83,7 +83,7 @@ button{
     text-align: center;
     font-size: 7em;
     font-family: 'Work Sans';
-    color:rgba(60, 22, 104, 0.712);
+    color:#251e3b;
     font-weight: bold;
     
     }
@@ -91,10 +91,11 @@ button{
         margin-top: 1em;
         text-align: center;
         align-items: center;
+        color: #3b3355;
     }
     .hostInput{
         font-size: 0.75em;
-        color:rgba(60, 22, 104, 0.712);
+        color:#bfcde0;
         border-color:rgba(0, 0, 0, 0.623);
         background-color:rgba(18, 11, 83, 0.233);
     
@@ -126,8 +127,8 @@ button{
         max-width: 25em;
         margin: 0.5em;
         font-size: 1.5em;
-        border:rgba(248, 228, 45, 0.753);
-        background-color:rgba(60, 22, 104, 0.342);
+        border:#bfcde0;
+        background-color:#5d5d81;
         border-radius: 10px;
-        color: rgba(245, 245, 18, 0.842);
+        color: #bfcde0;
     }
