@@ -242,3 +242,6 @@ class Controller():
     def get_character_sheet_by_id(self, room: str, id: int):
         char_sheets = self.rooms.find_one({"room_name": room})["char_sheets"]
         return char_sheets[str(id)]
+
+    def modify_character_sheet(self, room: str, id: int, modified_sheet: dict):
+        self.rooms.update_one({"room_name": room}, {"$set": {f"char_sheets.{id}": modified_sheet}})
