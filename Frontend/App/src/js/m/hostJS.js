@@ -27,7 +27,7 @@ function HostHTML({ setUsername, setRoomID }){
                                     setUsername(username);
                                     setRoomID(roomID);
                                     localStorage.setItem('roomID', roomID);
-                                    var roomData = "{\"Name\":\""+roomID+"\",\"Battlemap\":\""+battlemap+"\"}";
+                                    var roomData = "{\"Name\":\""+roomID+"\",\"Battlemap\":\"default\"}";
                                     var jsonF = JSON.parse(roomData);
                                     
                                     socket.emit('create',jsonF);
