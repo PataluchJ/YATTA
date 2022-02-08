@@ -110,7 +110,7 @@ class Wrapper:
                         "Coords": {
                             "x": 310.0, 
                             "y": 190.0, 
-                            "z_layer": -1 
+                            "z_layer": 1 
                         }
                     },
                     "Transformation": {
@@ -169,7 +169,8 @@ class Wrapper:
                 temp['Position']['Layer'] = 1
                 temp['Position']['Coords']['x'] = 600
                 temp['Position']['Coords']['y'] = 600
-                createdObject = self.dbc.add_object(data['Room'], 6, temp['Position'], temp['Transformation'])
+                temp['Position']['Coords']['z_layer'] = -1
+                createdObject = self.dbc.add_object(data['Room'], 0, temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"} 

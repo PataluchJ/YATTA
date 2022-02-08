@@ -71,6 +71,7 @@ class PixiComponent extends React.Component {
     }
     addToken = (id, textureId, x, y, z, level, layer, scale_x, scale_y, rotate) => {
         
+        //console.log(id, textureId, x, y, z, level, layer, scale_x, scale_y, rotate)
         const sprite = MyObject.from(this.getTexture(textureId))
         sprite.anchor.set(0.5)
         sprite.x = x
@@ -188,14 +189,19 @@ class PixiComponent extends React.Component {
   
     // movement
     onDragStart(e) {
-    
         console.log("onDragStart()")
-        //console.log(pressedKeys)
+        
         // only when "Shift" is not pressed
         if(!pressedKeys['16']){
             
             e.target.alpha = 0.5
+
+            // hold x, y to check later if it was only a click
+            //this.selectedTarget_X = e.target.x
+            //this.selectedTarget_Y = e.target.y
+
             this.selectedTarget = e.target
+            
             this.app.stage.addEventListener('pointermove', this.onDragMove.bind(this))
         }       
     }
@@ -205,15 +211,21 @@ class PixiComponent extends React.Component {
             this.selectedTarget.alpha = 1
             this.app.stage.removeAllListeners()
 
-            let room = localStorage.getItem('roomID')
-            console.log(room)
-            var msg = '{"Room":"' + room + '", "Id":'+ this.selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + this.selectedTarget.x  + ', "y":' + this.selectedTarget.y + ', "z_layer": 1 }}}';
-            console.log(msg)
-            var jsonF = JSON.parse(msg);
-            socket.emit('object_move', jsonF); 
+
+            // if same coords => single click
+            //if(this.selectedTarget.x == this.selectedTarget_X && this.selectedTarget.y == this.selectedTarget_Y){
+                //this.selectedTarget.filters = [this.outlineFilterBlue]
+               
+            //} 
+            //else {
+                let room = localStorage.getItem('roomID')
+                console.log(room)
+                var msg = '{"Room":"' + room + '", "Id":'+ this.selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + this.selectedTarget.x  + ', "y":' + this.selectedTarget.y + ', "z_layer":' + this.selectedTarget.z + '}}}';
+                console.log(msg)
+                var jsonF = JSON.parse(msg);
+                socket.emit('object_move', jsonF); 
+            //}
         }
-        
-   
     }
     onDragMove(e) {
         this.selectedTarget.parent.toLocal(e.global, null, this.selectedTarget.position)
@@ -221,7 +233,7 @@ class PixiComponent extends React.Component {
 
     render() {
         console.log("render()")
-        this.app = new PIXI.Application({width: window.screen.width*0.175, height: window.screen.height*0.15, backgroundColor: '0x121212', antialias: false, resolution: 4})
+        this.app = new PIXI.Application({width: window.screen.width * 0.175, height: window.screen.height * 0.15, backgroundColor: '0x121212', antialias: false, resolution: 4})
         let component = this;
        
         // stage
@@ -267,48 +279,6 @@ class PixiComponent extends React.Component {
         this.viewport.addChild(this.ObjectContainer)
         this.viewport.addChild(this.gridContainer)
 
-
-        // socket listeners
-        socket.on("new_position", data => {
-            console.log("socket.on(new_position)")
-            this.setNewPosition(data.Id, data.Position.Coords.x, data.Position.Coords.y, data.Position.Coords.z_layer)
-          })
-
-        socket.on("object_new", data => {
-            data = JSON.parse(data)
-            console.log("socket.on(object_new)")
-            console.log(data)
-            if(data.Position.Layer == -1){
-                this.addToken(
-                    data.Id,
-                    data.Image_Id,
-                    data.Position.Coords.x,
-                    data.Position.Coords.y,
-                    data.Position.Coords.z,
-                    data.Position.Level,
-                    data.Position.Layer,
-                    data.Transformation.scale_x,
-                    data.Transformation.scale_y,
-                    data.Transformation.rotation
-                )
-            }
-            else{
-                this.addObject(
-                    data.Id,
-                    data.Image_Id,
-                    data.Position.Coords.x,
-                    data.Position.Coords.y,
-                    data.Position.Coords.z,
-                    data.Position.Level,
-                    data.Position.Layer,
-                    data.Transformation.scale_x,
-                    data.Transformation.scale_y,
-                    data.Transformation.rotation
-                )
-            }
-         
-        })
-        
         //textures
         this.addTexture(0, testbg)
         this.addTexture(1, img_Bard)
@@ -318,6 +288,90 @@ class PixiComponent extends React.Component {
         this.addTexture(5, img_Paladyn)
         this.addTexture(6, img_Woj)
 
+        // socket listeners
+        socket.on("new_position", data => {
+            console.log("socket.on(new_position)")
+            this.setNewPosition(data.Id, data.Position.Coords.x, data.Position.Coords.y, data.Position.Coords.z_layer)
+        })
+        
+        socket.on("object_new", data => {
+            data = JSON.parse(data)
+            console.log("socket.on(object_new)")
+            console.log(data)
+            if(data.Position.Coords.z_layer == -1){
+                this.addObject(
+                    data.Id,
+                    data.Image_Id,
+                    data.Position.Coords.x,
+                    data.Position.Coords.y,
+                    data.Position.Coords.z_layer,
+                    data.Position.Level,
+                    data.Position.Layer,
+                    data.Transformation.scale_x,
+                    data.Transformation.scale_y,
+                    data.Transformation.rotation
+                )
+            }
+            else{
+                this.addToken(
+                    data.Id,
+                    data.Image_Id,
+                    data.Position.Coords.x,
+                    data.Position.Coords.y,
+                    data.Position.Coords.z_layer,
+                    data.Position.Level,
+                    data.Position.Layer,
+                    data.Transformation.scale_x,
+                    data.Transformation.scale_y,
+                    data.Transformation.rotation
+                )
+            }
+         
+        })
+
+        socket.on("all_data", data => {
+            
+            let self = this
+            data.Battlemap.Objects.forEach(function(item) {
+
+                console.log(item)
+               
+                if(item.Position.Coords.z_layer == -1){
+                    self.addObject(
+                        item.Id,
+                        item.Image_id,
+                        item.Position.Coords.x,
+                        item.Position.Coords.y,
+                        item.Position.Coords.z_layer,
+                        item.Position.Level,
+                        item.Position.Layer,
+                        item.Transformation.scale_x,
+                        item.Transformation.scale_y,
+                        item.Transformation.rotation
+                    )
+                }
+                else{
+                    self.addToken(
+                        item.Id,
+                        item.Image_id,
+                        item.Position.Coords.x,
+                        item.Position.Coords.y,
+                        item.Position.Coords.z_layer,
+                        item.Position.Level,
+                        item.Position.Layer,
+                        item.Transformation.scale_x,
+                        item.Transformation.scale_y,
+                        item.Transformation.rotation
+                    )
+                }
+            });
+        });
+  
+        var msg = '{"Room":"' + localStorage.getItem('roomID') + '"}';
+        socket.emit('get_all_room_data', JSON.parse(msg)); 
+        
+      
+        
         // temp for testing
 
         //this.addToken(1, 1, 310, 190, -1, 0, -1, 0.05, 0.05, 0);

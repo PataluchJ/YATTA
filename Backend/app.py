@@ -54,10 +54,18 @@ def ont_disconnect():
 @socketio.on('join')
 def on_join(json_data):
     join_room(json_data['Room'])
-    result = generic_argument_call(wrapper.get_all_data,json_data)
+    result = generic_argument_call(wrapper.get_all_data, json_data)
     if(result['Status'] == 200):
         emit('join', result['Json'])
         print("SENDING JOIN INFO" + str(result['Json']));
+        return 200
+
+@socketio.on('get_all_room_data')
+def on_getAll(json_data):
+    result = generic_argument_call(wrapper.get_all_data, json_data)
+    if(result['Status'] == 200):
+        emit('all_data', result['Json'])
+        print("SENDING ALL ROOM DATA");
         return 200
 
 @socketio.on('leave')
@@ -86,7 +94,6 @@ def message_send(json_data):
     if result['Status'] == 200:
         emit('new_message', result['Json'], to=json_data['Room'])
 
-
 @socketio.on('exec_command')
 def exec_command(json_data):
     result = generic_argument_call(wrapper.chat_command_exec, json_data)
@@ -106,20 +113,17 @@ def exec_command(json_data):
 def exec_macro():
     pass
 
-
 @socketio.on('object_new')
 def object_create(json_data):
     result = generic_argument_call(wrapper.bm_object_create, json_data)
     if result['Status'] == 200:
         emit('object_new', result['Json'], to=json_data['Room'])
 
-
 @socketio.on('object_delete')
 def object_delete(json_data):
     result = generic_argument_call(wrapper.bm_object_delete, json_data)
     if result['Status'] == 200:
         emit('object_delete', result['Json'], to=json_data['Room'])
-
 
 @socketio.on('object_move')
 def object_update_position(json_data):
@@ -145,7 +149,6 @@ def token_delete(json_data):
     result = generic_argument_call(wrapper.bm_token_delete, json_data)
     if result['Status'] == 200:
         emit('token_delete', json_data, to=json_data['Room'])
-
 
 if __name__ == '__main__':
     socketio.run(app)
