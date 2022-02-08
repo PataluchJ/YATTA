@@ -31,7 +31,9 @@ class Wrapper:
         for i in range(0, len(key_list)):
             if key_list[i] not in json:
                 raise self.WrongArguments("Missing key " + key_list[i])
-            if not isinstance(json[key_list[i]], key_types[i]):
+            if(key_types[i] == any):
+                continue
+            elif not isinstance(json[key_list[i]], key_types[i]):
                 raise self.WrongArguments(str(key_list[i]) + " is has wrong type")
 
     # Meta data ##########
@@ -259,7 +261,7 @@ class Wrapper:
     # Sheets #########
     def sheet_add(self, data):
         self.validate_json(data, ['Room', 'Name','Equipment','Abilities'],[str,str,any,any])
-        new_character = {'Nama':data['Name'], 'Equipment':data['Equipment'], 'Abilities':data['Abilities']}
+        new_character = {'Name': data['Name'], 'Equipment':data['Equipment'], 'Abilities':data['Abilities']}
         id = self.dbc.add_character_sheet(data['Room'], new_character)
         new_character['Id'] = id
         return new_character
