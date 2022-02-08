@@ -212,7 +212,9 @@ class Controller():
     ### IMAGES
 
     def add_image(self, room: str, img_data, img_name: str):
+        print("DBC 1")
         self.rooms.update_one({"room_name": room}, {"$set": {f"images.{img_name}": img_data}})
+        print("DBC 2")
 
     def delete_image(self, room: str, img_name: str):
         self.rooms.update_one({"room_name": room}, {"$unset": {f"images.{img_name}": ""}})

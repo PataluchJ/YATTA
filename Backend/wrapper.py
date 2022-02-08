@@ -223,16 +223,19 @@ class Wrapper:
     # Images ##########
 
     def img_new(self, data):
-        self.validate_json(data,['Room','Image','Name'],[str,any,str])
+        self.validate_json(data,['Room','Name'],[str,str])
+        print("Image validated!")
         self.dbc.add_image(data['Room'], data['Image'],data['Name'])
+        return {"Name": data['Name'], 'Image': data['Image']}
 
     def img_delete(self, data): 
         self.validate_json(data,['Room','Name'],[str,str])
         self.dbc.delete_image(data['Room'],data['Name'])
+        return {'Name': data['Name']}
     
     def img_get(self, data):
         self.validate_json(data,['Room','Name'],[str,str])
-        self.dbc.get_image_by_name(data['Room'],data['Name'])
+        return self.dbc.get_image_by_name(data['Room'],data['Name'])
 
     # Tokens ##########
 
@@ -267,3 +270,6 @@ class Wrapper:
         self.validate_json(data, ['Room'], [str])
         res = self.dbc.get_all_character_sheets(data['Room'])
         return res
+
+    def sheet_edit(self, data):
+        self.validate_json(data, ['Room'], [str])
