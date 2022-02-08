@@ -146,6 +146,23 @@ def token_delete(json_data):
     if result['Status'] == 200:
         emit('token_delete', json_data, to=json_data['Room'])
 
+@socketio.on('image_new')
+def image_new(json_data):
+    result = generic_argument_call(wrapper.img_new, json_data)
+    if result['Status'] == 200:
+        emit('image_new', result['Json'], to=json_data['Room'])
+
+@socketio.on('image_delete')
+def image_delete(json_data):
+    result = generic_argument_call(wrapper.img_delete, json_data)
+    if result['Status'] == 200:
+        emit('image_delete', result['Json'], to=json_data['Room'])
+
+@socketio.on('image_get')
+def image_get(json_data):
+    result = generic_argument_call(wrapper.img_get, json_data)
+    if result['Status'] == 200:
+        emit('image_get', result['Json'], to=json_data['Room'])
 
 if __name__ == '__main__':
     socketio.run(app)
