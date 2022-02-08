@@ -182,7 +182,11 @@ function Chat({ username, roomID }) {
       </div>
       <button className="chatButtons" onClick={newMessSetter}>Send</button>
       <Link to={`/creator`}>
-      <button className="chatButtons">Create new character sheet</button>
+      <button className="chatButtons" onClick={() => {
+        var roomData = "{\"Room\":\""+room+"\"}";
+        var jsonF = JSON.parse(roomData);                    
+        socket.emit('sheets_get',jsonF);
+      }}>Create new character sheet</button>
       </Link>
       <button className="chatButtons">Add object</button>
       <Link to={`/`}>

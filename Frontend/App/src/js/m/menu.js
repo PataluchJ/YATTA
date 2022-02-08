@@ -31,7 +31,7 @@ function Menu() {
                 <Route path="/battlemap" render={(props) => <Map  username={username} roomID={roomID} {...props} /> } />
                 <Route path="/join" render={(props) => <Join setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
                 <Route path="/host" render={(props) => <Host setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
-                <Route path="/creator" render={(props) => <Creator setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
+                <Route path="/creator" render={(props) => <Creator username={username} roomID={roomID} {...props} /> } />
             </Switch>
         </div>
         </Router>
