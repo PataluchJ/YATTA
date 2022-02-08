@@ -8,7 +8,7 @@ height: 100%;
 @media only screen and (min-width: 0px) {
     body{
     
-        margin-top: 2.5em;
+      
         height: 100%;
         background-repeat: no-repeat;
         background-size:contain;
@@ -18,7 +18,7 @@ height: 100%;
 @media only screen and (min-width: 650px){
     body{
     
-        margin-top: 2.5em;
+        
         height: 100%;
         background-repeat: no-repeat;
         background-size:contain,contain;
@@ -31,7 +31,7 @@ height: 100%;
 @media only screen and (min-width: 1281px){
     body{
     
-        margin-top: 2.5em;
+    
         height: 100%;
         background-repeat: no-repeat;
         background-size:contain,contain,contain;
@@ -43,7 +43,7 @@ height: 100%;
 -->
 body{
     
-    margin-top: 2.5em;
+ 
     height: 100%;
     background-repeat: no-repeat;
     background-size:cover;
@@ -69,15 +69,10 @@ font-weight: bold;
 }
 button{
     min-height: 2em;
-    padding: 5px;
     min-width: 15em;
     max-width: 25em;
-    margin: 0.5em;
-    font-size: 1.5em;
-    border:rgba(248, 228, 45, 0.753);
-    background-color:rgba(60, 22, 104, 0.342);
-    border-radius: 10px;
-    color: rgba(245, 245, 18, 0.842);
+    margin-top: 0.4em;
+
 }
 .hostTitle{
     text-align: center;

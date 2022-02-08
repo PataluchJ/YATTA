@@ -1,4 +1,5 @@
 import "../../css/chat.scss";
+
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
 import { Link } from "react-router-dom";
@@ -159,10 +160,13 @@ function Chat({ username, roomID }) {
         ></input>
         
       </div>
-      <button onClick={newMessSetter}>Send</button>
-
+      <button className="chatButtons" onClick={newMessSetter}>Send</button>
+      <Link to={`/creator`}>
+      <button className="chatButtons">Create new character sheet</button>
+      </Link>
+      <button className="chatButtons">Add object</button>
       <Link to={`/`}>
-      <button onClick={logOutButton}>Logout</button>
+      <button className="chatButtons" onClick={logOutButton}>Logout</button>
       </Link>
     </div>
   );

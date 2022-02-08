@@ -18,7 +18,7 @@ td{
     display: block;
     width: 100%;
     height: 100%;
-
+    background-color: #bfcde0;
     background-image:  url('../img/B.png');
     background-size: contain;
     padding: 5px;
@@ -27,6 +27,7 @@ td{
     display: block;
     width: 100%;
     height: 100%;
+    background-color: #bfcde0;
     background-image:  url('../img/M.png');
     background-size: contain;
     padding: 5px;
@@ -35,6 +36,7 @@ td{
     display: block;
     width: 100%;
     height: 100%;
+    background-color: #bfcde0;
     background-image:  url('../img/Ż.png');
     background-size: contain;
     padding: 5px;
@@ -45,6 +47,6 @@ td{
     height: 100%;
     background-image:  url('../img/S.png');
     background-size: contain;
-    background-color: green;
+    background-color: #bfcde0;
     padding: 5px;
 }

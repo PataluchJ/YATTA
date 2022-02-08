@@ -27,10 +27,10 @@
   }
 }
 .chat {
-  width: 200px;
+  width: 13em;
   padding: 1rem;
   justify-content: space-between;
-  height: 1000px;
+  height: 68em;
   flex-direction: column;
   background-color: $greyColor;
   .user-name {
@@ -44,7 +44,7 @@
   }
   .chat-message {
     @include scrollbars(5px, $backgroundColor, $yellowColor);
-    height: 70%;
+    height: 55%;
     display: flex;
     overflow-y: auto;
     align-content: flex-start;
@@ -109,4 +109,14 @@
       }
     }
   }
+}
+.chatButtons{
+  min-height: 2em;
+  width: 100%;
+  font-size: 1.5em;
+  border:#bfcde0;
+  background-color:#5d5d81;
+  border-radius: 10px;
+  color: #bfcde0;
+
 }

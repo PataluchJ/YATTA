@@ -9,6 +9,7 @@ import Chat from "../ch/chat"
 import Host from "../m/hostJS"
 import Second from "../bm/secondMenu"
 import Sheets from "../bm/charSheets"
+import Creator from "../bm/characterCreator"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
 import "../../css/charSheets.css";
@@ -31,6 +32,7 @@ function Menu() {
                 <Route path="/battlemap" render={(props) => <Map  username={username} roomID={roomID} {...props} /> } />
                 <Route path="/join" render={(props) => <Join setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
                 <Route path="/host" render={(props) => <Host setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
+                <Route path="/creator" render={(props) => <Creator setUsername={setUsername} setRoomID={setRoomID} {...props} /> } />
             </Switch>
         </div>
         </Router>
