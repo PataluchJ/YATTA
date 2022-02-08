@@ -5,15 +5,7 @@
     height: 40%;
     
 }
-td{
-    text-align: center;
-    width: 100%;
-    height: fit-content;
-    background-color: rgba(0, 0, 255, 0.411);
-    font-size:large;
-    font-family: 'Work Sans';
-    font:bolder;
-}
+
 .colOne{
     display: block;
     width: 100%;

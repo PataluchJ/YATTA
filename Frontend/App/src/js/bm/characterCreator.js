@@ -3,33 +3,43 @@ import React from "react";
 function characterCreator(){
 
 return (
-    <div>
-        <header>Character creator</header>
+    <div className="creatorDiv">
+        
         <table className="creatorTable" >
-            <tr className="currChars"> 
+            <tr className="creatorMenu"> 
+                <div className="tabTitle">Character</div>
                 <label className="jTitle">Character name</label><br></br>
-                <input className="charNameInput" type="text" id="charNameInput" name = "charNameInput"></input><br></br>
-                <button>New character</button><br></br>
+                <input className="tabInput" type="text" id="charNameInput" name = "charNameInput"></input><br></br>
+                <button className="tabBut">New character</button>
+                <div className="tabTitle">Equipment</div>
                 <label className="jTitle">Item name</label><br></br>
-                <input className="itemNameInput" type="text" id="itemNameInput" name = "itemNameInput"></input><br></br>
+                <input className="tabInput" type="text" id="itemNameInput" name = "itemNameInput"></input><br></br>
                 <label className="jTitle">Item description</label><br></br>
-                <input className="itemDInput" type="text" id="itemDInput" name = "itemDInput"></input><br></br>
-                <button>Add item</button><br></br>
+                <textarea  className="descInput" type="text" id="itemDInput" name = "itemDInput"></textarea ><br></br>
+                <button className="tabBut">Add item</button>
+                <div className="tabTitle">Abilities</div>
                 <label className="jTitle">Ability name</label><br></br>
-                <input className="abilityNameInput" type="text" id="abilityNameInput" name = "abilityNameInput"></input><br></br>
+                <input className="tabInput" type="text" id="abilityNameInput" name = "abilityNameInput"></input><br></br>
                 <label className="jTitle">Ability description</label><br></br>
-                <input className="abilityDInput" type="text" id="abilityDInput" name = "abilityDInput"></input><br></br>
-                <button>Add ability</button><br></br>
-                <button>Back</button><br></br>
+                <textarea className="descInput" type="text" id="abilityDInput" name = "abilityDInput"></textarea ><br></br>
+                <button className="tabBut">Add ability</button>
+                <button className="backBut">Back</button><br></br>
             </tr>
-            <tr className="currEq"> 
-            <tr>
-                
-                
+            <tr className="currChars">
+
 
             </tr>
+            <tr className="currEq"> 
+                <tr>
+                dadsadsasd
+                    
+
+                </tr>
             </tr>
-            <tr className="currChars"> 
+            <tr className="currAb"> 
+
+            </tr>
+            <tr className="currDesc"> 
 
             </tr>
         </table>
