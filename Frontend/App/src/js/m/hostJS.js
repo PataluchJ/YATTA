@@ -15,17 +15,15 @@ function HostHTML({ setUsername, setRoomID }){
                             <input className="hostInput" typ="text" id="uName" name = "uName"></input><br></br>
                             <label htmlFor="roomID" className="jTitle"> Insert room id:</label><br></br>
                             <input className="hostInput" type="text" id="roomID" name = "roomID"></input><br></br>
-                            <label htmlFor="roomID" className="jTitle"> Insert battlemap id:</label><br></br>
-                            <input className="hostInput" type="text" id="battlemapName" name = "battlemapName"></input>
-                        </div>
+                            </div>
                     </form>
                     <div className = "buttons">
                     <Link to={"/battlemap"}>
                         <button className="hostButton" onClick={() => {
                                 var roomID = document.getElementById("roomID").value ? document.getElementById("roomID").value : "";
                                 var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
-                                var battlemap= document.getElementById("battlemapName").value ? document.getElementById("battlemapName").value : "";
-                                if(username!=="" && roomID!=="" && battlemap!=="" ) {
+                                
+                                if(username!=="" && roomID!==""  ) {
                                     setUsername(username);
                                     setRoomID(roomID);
                                     localStorage.setItem('roomID', roomID);

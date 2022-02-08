@@ -8,11 +8,9 @@ import Join from "./joinJS"
 import Chat from "../ch/chat"
 import Host from "../m/hostJS"
 import Second from "../bm/secondMenu"
-import Sheets from "../bm/charSheets"
 import Creator from "../bm/characterCreator"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
-import "../../css/charSheets.css";
 import "../../css/creator.css";
 import "../../css/tables.css";
 const ENDPOINT = "localhost:5000";

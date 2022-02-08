@@ -167,6 +167,12 @@ def image_get(json_data):
     if result['Status'] == 200:
         emit('image_get', result['Json'], to=json_data['Room'])
 
+@socketio.on('image_get_all')
+def image_get_all(json_data):
+    result = generic_argument_call(wrapper.img_get_all, json_data)
+    if result['Status'] == 200:
+        emit('image_get_all', result['Json'])
+
 @socketio.on("sheets_get")
 def sheet_get_all(json_data):
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
