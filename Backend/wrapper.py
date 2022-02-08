@@ -42,7 +42,8 @@ class Wrapper:
         btInfo = self.dbc.get_all_data(data['Room'])
         messages = self.dbc.get_all_messages(data['Room'])
         images = self.dbc.get_all_images(data['Room'])
-        return {'Messages': messages['Messages'], 'Battlemap': btInfo, 'Images': images}
+        sheets = self.dbc.get_all_character_sheets(data['Room'])
+        return {'Messages': messages['Messages'], 'Battlemap': btInfo, 'Images': images, 'Sheets': sheets}
     
     def new_room(self, data):
         '''Create new room with a battlemap with given names.'''
@@ -247,3 +248,10 @@ class Wrapper:
         if success is True: 
             return {"Id": data['Token_Id']}
         raise self.Failure("Token delete failed at bdcontroller")
+
+    # Sheets #########
+
+    def sheets_get_all(self, data):
+        self.validate_json(data, ['Room'], [str])
+        res = self.dbc.get_all_character_sheets(data['Room'])
+        return res
