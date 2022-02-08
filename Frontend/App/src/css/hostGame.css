@@ -51,14 +51,15 @@ body{
     }
 header{
 display: grid;
-
+font-family: 'Work Sans';
+    
+color:#251e3b;
 text-align: center;
 min-height: 1em;
 font-size: 4em;
 font-family: 'Work Sans';
 background-size:cover;
 background-color: rgba(128, 126, 150, 0.473);
-color:rgba(245, 245, 18, 0.842);
 font-weight: bold;
 
 }
