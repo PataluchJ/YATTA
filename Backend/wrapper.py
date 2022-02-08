@@ -251,6 +251,17 @@ class Wrapper:
         raise self.Failure("Token delete failed at bdcontroller")
 
     # Sheets #########
+    def sheet_add(self, data):
+        self.validate_json(data, ['Room', 'Name','Equipment','Abilities'],[str,str,any,any])
+        new_character = {'Nama':data['Name'], 'Equipment':data['Equipment'], 'Abilities':data['Abilities']}
+        id = self.dbc.add_character_sheet(data['Room'], new_character)
+        new_character['Id'] = id
+        return new_character
+
+    def sheet_delete(self, data):
+        self.validate_json(data, ['Room', 'Id'],[str,int])
+        self.dbc.delete_character_sheet(data['Room'],data['Id'])
+        return {'Id': data['Id']}
 
     def sheets_get_all(self, data):
         self.validate_json(data, ['Room'], [str])

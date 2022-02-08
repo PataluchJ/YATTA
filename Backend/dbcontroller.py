@@ -231,6 +231,7 @@ class Controller():
         sheet_id = self.rooms.find_one({"room_name": room})["char_sheet_id"]
         self.rooms.update_one({"room_name": room}, {"$set": {f"char_sheets.{sheet_id}": sheet}})
         self.rooms.update_one({"room_name": room}, {"$inc": {"char_sheet_id": 1}})
+        return sheet_id
 
     def delete_character_sheet(self, room: str, id: int):
         self.rooms.update_one({"room_name": room}, {"$unset": {f"char_sheets.{id}": ""}})

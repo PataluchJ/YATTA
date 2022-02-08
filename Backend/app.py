@@ -167,9 +167,21 @@ def image_get(json_data):
 
 @socketio.on("sheets_get")
 def sheet_get_all(json_data):
-    result = generic_call(wrapper.sheets_get_all)
+    result = generic_argument_call(wrapper.sheets_get_all,json_data)
     if result['Status'] == 200:
-        emit('image_get', result['Json'], to=json_data['Room'])
+        emit('sheets_get', result['Json'], to=json_data['Room'])
+
+@socketio.on('sheet_new')
+def sheet_add(json_data):
+    result = generic_argument_call(wrapper.sheet_add,json_data)
+    if result['Status'] == 200:
+        emit('sheet_new', result['Json'], to=json_data['Room'])
+
+@socketio.on('sheet_delete')
+def sheet_delete(json_data):
+    result = generic_argument_call(wrapper.sheet_delete, json_data)
+    if result['Status'] == 200:
+        emit('sheet_delete', result['Json'], to=json_data['Room'])
         
 if __name__ == '__main__':
     socketio.run(app)
