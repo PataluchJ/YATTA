@@ -8,6 +8,7 @@ class Controller():
         self.db = self.client.mydb
 
         self.rooms = self.db.rooms
+        self.images = self.db.images
 
         self.blank_trsf = {
             "scale_x": 1,
@@ -25,7 +26,12 @@ class Controller():
             "battlemap": {},
             "battlemaps": []
         }
+        img_post = {
+            "room_name": name,
+            "images": []
+        }
         self.rooms.insert_one(post)
+        self.images.insert_one(img_post)
 
     def get_all_rooms(self) -> list:
         """Returns a list contatining names of all available rooms"""
@@ -204,3 +210,16 @@ class Controller():
     def get_all_data(self, room: str):
         res = self.rooms.find_one({"room_name": room})['battlemap']
         return res
+
+
+    ### IMAGES
+
+    def add_image(self, room: str, img_data, img_name: str):
+        post = {
+            "img": img_data,
+            "img_name": img_name
+        }
+        self.images.update_one({"room_name": room}, {"$push": {"images": post}})
+
+    def get_images(self, room: str):
+        return self.images.find({"room_name": room})["images"]
