@@ -16,12 +16,13 @@ font-size: 4em;
 font-family: 'Work Sans';
 background-size:cover;
 background-color: rgba(60, 22, 104, 0.342);
-color:rgba(245, 245, 18, 0.842);
+color: #3b3355;
 font-weight: bold;
+margin-bottom: 3em;
 
 }
 .buttons{
-    margin-top: 12em;
+    margin-top: 6em;
     text-align: center;
     align-items: center;
 }
@@ -33,9 +34,9 @@ font-weight: bold;
     margin: 0.5em;
     font-size: 2.5em;
     border:rgba(248, 228, 45, 0.753);
-    background-color:rgba(60, 22, 104, 0.342);
+    background-color:#5d5d81;
     border-radius: 10px;
-    color: rgba(245, 245, 18, 0.842);
+    color: #bfcde0;
 }
 .battleMap{
     display:flex;

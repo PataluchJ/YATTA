@@ -8,13 +8,14 @@ function HostHTML({ setUsername, setRoomID }){
         return(
             <div className = "hostBody">
                 <header className="hostTitle"> Host Game </header>
+                <div className="restJoin">
                 <form className="hostForm">
                     <div className="forms">
-                    <label htmlFor="uName">Username:</label><br></br>
+                    <label htmlFor="uName" className="jTitle">Username:</label><br></br>
                     <input className="hostInput" typ="text" id="uName" name = "uName"></input><br></br>
-                    <label htmlFor="roomID"> Insert room id:</label><br></br>
+                    <label htmlFor="roomID" className="jTitle"> Insert room id:</label><br></br>
                     <input className="hostInput" type="text" id="roomID" name = "roomID"></input><br></br>
-                    <label htmlFor="roomID"> Insert battlemap id:</label><br></br>
+                    <label htmlFor="roomID" className="jTitle"> Insert battlemap id:</label><br></br>
                     <input className="hostInput" type="text" id="battlemapName" name = "battlemapName"></input>
                     </div>
                 </form>
@@ -40,6 +41,7 @@ function HostHTML({ setUsername, setRoomID }){
                 <Link to={`/`}>
                  <button className="hostButton">Back</button>
                  </Link>
+                </div>
                 </div>
             </div>
         );
