@@ -237,6 +237,9 @@ class Wrapper:
         self.validate_json(data,['Room','Name'],[str,str])
         return self.dbc.get_image_by_name(data['Room'],data['Name'])
 
+    def img_get_all(self, data):
+        self.validate_json(data, ['Room'], [str])
+        return self.dbc.get_all_images(data['Room'])
     # Tokens ##########
 
     def bm_token_create(self, data):
