@@ -2,6 +2,7 @@ import { useState, useEffect,useContext } from "react";
 import React from "react";
 import {SocketContext} from '../m/menu';
 import { Renderer } from "pixi.js";
+import "../../css/charSheets.css"
 var colToken;
 var hTokens = [];
 var sheets = ["Wojownik","Mag","Łotrzyk","Bard","Kapłan","Paladyn"];
@@ -75,7 +76,7 @@ return(
         {sheets.map((i) => {
             
             return(
-                <tr onClick={() => setSh(i,setSheet)} classId={i} className="e">
+                <tr className="e" onClick={() => setSh(i,setSheet)} classId={i} className="e">
                    {i} 
                 </tr>
             );
@@ -88,7 +89,7 @@ return(
                 
                 eq[activeSheet].map((i) => { 
                     return(
-                        <tr onClick={() => setIt(i,setItem)} classId={i} className="e">
+                        <tr className="e" onClick={() => setIt(i,setItem)} classId={i} className="e">
                            {i} 
                         </tr>
                     );
@@ -103,7 +104,7 @@ return(
                 
                 ab[activeSheet].map((i) => { 
                     return(
-                        <tr onClick={() => setIt(i,setItem)}  classId={i} className="e">
+                        <tr className="e"  onClick={() => setIt(i,setItem)}  classId={i} className="e">
                            {i} 
                         </tr>
                     );
@@ -117,7 +118,7 @@ return(
             {
         opisy[activeItem].map((i) => { 
             return(
-                <tr classId={i} className="e">{i}</tr>
+                <tr className="e" classId={i} className="e">{i}</tr>
             );
         
         })}
