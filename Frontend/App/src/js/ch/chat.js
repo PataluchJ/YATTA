@@ -109,8 +109,8 @@ function Chat({ username, roomID }) {
     setShowUpload(!showUpload);
   }
 
-  const uploadImage = (image) => {
-    const json = {'Room': room, 'Image': image, 'Name': 'Test'}
+  const uploadImage = (image,name) => {
+    const json = {'Room': room, 'Image': image, 'Name': name}
     socket.emit('image_new', json)
   }
 

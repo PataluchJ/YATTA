@@ -15,12 +15,12 @@ class PopUp extends React.Component {
   onImageChange = event => {
     if (event.target.files && event.target.files[0]){
       let img = event.target.files[0];
+      console.log(img);
       this.setState({
         imageURL : URL.createObjectURL(img),
         image : img,
         imageChoosed: true
       });
-      console.log("Current image: ", this.state.image)
     }
   };
   render() {
@@ -32,7 +32,7 @@ class PopUp extends React.Component {
         <h1>Select Image</h1>
         <input type="file" name="myImage" onChange={this.onImageChange} />
         <br></br>
-        <button onClick={() => {this.props.sendImage(this.state.image);} }>Send</button>
+        <button onClick={() => {this.props.sendImage(this.state.image, this.state.image.name);} }>Send</button>
         <button onClick={() => {this.props.closePopup();}}>Go Back</button>
         </div>
       </div>

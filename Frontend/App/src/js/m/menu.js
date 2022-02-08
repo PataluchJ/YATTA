@@ -11,7 +11,6 @@ import Second from "../bm/secondMenu"
 import Creator from "../bm/characterCreator"
 import "../../css/menu.css"
 import "../../css/joinGame.css"
-import "../../css/charSheets.css";
 import "../../css/creator.css";
 import "../../css/tables.css";
 const ENDPOINT = "localhost:5000";
