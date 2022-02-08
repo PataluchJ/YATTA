@@ -2,7 +2,10 @@ import "../../css/chat.scss";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
+import PopUp from './upload'
+import ReactDOM from 'react-dom'
 import { Link } from "react-router-dom";
+import { TilingSprite } from "pixi.js";
 
 function Chat({ username, roomID }) {
   const socket = useContext(SocketContext);
@@ -13,6 +16,7 @@ function Chat({ username, roomID }) {
   const [messages, setMessages] = useState([]);
   const [newMess, setNewMess] = useState(0);
   const [logged, setLogged] = useState(false);
+  const [showUpload, setShowUpload] = useState(false)
   const id = useRef(0);
 
   if (user !== "") {
@@ -48,8 +52,13 @@ function Chat({ username, roomID }) {
       setMessages([...temp]);
     });
 
-    socket.on("new_message", data => {
+    socket.on("image_new", data => {
+      let name = data['Name'];
+      console.log(name);
+    });
 
+    socket.on("new_message", data => {
+      console.log("Message")
       let temp = [];
       temp.push({
         id: id,
@@ -80,6 +89,7 @@ function Chat({ username, roomID }) {
       socket.off("join");
       socket.off("new_message");
       socket.off("exec_results");
+      socket.off("image_new");
     }
   });
 
@@ -93,6 +103,15 @@ function Chat({ username, roomID }) {
     setLogged(false);
     localStorage.removeItem('username');
     localStorage.removeItem('roomID');
+  }
+
+  const toggleUploadPopup = () => {
+    setShowUpload(!showUpload);
+  }
+
+  const uploadImage = (image) => {
+    const json = {'Room': room, 'Image': image, 'Name': 'Test'}
+    socket.emit('image_new', json)
   }
 
   useEffect(() => {
@@ -168,6 +187,16 @@ function Chat({ username, roomID }) {
       <Link to={`/`}>
       <button className="chatButtons" onClick={logOutButton}>Logout</button>
       </Link>
+      <button className="chatButtons" onClick={toggleUploadPopup} >Upload image</button>
+    
+          {showUpload ? 
+            <PopUp
+            closePopup={toggleUploadPopup.bind(this)}
+            sendImage={uploadImage.bind(this)}
+            
+            />
+            : null
+          }
     </div>
   );
 }
