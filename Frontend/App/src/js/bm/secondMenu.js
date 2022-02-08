@@ -61,7 +61,8 @@ function SecondMenu({gameData}){
     const [gD,setGameData]= useState(" ");
     const socket = useContext(SocketContext);
     useEffect(() => {
-        socket.on("join",data=>{setGameData(data);} ); },[]);
+        socket.on("join", data => {setGameData(data);});
+    });
 
         console.log("GAME DATA");
         console.log(gD);

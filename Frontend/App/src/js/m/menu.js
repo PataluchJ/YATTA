@@ -1,10 +1,8 @@
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import socketIOClient from "socket.io-client";
-import * as io from 'socket.io-client'
 import MenuView from "./menuHTMLinJS"
-//import BattleMap from "./battleMapJS"
 import BattleMap from "../bm/battlemapReact";
 import Join from "./joinJS"
 import Chat from "../ch/chat"
@@ -24,9 +22,7 @@ function Menu() {
     const [username, setUsername] = useState("");
     const [roomID, setRoomID] = useState("");
 
-    console.log("Enter: " + username);
     return (
-       
         <SocketContext.Provider value={socket}>
         <Router>
         <div className="menu">
@@ -42,52 +38,21 @@ function Menu() {
     );
 }
 
-// function menuView(){
-//     return(
-//         <React.Fragment>
-//         <div className="menuView">
-//           <MenuView />
-//         </div>
-
-//         </React.Fragment>
-//     );
-
-// }
 class Map extends React.Component {
     render() {
         return(
             <React.Fragment>
             <div className="battleMap" id="battleMap">
                 <div className="battleMapAssets" id ="battleMapAssets">
-            <BattleMap />
-                <Second />
-            </div>
-            <Chat
-            username={this.props.username}
-            roomID={this.props.roomID}
-            //{props.match.params.username}
-
-           />
-
+                    <BattleMap />
+                    <Second />
+                </div>
+                <Chat username={this.props.username} roomID={this.props.roomID} />
             </div>
             </React.Fragment>
 
         );
     }
 }
-// class JoinSite extends React.Component {
-//     render() {
-//         console.log("Join site");
-//         return(
-//             <React.Fragment>
-           
-//             <div className="join">
-//               <Join setUsername={this.props.setUsername} />
-//             </div>
-    
-//             </React.Fragment>
-//         );
-//     }
-// }
 
 export default Menu;
