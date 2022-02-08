@@ -27,8 +27,12 @@ function GiveMeHTML({ setUsername, setRoomID }) {
                                     var username= document.getElementById("uName").value ? document.getElementById("uName").value : "";
                                     setUsername(username);
                                     setRoomID(roomID);
-                                    if(username!=="" && roomID!=="") {
                                     
+                                    console.log("roomID:" + roomID)
+                                    localStorage.setItem('roomID', roomID);
+                                    if(username!=="" && roomID!=="") {
+                                        console.log("roomID2:" + roomID)
+
                                         var roomData = "{\"Room\":\""+roomID+"\"}";
                                         var jsonF = JSON.parse(roomData);
                                         

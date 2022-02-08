@@ -16,6 +16,7 @@ function Chat({ username, roomID }) {
   const id = useRef(0);
 
   if (user !== "") {
+    console.log("AAAAAAAAAAAAAAAAAAA:" + room)
     localStorage.setItem('username', user);
     localStorage.setItem('roomID', room);
   }

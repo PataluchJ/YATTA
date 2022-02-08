@@ -60,6 +60,8 @@ def on_join(json_data):
 
 @socketio.on('get_all_room_data')
 def on_getAll(json_data):
+    print("join: ", json_data['Room'])
+    join_room(json_data['Room'])
     result = generic_argument_call(wrapper.get_all_data, json_data)
     if(result['Status'] == 200):
         emit('all_data', result['Json'])

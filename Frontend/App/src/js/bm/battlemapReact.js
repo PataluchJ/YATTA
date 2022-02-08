@@ -367,7 +367,9 @@ class PixiComponent extends React.Component {
             });
         });
   
+       
         var msg = '{"Room":"' + localStorage.getItem('roomID') + '"}';
+        console.log("msg: " + msg)
         socket.emit('get_all_room_data', JSON.parse(msg)); 
         
       

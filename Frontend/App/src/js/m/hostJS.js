@@ -28,6 +28,7 @@ function HostHTML({ setUsername, setRoomID }){
                                 if(username!=="" && roomID!=="" && battlemap!=="" ) {
                                     setUsername(username);
                                     setRoomID(roomID);
+                                    localStorage.setItem('roomID', roomID);
                                     var roomData = "{\"Name\":\""+roomID+"\",\"Battlemap\":\""+battlemap+"\"}";
                                     var jsonF = JSON.parse(roomData);
                                     
