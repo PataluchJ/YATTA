@@ -46,8 +46,8 @@ margin-bottom: 3em;
     width:100%;
     }
 canvas{
-    min-width:60%;
-    max-height: 60%;
+    height: 60vh;
+    width: 70vw;
 }
 .chat{
     min-height: 70%;

@@ -72,15 +72,12 @@ function CharacterCreator({ username, roomID }){
         }
     }, [isModified]);
     
-    useEffect(() => {
+
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
             let tempAb = {};
             let tempDesc = {};
-          
-           
-           
             data.forEach(function(item) {
                 console.log(item.Name);
                 tempNames.push({
@@ -115,13 +112,9 @@ function CharacterCreator({ username, roomID }){
             setCharNames([...tempNames]);
             setCharEquipment({...tempEq});
             setCharAbilities({...tempAb});
-            setCharItemsDescription({...tempDesc});
-        });
+            setCharItemsDescription({...tempDesc});})
+
     
-        return () => {
-          socket.off("sheets_get");
-        }
-    });
 
 return (
     <div className="creatorDiv">
@@ -253,7 +246,7 @@ return (
             <div className="tabTitle">Created characters</div>
             {charNames.map((i) => { 
                 return(
-                    <tr className="f" onClick={() => {setActiveName(i);setActiveItem("");console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
+                    <tr className="f" onClick={() => {setActiveName(i);}} classId={i}>
                     {i.name} 
                     </tr>
                 );

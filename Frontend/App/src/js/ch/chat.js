@@ -202,7 +202,6 @@ function Chat({ username, roomID }) {
               <div className="message mess-right">
                 <p>{i.text}</p>
                 <span>{i.username}</span>
-                <span>{i.character}</span>
               </div>
             );
           } else {
@@ -210,7 +209,7 @@ function Chat({ username, roomID }) {
               <div className="message">
                 <p>{i.text} </p>
                 <span>{i.username}</span>
-                <span>{i.character}</span>
+  
               </div>
             );
           }
