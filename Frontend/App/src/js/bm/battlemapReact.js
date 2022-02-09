@@ -69,9 +69,9 @@ class PixiComponent extends React.Component {
         sprite.angle = angle
         sprite.id = id
         sprite.textureId = textureId
-
+        console.log("Sprite: ", sprite)
         sprite.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
-
+        
         sprite.parentGroup = this.ObjectGroup
         this.ObjectContainer.addChild(sprite)
     }
@@ -110,11 +110,11 @@ class PixiComponent extends React.Component {
             100000,
             100000,
         );
-        tilingSprite.x = -50000
-        tilingSprite.y = -50000
+        tilingSprite.x = -56000+35
+        tilingSprite.y = -56000+35
         tilingSprite.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
-        tilingSprite.tileScale.x = 0.1
-        tilingSprite.tileScale.y = 0.1
+        tilingSprite.tileScale.x = 70.0/400.0
+        tilingSprite.tileScale.y = 70.0/400.0
 
         tilingSprite.parentGroup = this.GridGroup
         this.gridContainer.addChild(tilingSprite)
@@ -362,6 +362,7 @@ class PixiComponent extends React.Component {
                     data.Transformation.scale_y,
                     data.Transformation.rotation
                 )
+                
             }
             else{
                 this.addToken(
@@ -377,7 +378,6 @@ class PixiComponent extends React.Component {
                     data.Transformation.rotation
                 )
             }
-         
         })
 
         socket.on("all_data", data => {
