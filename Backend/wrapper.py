@@ -1,6 +1,8 @@
 import json 
 import dbcontroller
 import random
+from PIL import Image
+import io
 
 class Wrapper:
 
@@ -21,6 +23,8 @@ class Wrapper:
 
     def __init__(self) -> None:
         self.dbc = dbcontroller.Controller()
+        self.desiredX = 70
+        self.desiredY = 70
         #self.parser = commandParser.CommandParser()
 
     # Utility functiion 
@@ -185,12 +189,29 @@ class Wrapper:
 
     # Objects #########
 
+    def get_transform(self, img):
+        ext = 'none'
+        for k in img.keys():
+            if k != 'Name':
+                ext = k
+        
+        im = Image.open(io.BytesIO(img[ext]))
+        xScale = float(self.desiredX) / float(im.size[0])
+        yScale = float(self.desiredY) / float(im.size[1])
+        
+        transform = {'scale_x': xScale, 'scale_y': yScale, 'rotation': 0.0}
+        print(transform)
+        return transform
+        
+
     def bm_object_create(self, data):
         '''Creates new object.'''
         self.validate_json(data, ['Image_Name','Position','Room'], [str, dict, str])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
         self.validate_json(data['Position']['Coords'], ['x','y','z_layer'], [any, any, int])
-        return self.dbc.add_object(data['Room'], data['Image_Name'], data['Position'], {'scale_x':1.0, 'scale_y':1.0, 'rotation':0.0})
+        scale = self.get_transform(self.dbc.get_image_by_name(data['Room'], data['Image_Name']))
+        print("Adding object to database")
+        return self.dbc.add_object(data['Room'], data['Image_Name'], data['Position'], scale)
         
     def bm_object_delete(self, data):
         '''Deletes object by id'''
@@ -226,7 +247,6 @@ class Wrapper:
 
     def img_new(self, data):
         self.validate_json(data,['Room','Name'],[str,str])
-        print("Image validated!")
         self.dbc.add_image(data['Room'], data['Image'],data['Name'])
         return {"Name": data['Name'], 'Image': data['Image']}
 
