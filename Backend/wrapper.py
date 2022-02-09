@@ -277,4 +277,8 @@ class Wrapper:
         return res
 
     def sheet_edit(self, data):
-        self.validate_json(data, ['Room'], [str])
+        self.validate_json(data, ['Room', 'Id','Equipment', 'Abilities'], [str, int, any, any])
+        sheet = {'Name': data['Name'], 'Equipment': data['Equipment'], 'Abilities': data['Abilities']}
+        self.dbc.modify_character_sheet(data['Room'], data['Id'], sheet)
+        sheet['Id'] = data['Id']
+        return sheet
