@@ -220,11 +220,16 @@ class Controller():
         self.rooms.update_one({"room_name": room}, {"$unset": {f"images.{img_name}": ""}})
 
     def get_all_images(self, room: str):
-        return self.rooms.find_one({"room_name": room})["images"]
+        images = self.rooms.find_one({"room_name": room})["images"]
+        for k in images.keys():
+            images[k]['Name'] = k
+        return images
 
     def get_image_by_name(self, room: str, img_name: str):
         images = self.rooms.find_one({"room_name": room})["images"]
-        return images[img_name]
+        image = images[img_name]
+        image['Name'] = img_name
+        return image
 
 
     ### CHARACTER SHEETS
