@@ -94,7 +94,7 @@ function CharacterCreator({ username, roomID }){
             setCharNames(prev => prev.concat(temp));
         });
 
-        socket.emit('sheet_edit', data => {
+        socket.on('sheet_edit', data => {
             setCharEquipment({...charEquipment});
             setCharAbilities({...charAbilities});
             setCharItemsDescription({...charItemsDescription});
@@ -114,7 +114,7 @@ return (
             <tr className="creatorMenu"> 
                 <div className="tabTitle">Character</div>
                 <label className="tTitle">Character name</label><br></br>
-                <input className="tabInput" type="text" id="charNameInput" name ="charNameInput" value={currentCharName} onChange={(e) => setCurrentCharName(e.target.value)}></input><br></br>
+                <input className="tabInput" type="text" id="charNameInput" name ="charNameInput"  value={currentCharName} onChange={(e) => setCurrentCharName(e.target.value)}></input><br></br>
                 <button className="tabBut" onClick={() => {
                     if (currentCharName !== "" && !charNames.some(e => e.name === currentCharName)) {
                         var msg = '{"Room":"' + room + '", "Name":"' + currentCharName + '","Equipment":[], "Abilities":[]}';
@@ -128,6 +128,9 @@ return (
                 <label className="tTitle">Item description</label><br></br>
                 <textarea  className="descInput" type="text" id="itemDInput" name = "itemDInput" value={currentEqDesc} onChange={(e) => setCurrentEqDesc(e.target.value)}></textarea ><br></br>
                 <button className="tabBut" onClick={() => {
+
+                    console.log("ITEM NAME "+currentEqName+" "+document.getElementById("itemNameInput").value);
+                    console.log("ITEM DESC "+currentEqDesc);
                     if ((currentCharName !== "" || activeName !== null) && !charNames.some(e => e.name === currentCharName) && currentEqName !== "" && currentEqDesc !== "") {
                         var eqString = "";
                         Object.keys(charEquipment).forEach(function(item) {
@@ -140,7 +143,8 @@ return (
                         if (!Object.entries(charEquipment).includes(currentEqName)) {
                             eqString += '{"Name":"' + currentEqName + '","Description":"' + currentEqDesc + '"}';
                             var temp = [];
-                            if (charEquipment[activeName?.name] !== null) {
+                            if (charEquipment[activeName?.name] !== null ) {
+                                console.log(charEquipment[activeName?.name])
                                 Object.values(charEquipment[activeName?.name]).forEach(function(item) {
                                     temp.push(item);
                                     charEquipment[activeName?.name] = temp;
@@ -177,10 +181,13 @@ return (
                 }}>Add item</button>
                 <div className="tabTitle">Abilities</div>
                 <label className="tTitle">Ability name</label><br></br>
-                <input className="tabInput" type="text" id="abilityNameInput" name = "abilityNameInput" value={currentAbName} onChange={(e) => setCurrentAbName(e.target.value)}></input><br></br>
+                <input className="tabInput" type="text" id="abilityNameInput" name = "abilityNameInput" ></input><br></br>
                 <label className="tTitle">Ability description</label><br></br>
-                <textarea className="descInput" type="text" id="abilityDInput" name = "abilityDInput" value={currentAbDesc} onChange={(e) => setCurrentAbDesc(e.target.value)}></textarea ><br></br>
+                <textarea className="descInput" type="text" id="abilityDInput" name = "abilityDInput" ></textarea ><br></br>
                 <button className="tabBut" onClick={() => {
+                    
+                    setCurrentAbName(document.getElementById("abilityNameInput").values);
+                    setCurrentAbDesc(document.getElementById("abilityDInput").values);
                     if (currentCharName !== "" && !charNames.some(e => e.name === currentCharName) && currentAbName !== "" && currentAbDesc !== "") {
                         var abString = "";
                         Object.keys(charAbilities).forEach(function(item) {
@@ -225,7 +232,9 @@ return (
 
                     }
                 }}>Add ability</button>
+                <Link to={"/battlemap"}>
                 <button className="backBut">Back</button><br></br>
+                </Link>
             </tr>
             <tr className="currChars">
             {charNames.map((i) => { 
