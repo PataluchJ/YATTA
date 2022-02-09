@@ -46,7 +46,7 @@ class Map extends React.Component {
             <div className="battleMap" id="battleMap">
                 <div className="battleMapAssets" id ="battleMapAssets">
                     <BattleMap username={this.props.username} roomID={this.props.roomID}/>
-                    <Second />
+                    <Second username={this.props.username} roomID={this.props.roomID}/>
                 </div>
                 <Chat username={this.props.username} roomID={this.props.roomID} />
             </div>
