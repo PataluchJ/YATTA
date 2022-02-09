@@ -51,6 +51,7 @@ function CharacterCreator({ username, roomID }){
             let tempAb = {};
             let tempDesc = {};
             var tempTempEq = [];
+            var tempTempAb = [];
            
             data.forEach(function(item) {
                 tempNames.push({
@@ -68,8 +69,11 @@ function CharacterCreator({ username, roomID }){
                 });
 
                 item.Abilities.forEach(function(item2) {
-                    tempAb[item.Name] = [...tempAb[item.Name], item2.Name];
-                    tempDesc[item2.Name] = [...tempDesc[item2.Name], item2.Description];
+                    var tempTempDc = [];
+                    tempTempAb.push(item2.Name);
+                    tempTempDc.push(item2.Description);
+                    tempAb[item.Name] = tempTempAb;
+                    tempDesc[item2.Name] = tempTempDc;
                 });
             });
             id.current = data.length;
