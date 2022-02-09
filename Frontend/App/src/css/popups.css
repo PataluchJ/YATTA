@@ -22,6 +22,7 @@
   }
   .text_input {
     color: black;
+    width:100%;
   }
   .span_text{
     color: black;
@@ -63,4 +64,13 @@
   }
   .pop_button:hover{
     border:#bfcde0 1px solid;
+  }
+  .select_box{
+    padding: 10px;
+    height:92%
+  }
+  .select_image{
+    align-items: center;
+    max-width: 90%;
+    max-height: 90%;
   }
