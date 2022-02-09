@@ -344,7 +344,7 @@ class PixiComponent extends React.Component {
             if(data.Position.Coords.z_layer == -1){
                 this.addObject(
                     data.Id,
-                    data.Image_Id,
+                    data.Image_Name,
                     data.Position.Coords.x,
                     data.Position.Coords.y,
                     data.Position.Coords.z_layer,
@@ -358,7 +358,7 @@ class PixiComponent extends React.Component {
             else{
                 this.addToken(
                     data.Id,
-                    data.Image_Id,
+                    data.Image_Name,
                     data.Position.Coords.x,
                     data.Position.Coords.y,
                     data.Position.Coords.z_layer,
@@ -383,7 +383,7 @@ class PixiComponent extends React.Component {
                 if(item.Position.Coords.z_layer == -1){
                     self.addObject(
                         item.Id,
-                        item.Image_id,
+                        item.Image_Name,
                         item.Position.Coords.x,
                         item.Position.Coords.y,
                         item.Position.Coords.z_layer,
@@ -397,7 +397,7 @@ class PixiComponent extends React.Component {
                 else{
                     self.addToken(
                         item.Id,
-                        item.Image_id,
+                        item.Image_Name,
                         item.Position.Coords.x,
                         item.Position.Coords.y,
                         item.Position.Coords.z_layer,
