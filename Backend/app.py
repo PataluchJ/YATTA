@@ -26,7 +26,7 @@ def generic_argument_call(function, json_data):
         print("Error " + e.message)
         return {'Status': 404}
     except Exception as e:
-        print("Undefined error.")
+        print("Undefined error: ", e)
         return {'Status': 500}
 
 def generic_call(function):
@@ -40,7 +40,7 @@ def generic_call(function):
         print("Error " + e.message)
         return {'Status': 404}
     except Exception as e:
-        print("Undefined error.")
+        print("Undefined error: ", e)
         return {'Status': 500}
 
 @socketio.on('connect')

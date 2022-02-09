@@ -187,10 +187,10 @@ class Wrapper:
 
     def bm_object_create(self, data):
         '''Creates new object.'''
-        self.validate_json(data, ['Image_Id','Position','Room'], [int, dict, str])
+        self.validate_json(data, ['Image_Name','Position','Room'], [str, dict, str])
         self.validate_json(data['Position'], ['Level', 'Layer', 'Coords'], [int,int,dict])
-        self.validate_json(data['Position']['Coords'], ['x','y','z_layer'], [float, float, int])
-        return self.dbc.add_object(data['Room'], data['Image_Id'], data['Position'])
+        self.validate_json(data['Position']['Coords'], ['x','y','z_layer'], [any, any, int])
+        return self.dbc.add_object(data['Room'], data['Image_Name'], data['Position'], {'scale_x':1.0, 'scale_y':1.0, 'rotation':0.0})
         
     def bm_object_delete(self, data):
         '''Deletes object by id'''
@@ -240,6 +240,7 @@ class Wrapper:
         return self.dbc.get_image_by_name(data['Room'],data['Name'])
 
     def img_get_all(self, data):
+        print("Received img_get_all")
         self.validate_json(data, ['Room'], [str])
         return self.dbc.get_all_images(data['Room'])
     # Tokens ##########
