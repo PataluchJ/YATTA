@@ -100,7 +100,7 @@ class Controller():
     def add_object(self, room: str, image_name: str, position: dict, transformation: dict):
         post = {
             "Id": self.rooms.find_one({"room_name": room})["object_id"],
-            "Image_id": image_name,
+            "Image_Name": image_name,
             "Position": position,
             "Transformation": transformation
         }

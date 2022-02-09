@@ -229,7 +229,9 @@ function Chat({ username, roomID }) {
       }}>Create new character sheet</button>
       </Link>
       <button className="chatButtons" onClick={() => {setIsRequiringImages(true); askForAllImages();}}>Add object</button>
+      <Link to={`/`}>
       <button className="chatButtons" onClick={() => {logOutButton();}}>Logout</button>
+      </Link>
       <button className="chatButtons" onClick={() => {toggleUploadPopup();}} >Upload image</button>
     
           {showUpload ? 

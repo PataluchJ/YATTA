@@ -5,6 +5,7 @@ import { Viewport } from 'pixi-viewport'
 import { Layer, Group, Stage } from '@pixi/layers'
 import  gridImage  from '../../img/squre.png'
 import  testbg  from '../../img/testbg.jpg'
+import  greenTexture  from '../../img/green.png'
 
 import  img_Bard  from '../../img/PZ icons/Bard.jpg'
 import  img_Kapłan  from '../../img/PZ icons/Kapłan.jpg'
@@ -28,6 +29,7 @@ window.onkeydown = function(e) { pressedKeys[e.keyCode] = true; }
 
 class MyObject extends PIXI.Sprite {
     id;
+    textureId;
 }
 
 class MyTexture extends PIXI.Texture{
@@ -64,6 +66,8 @@ class PixiComponent extends React.Component {
         sprite.scale.y = scale_y
         sprite.rotate = rotate
         sprite.id = id
+        sprite.textureId = textureId
+
         sprite.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
 
         sprite.parentGroup = this.ObjectGroup
@@ -81,6 +85,7 @@ class PixiComponent extends React.Component {
         sprite.scale.y = scale_y
         sprite.rotate = rotate
         sprite.id = id
+        sprite.textureId = textureId
     
         sprite.interactive = true;
         sprite.buttonMode = true
@@ -113,18 +118,34 @@ class PixiComponent extends React.Component {
         this.gridContainer.addChild(tilingSprite)
         
     }
-
-    addTexture(id, texture){
-        textureArray[id] = MyTexture.from(texture)
+    addTexture(textureName, texture){
+        textureArray[textureName] = MyTexture.from(texture)
     }
-    getTexture(id){
-        //TODO check if texture is in array
-        return textureArray[id]
+    getTexture(textureName){
+        console.log("getTexture()")
+        if (textureArray[textureName] != null){
+            console.log("textureArray[textureName]: " + textureArray[textureName])
+            return textureArray[textureName]
+        }
+        else{
+            let room = localStorage.getItem('roomID')
+            var msg = '{"Room":"' + room + '", "Name":"' + textureName + '"}'
+            console.log("sending texture request msg " + msg)
+            var jsonF = JSON.parse(msg);
+            socket.emit('image_get', jsonF);
+            return MyTexture.from(greenTexture)
+        }
     }
     removeObject(id){
-        this.viewport.children.forEach(function (arrayItem) {
-            if(arrayItem.id === id)
-            arrayItem.parent.removeChild(arrayItem);
+        this.TokenContainer.children.forEach(function (arrayItem) {
+            if(arrayItem.id === id){
+                arrayItem.parent.removeChild(arrayItem);
+            }        
+        });
+        this.ObjectContainer.children.forEach(function (arrayItem) {
+            if(arrayItem.id === id){
+                arrayItem.parent.removeChild(arrayItem);
+            }        
         });
     }
     setNewPosition(id, x, y, z){
@@ -158,9 +179,17 @@ class PixiComponent extends React.Component {
             }        
         });
     }
-    setNewTexture(id, texture){
-        this.viewport.children.forEach(function (arrayItem) {
-            if(arrayItem.id === id){
+    setNewTexture(textureName, texture){
+        
+        console.log("setNewTexture(textureName:" + textureName + ", texture:" + texture + ")")
+
+        this.TokenContainer.children.forEach(function (arrayItem) {
+            if(arrayItem.textureId === textureName){
+                arrayItem.texture = PIXI.Texture.from(texture)
+            }        
+        });
+        this.ObjectContainer.children.forEach(function (arrayItem) {
+            if(arrayItem.textureId === textureName){
                 arrayItem.texture = PIXI.Texture.from(texture)
             }        
         });
@@ -280,28 +309,53 @@ class PixiComponent extends React.Component {
         this.viewport.addChild(this.gridContainer)
 
         //textures
-        this.addTexture(0, testbg)
-        this.addTexture(1, img_Bard)
-        this.addTexture(2, img_Kapłan)
-        this.addTexture(3, img_Łotrzyk)
-        this.addTexture(4, img_Mag)
-        this.addTexture(5, img_Paladyn)
-        this.addTexture(6, img_Woj)
+        //this.addTexture(0, testbg)
+        //this.addTexture(1, img_Bard)
+        //this.addTexture(2, img_Kapłan)
+        //this.addTexture(3, img_Łotrzyk)
+        //this.addTexture(4, img_Mag)
+        //this.addTexture(5, img_Paladyn)
+        //this.addTexture(6, img_Woj)
+
 
         // socket listeners
+        socket.on("image_get", data => {
+            console.log("socket.on(image_get)")
+            console.log(data)
+
+
+            let image 
+            let image_extention
+            for (const [key, value] of Object.entries(data)){
+                
+                if(key != 'Name'){
+                    image = value
+                    image_extention = key
+                }
+            }
+
+            var arrayBufferView = new Uint8Array( image );
+            var blob = new Blob( [ arrayBufferView ], { type: `image/${image_extention}`} );
+            var urlCreator = window.URL || window.webkitURL;
+            var imageUrl = urlCreator.createObjectURL( blob );
+
+            this.setNewTexture(data.Name , imageUrl)
+        })
+
         socket.on("new_position", data => {
             console.log("socket.on(new_position)")
+            console.log(data)
             this.setNewPosition(data.Id, data.Position.Coords.x, data.Position.Coords.y, data.Position.Coords.z_layer)
         })
         
         socket.on("object_new", data => {
-            data = JSON.parse(data)
             console.log("socket.on(object_new)")
+            //data = JSON.parse(data)
             console.log(data)
             if(data.Position.Coords.z_layer == -1){
                 this.addObject(
                     data.Id,
-                    data.Image_Id,
+                    data.Image_Name,
                     data.Position.Coords.x,
                     data.Position.Coords.y,
                     data.Position.Coords.z_layer,
@@ -315,7 +369,7 @@ class PixiComponent extends React.Component {
             else{
                 this.addToken(
                     data.Id,
-                    data.Image_Id,
+                    data.Image_Name,
                     data.Position.Coords.x,
                     data.Position.Coords.y,
                     data.Position.Coords.z_layer,
@@ -330,16 +384,17 @@ class PixiComponent extends React.Component {
         })
 
         socket.on("all_data", data => {
-            
+            console.log("socket.on(all_data)")
+            console.log(data)
             let self = this
             data.Battlemap.Objects.forEach(function(item) {
 
-                console.log(item)
+                //console.log(item)
                
                 if(item.Position.Coords.z_layer == -1){
                     self.addObject(
                         item.Id,
-                        item.Image_id,
+                        item.Image_Name,
                         item.Position.Coords.x,
                         item.Position.Coords.y,
                         item.Position.Coords.z_layer,
@@ -353,7 +408,7 @@ class PixiComponent extends React.Component {
                 else{
                     self.addToken(
                         item.Id,
-                        item.Image_id,
+                        item.Image_Name,
                         item.Position.Coords.x,
                         item.Position.Coords.y,
                         item.Position.Coords.z_layer,
@@ -369,7 +424,7 @@ class PixiComponent extends React.Component {
   
        
         var msg = '{"Room":"' + localStorage.getItem('roomID') + '"}';
-        console.log("msg: " + msg)
+        console.log("rander sending msg: " + msg)
         socket.emit('get_all_room_data', JSON.parse(msg)); 
         
       

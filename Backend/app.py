@@ -117,6 +117,7 @@ def exec_macro():
 def object_create(json_data):
     result = generic_argument_call(wrapper.bm_object_create, json_data)
     if result['Status'] == 200:
+        print("object_new:", result['Json'])
         emit('object_new', result['Json'], to=json_data['Room'])
 
 @socketio.on('object_delete')
