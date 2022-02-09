@@ -107,7 +107,7 @@ class Wrapper:
         if command[0] == '/add':
             temp = {
                     "Id":1,
-                    "Image_Id": command[2],
+                    "Image_Name": command[2],
                     "Position": {
                         "Level": 0,
                         "Layer": -1,

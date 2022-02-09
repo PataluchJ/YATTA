@@ -323,8 +323,19 @@ class PixiComponent extends React.Component {
             console.log("socket.on(image_get)")
             console.log(data)
 
-            var arrayBufferView = new Uint8Array( data.jpg );
-            var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+
+            let image 
+            let image_extention
+            for (const [key, value] of Object.entries(data)){
+                
+                if(key != 'Name'){
+                    image = value
+                    image_extention = key
+                }
+            }
+
+            var arrayBufferView = new Uint8Array( image );
+            var blob = new Blob( [ arrayBufferView ], { type: `image/${image_extention}`} );
             var urlCreator = window.URL || window.webkitURL;
             var imageUrl = urlCreator.createObjectURL( blob );
 
@@ -339,7 +350,7 @@ class PixiComponent extends React.Component {
         
         socket.on("object_new", data => {
             console.log("socket.on(object_new)")
-            data = JSON.parse(data)
+            //data = JSON.parse(data)
             console.log(data)
             if(data.Position.Coords.z_layer == -1){
                 this.addObject(
