@@ -231,6 +231,7 @@ class Controller():
 
     def add_character_sheet(self, room: str, sheet: dict):
         sheet_id = self.rooms.find_one({"room_name": room})["char_sheet_id"]
+        sheet['Id'] = sheet_id
         self.rooms.update_one({"room_name": room}, {"$set": {f"char_sheets.{sheet_id}": sheet}})
         self.rooms.update_one({"room_name": room}, {"$inc": {"char_sheet_id": 1}})
         return sheet_id
