@@ -61,11 +61,12 @@ function CharacterCreator({ username, roomID }){
 
                 item.Equipment.forEach(function(item2) {
                     var tempTempDc = [];
-                    console.log("Name "+item2.Name);
+                    
                     tempTempEq.push(item2.Name);
                     tempTempDc.push(item2.Description);
                     tempEq[item.Name] = tempTempEq;
                     tempDesc[item2.Name] = tempTempDc;
+                    console.log("Name "+item2.Name+" "+tempDesc[item2.Name]);
                 });
 
                 item.Abilities.forEach(function(item2) {
@@ -98,6 +99,9 @@ function CharacterCreator({ username, roomID }){
             setCharEquipment({...charEquipment});
             setCharAbilities({...charAbilities});
             setCharItemsDescription({...charItemsDescription});
+            var roomData = "{\"Room\":\""+room+"\"}";
+        var jsonF = JSON.parse(roomData);                    
+        socket.emit('sheets_get',jsonF);
         });
     
         return () => {
@@ -134,16 +138,23 @@ return (
                     if ((currentCharName !== "" || activeName !== null) && !charNames.some(e => e.name === currentCharName) && currentEqName !== "" && currentEqDesc !== "") {
                         var eqString = "";
                         Object.keys(charEquipment).forEach(function(item) {
-                            if (activeName.name !== charEquipment[item]) {
-                                eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + charItemsDescription[charEquipment[item]] + '"},';
+                            console.log("Char name "+item);
+                            charEquipment[item].forEach(function(eq){
+                                console.log("eq name "+eq);
+                            if (currentEqName !== eq) {
+                                eqString += '{"Name":"' + eq + '","Description":"' + charItemsDescription[eq] + '"},';
                             } else {
-                                eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + currentEqDesc + '"},';
-                            }
+                                eqString += '{"Name":"' + eq + '","Description":"' + currentEqDesc + '"},';
+                            }});
                         });
+                        console.log(eqString);
                         if (!Object.entries(charEquipment).includes(currentEqName)) {
+                         
                             eqString += '{"Name":"' + currentEqName + '","Description":"' + currentEqDesc + '"}';
+                            
                             var temp = [];
-                            if (charEquipment[activeName?.name] !== null ) {
+
+                            if (charEquipment[activeName?.name]) {
                                 console.log(charEquipment[activeName?.name])
                                 Object.values(charEquipment[activeName?.name]).forEach(function(item) {
                                     temp.push(item);
