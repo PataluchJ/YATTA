@@ -39,14 +39,19 @@ function CharacterCreator({ username, roomID }){
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [room]);
+    useEffect(() => {
 
+
+
+    })
     useEffect(() => {
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
             let tempAb = {};
             let tempDesc = {};
-
+            var tempTempEq = [];
+           
             data.forEach(function(item) {
                 tempNames.push({
                     id: item.Id,
@@ -54,8 +59,12 @@ function CharacterCreator({ username, roomID }){
                 });
 
                 item.Equipment.forEach(function(item2) {
-                    tempEq[item.Name].concat(item2.Name);
-                    tempDesc[item2.Name] = [...tempDesc[item2.Name], item2.Description];
+                    var tempTempDc = [];
+                    console.log("Name "+item2.Name);
+                    tempTempEq.push(item2.Name);
+                    tempTempDc.push(item2.Description);
+                    tempEq[item.Name] = tempTempEq;
+                    tempDesc[item2.Name] = tempTempDc;
                 });
 
                 item.Abilities.forEach(function(item2) {
@@ -64,6 +73,7 @@ function CharacterCreator({ username, roomID }){
                 });
             });
             id.current = data.length;
+            
             setCharNames([...tempNames]);
             setCharEquipment({...tempEq});
             setCharAbilities({...tempAb});
@@ -105,7 +115,7 @@ return (
                         var jsonF = JSON.parse(msg);
                         socket.emit('sheet_new', jsonF);
                     }
-                }}>New character</button><br></br>
+                }}>New character</button>
                 <div className="tabTitle">Equipment</div>
                 <label className="tTitle">Item name</label><br></br>
                 <input className="tabInput" type="text" id="itemNameInput" name = "itemNameInput" value={currentEqName} onChange={(e) => setCurrentEqName(e.target.value)}></input><br></br>
@@ -144,8 +154,8 @@ return (
                         console.log(msg);
                         var jsonF = JSON.parse(msg);
                         socket.emit("sheet_edit", jsonF);
-                        setCharEquipment(prev => prev[tempName].push(currentEqName));
-                        setCharItemsDescription(prev => prev[tempName].push(currentEqDesc));
+                        setCharEquipment(prev => Object.entries(prev).concat(currentEqName));
+                        setCharItemsDescription(prev => Object.entries(prev).concat(currentEqDesc));
                         console.log(charEquipment);
                     }
                 }}>Add item</button>
@@ -176,8 +186,14 @@ return (
                             eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + charItemsDescription[charEquipment[item]] + '"},';
                         });
                         eqString.slice(0, -1);
+                        var tempId = id;
+                        var tempName = currentCharName;
+                        if (activeName !== null) {
+                            tempId = activeName.id;
+                            tempName = activeName.name;
+                        }
 
-                        var msg = '{"Room":"' + room + '", "Name":"' + currentCharName + '", "Id":' + activeName.Id + ', "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
+                        var msg = '{"Room":"' + room + '", "Name":"' + tempName + '", "Id":' + tempId + ', "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         var jsonF = JSON.parse(msg);
                         socket.emit("sheet_edit", jsonF);
 
@@ -190,14 +206,14 @@ return (
             <tr className="currChars">
             {charNames.map((i) => { 
                 return(
-                    <tr className="e" onClick={() => setActiveName(i)} classId={i}>
+                    <tr className="e" onClick={() => {setActiveName(i);console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
                     {i.name} 
                     </tr>
                 );
             })}
             </tr>
             <tr className="currEq"> 
-            {charEquipment[activeName]?.map((i) => { 
+            {charEquipment[activeName?.name]?.map((i) => { 
                 return(
                     <tr className="e" onClick={() => setActiveItem(i)} classId={i}>
                     {i} 
