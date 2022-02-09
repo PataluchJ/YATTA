@@ -45,27 +45,40 @@ class AddToken extends React.Component  {
         {this.generateImageBoxes().map( (i) => {
             if(i['Name'] === this.state.choosenImage){
                 return (
-                    <div  className='image_box image_box_choosen'>
-                        <img width='40' height='40' src={i['Image']} alt="XD"></img>
-                        <span className='span_text'>{i['Name']}.{i['Type']}</span>
+                    <div  className='image_line image_line_choosen'>
+                        <div className='image_box'>
+                        <img width='50' height='50' src={i['Image']} alt="No preview"></img>
+                        </div>
+                        <div className='image_name'>
+                        <span className='image_name_span'>{i['Name']}.{i['Type']}</span>
+                        </div>
                     </div>
                 )
             }
             else {
                 return (
-                    <div onClick={() => {this.handleDivClick(i['Name']);}} className='image_box'>
-                        <img width='40' height='40' src={i['Image']} alt="XD"></img>
-                        <span className='span_text'>{i['Name']}.{i['Type']}</span>
+                    <div onClick={() => {this.handleDivClick(i['Name']);}} className='image_line'>
+                        <div className='image_box'>
+                        <img width='50' height='50' src={i['Image']} alt="No preview"></img>
+                        </div>
+                        <div className='image_name'>
+                        <span className='image_name_span'>{i['Name']}.{i['Type']}</span>
+                        </div>
                     </div>
                 )
             }
         })}
         </div>
-        <button onClick={() => {
+        <div className='bottom_bar'>
+        <button className='pop_button' onClick={() => {
             if(this.state.choosenImage !== '')
                 this.props.addToken(this.state.choosenImage);
-            }}>Add token</button>
-        <button onClick={() => {this.props.closePopup();}}>Go Back</button>
+            }}>as Token</button>
+        <button className='pop_button' onClick={() => {
+            this.props.setBackground(this.state.choosenImage);
+        }}>as Background</button>
+        <button className='pop_button' onClick={() => {this.props.closePopup();}}>Go Back</button>
+        </div>
         </div>
       </div>
         

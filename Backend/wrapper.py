@@ -203,6 +203,17 @@ class Wrapper:
         print(transform)
         return transform
         
+    def set_background(self, data):
+        self.validate_json(data, ['Room', 'Image'], [str,str])
+        new_object = {'Image_Name': data['Image'],'Position':{'Level': 0, 'Layer': 0,'Coords':{'x': 0.0,'y': 0.0,'z_layer': -1}}, 'Transformation': {'scale_x':1, 'scale_y':1, 'rotation':0}}
+        delete_object = {}
+        all_objects = self.dbc.get_all_objects(data['Room'])
+        for a in all_objects:
+            if(a['Position']['Coords']['z_layer'] == -1):
+                delete_object['Id'] = a['Id']
+                self.dbc.delete_object(data['Room'], a['Id'])
+        self.dbc.add_object(data['Room'], data['Image'], new_object['Position'], new_object['Transformation'])
+        return {'Delete': delete_object, 'New': new_object}
 
     def bm_object_create(self, data):
         '''Creates new object.'''

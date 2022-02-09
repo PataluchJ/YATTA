@@ -152,6 +152,7 @@ def token_delete(json_data):
 
 @socketio.on('image_new')
 def image_new(json_data):
+    print("Receiving image...")
     result = generic_argument_call(wrapper.img_new, json_data)
     if result['Status'] == 200:
         emit('image_new', result['Json'], to=json_data['Room'])
@@ -203,6 +204,14 @@ def sheet_edit(json_data):
     print(json_data)
     if result['Status'] == 200:
         emit('sheet_edit', result['Json'], to=json_data['Room'])
+
+@socketio.on('set_background')
+def set_background(json_data):
+    print("Set background...")
+    result = generic_argument_call(wrapper.set_background, json_data)
+    if result['Status'] == 200:
+        emit('object_delete', result['Json']['Delete'], to=json_data['Room'])
+        emit('object_new', result['Json']['New'], to=json_data['Room'])
 
 if __name__ == '__main__':
     socketio.run(app)

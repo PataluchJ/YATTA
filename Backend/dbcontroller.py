@@ -153,7 +153,8 @@ class Controller():
             return True
         return False
 
-
+    def get_all_objects(self, room: str):
+        return self.rooms.find_one({"room_name": room})['battlemap']['Objects']
     # BATTLEMAP
 
     def create_battlemap(self, room: str, name: str, lvl_names: list):

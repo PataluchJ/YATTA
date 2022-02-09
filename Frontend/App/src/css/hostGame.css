@@ -71,7 +71,7 @@ font-weight: bold;
 button{
     min-height: 2em;
     min-width: 15em;
-    max-width: 25em;
+    max-width: 100%;
     margin-top: 0.4em;
 
 }

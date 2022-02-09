@@ -150,10 +150,20 @@ function Chat({ username, roomID }) {
    // toggleAddTokenPopup();
   }
 
+  const setBackground = (name) => {
+    let json = {
+      'Room': room,
+      'Image': name
+    }
+    socket.emit('set_background', json);
+  }
+
   const askForAllImages = () => {
     const json = {'Room': room};
     socket.emit('image_get_all', json);
   }
+
+  
 
   useEffect(() => {
     if (text !== "") {
@@ -246,6 +256,7 @@ function Chat({ username, roomID }) {
             <AddToken
             closePopup={toggleAddTokenPopup.bind(this)}
             addToken={addToken.bind(this)}
+            setBackground={setBackground.bind(this)}
             askForImages={askForAllImages.bind(this)}
             setReqFlag={setIsRequiringImages.bind(this)}
             imgRec = {imagesReceived}
