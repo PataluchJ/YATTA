@@ -152,18 +152,16 @@ return (
                             charEquipment[activeName?.name] = temp;
                             charItemsDescription[currentEqName] = currentEqDesc;
                         } else {
-                            Object.keys(charEquipment).forEach(function(item) {
-                                charEquipment[item].forEach(function(eq) {
-                                    if (currentEqName !== eq) {
-                                        eqString += '{"Name":"' + eq + '","Description":"' + charItemsDescription[eq] + '"},';
-                                    } else {
-                                        eqString += '{"Name":"' + eq + '","Description":"' + currentEqDesc + '"},';
-                                        exists = true;
-                                    }
-                                    temp.push(eq);
-                                    charEquipment[activeName?.name] = temp;
-                                    charItemsDescription[currentEqName] = currentEqDesc;
-                                });
+                            charEquipment[activeName?.name].forEach(function(eq) {
+                                if (currentEqName !== eq) {
+                                    eqString += '{"Name":"' + eq + '","Description":"' + charItemsDescription[eq] + '"},';
+                                } else {
+                                    eqString += '{"Name":"' + eq + '","Description":"' + currentEqDesc + '"},';
+                                    exists = true;
+                                }
+                                temp.push(eq);
+                                charEquipment[activeName?.name] = temp;
+                                charItemsDescription[currentEqName] = currentEqDesc;
                             });
                             if (!exists) {
                                 eqString += '{"Name":"' + currentEqName + '","Description":"' + currentEqDesc + '"}';
@@ -176,10 +174,13 @@ return (
                         }
 
                         var abString = "";
-                        Object.keys(charAbilities).forEach(function(item) {
-                            abString += '{"Name":"' + charAbilities[item] + '","Description":"' + charItemsDescription[charAbilities[item]] + '"},';
-                        });
-                        abString = abString.slice(0, -1);
+
+                        if (charAbilities[activeName?.name]) {
+                            charAbilities[activeName?.name].forEach(function(ab) {
+                                abString += '{"Name":"' + ab + '","Description":"' + charItemsDescription[ab] + '"},';
+                            });
+                            abString = abString.slice(0, -1);
+                        }
 
                         var msg = '{"Room":"' + room + '", "Id":' + activeName.id + ', "Name":"' + activeName.name + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         console.log(msg);
@@ -204,18 +205,16 @@ return (
                             charAbilities[activeName?.name] = temp;
                             charItemsDescription[currentAbName] = currentAbDesc;
                         } else {
-                            Object.keys(charAbilities).forEach(function(item) {
-                                charAbilities[item].forEach(function(ab) {
-                                    if (currentAbName !== ab) {
-                                        abString += '{"Name":"' + ab + '","Description":"' + charItemsDescription[ab] + '"},';
-                                    } else {
-                                        abString += '{"Name":"' + ab + '","Description":"' + currentAbDesc + '"},';
-                                        exists = true;
-                                    }
-                                    temp.push(ab);
-                                    charAbilities[activeName?.name] = temp;
-                                    charItemsDescription[currentAbName] = currentAbDesc;
-                                });
+                            charAbilities[activeName?.name].forEach(function(ab) {
+                                if (currentAbName !== ab) {
+                                    abString += '{"Name":"' + ab + '","Description":"' + charItemsDescription[ab] + '"},';
+                                } else {
+                                    abString += '{"Name":"' + ab + '","Description":"' + currentAbDesc + '"},';
+                                    exists = true;
+                                }
+                                temp.push(ab);
+                                charAbilities[activeName?.name] = temp;
+                                charItemsDescription[currentAbName] = currentAbDesc;
                             });
                             if (!exists) {
                                 abString += '{"Name":"' + currentAbName + '","Description":"' + currentAbDesc + '"}';
@@ -228,10 +227,12 @@ return (
                         }
 
                         var eqString = "";
-                        Object.keys(charEquipment).forEach(function(item) {
-                            eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + charItemsDescription[charEquipment[item]] + '"},';
-                        });
-                        eqString= eqString.slice(0, -1);
+                        if (charEquipment[activeName?.name]) {
+                            charEquipment[activeName?.name].forEach(function(eq) {
+                                eqString += '{"Name":"' + eq + '","Description":"' + charItemsDescription[eq] + '"},';
+                            });
+                            eqString= eqString.slice(0, -1);   
+                        }
 
                         var msg = '{"Room":"' + room + '", "Id":' + activeName.id + ', "Name":"' + activeName.name + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         console.log(msg);
