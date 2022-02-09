@@ -237,7 +237,7 @@ class Wrapper:
     def bm_object_update_transformation(self, data):
         '''Updates object transformation and return dictionary with new position ready to be send to other players'''
         self.validate_json(data, ['Id', 'Transformation','Room'], [int, dict,str])
-        self.validate_json(data['Transformation'], ['scale_x', 'scale_y', 'rotation'], [float,float,float])
+        self.validate_json(data['Transformation'], ['scale_x', 'scale_y', 'rotation'], [any,any,any])
         success = self.dbc.update_object_transformation(data['Room'], data['Id'], data['Transformation'])
         if success is True:
             return {'Id': data['Id'], 'Transformation' : data['Transformation']}

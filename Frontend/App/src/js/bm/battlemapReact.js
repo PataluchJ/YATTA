@@ -23,9 +23,8 @@ var textureArray = {};
 
 // keybord input
 var pressedKeys = {};
-window.onkeyup = function(e) { pressedKeys[e.keyCode] = false; }
-window.onkeydown = function(e) { pressedKeys[e.keyCode] = true; }
 
+var selectedTarget = null;
 
 class MyObject extends PIXI.Sprite {
     id;
@@ -38,12 +37,13 @@ class MyTexture extends PIXI.Texture{
 
 class PixiComponent extends React.Component {
    
-    
+   
 
     constructor(){
         console.log("constructor")
         super()
     }
+
     componentDidMount() {
         console.log("componentDidMount")
         console.log(this)
@@ -164,17 +164,18 @@ class PixiComponent extends React.Component {
             }        
         });
     }
-    setNewScale(id, scale_x, scale_y){
-        this.viewport.children.forEach(function (arrayItem) {
+    setNewTransformation(id, scale_x, scale_y, rotate){
+        this.TokenContainer.children.forEach(function (arrayItem) {
             if(arrayItem.id === id){
-                arrayItem.scale_x = scale_x
-                arrayItem.scale_y = scale_y
+                arrayItem.scale.x = scale_x
+                arrayItem.scale.y = scale_y
+                arrayItem.rotate = rotate
             }        
         });
-    }
-    setNewRotation(id, rotate){
-        this.viewport.children.forEach(function (arrayItem) {
+        this.ObjectContainer.children.forEach(function (arrayItem) {
             if(arrayItem.id === id){
+                arrayItem.scale.x = scale_x
+                arrayItem.scale.y = scale_y
                 arrayItem.rotate = rotate
             }        
         });
@@ -215,7 +216,7 @@ class PixiComponent extends React.Component {
             }        
         });
     }
-  
+    
     // movement
     onDragStart(e) {
         console.log("onDragStart()")
@@ -229,15 +230,15 @@ class PixiComponent extends React.Component {
             //this.selectedTarget_X = e.target.x
             //this.selectedTarget_Y = e.target.y
 
-            this.selectedTarget = e.target
+            selectedTarget = e.target
             
             this.app.stage.addEventListener('pointermove', this.onDragMove.bind(this))
         }       
     }
     onDragEnd() {
         console.log("onDragEnd()")
-        if(!pressedKeys['16']){
-            this.selectedTarget.alpha = 1
+        if(!pressedKeys['16'] && selectedTarget != null){
+            selectedTarget.alpha = 1
             this.app.stage.removeAllListeners()
 
 
@@ -249,15 +250,18 @@ class PixiComponent extends React.Component {
             //else {
                 let room = localStorage.getItem('roomID')
                 console.log(room)
-                var msg = '{"Room":"' + room + '", "Id":'+ this.selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + this.selectedTarget.x  + ', "y":' + this.selectedTarget.y + ', "z_layer":' + this.selectedTarget.z + '}}}';
+                var msg = '{"Room":"' + room + '", "Id":'+ selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + selectedTarget.x  + ', "y":' + selectedTarget.y + ', "z_layer":' + selectedTarget.z + '}}}';
                 console.log(msg)
                 var jsonF = JSON.parse(msg);
                 socket.emit('object_move', jsonF); 
             //}
+            selectedTarget = null
         }
     }
     onDragMove(e) {
-        this.selectedTarget.parent.toLocal(e.global, null, this.selectedTarget.position)
+        if(selectedTarget != null){
+            selectedTarget.parent.toLocal(e.global, null, selectedTarget.position)
+        }
     }
 
     render() {
@@ -265,6 +269,44 @@ class PixiComponent extends React.Component {
         this.app = new PIXI.Application({width: window.screen.width * 0.175, height: window.screen.height * 0.15, backgroundColor: '0x121212', antialias: false, resolution: 4})
         let component = this;
        
+        // keybord input
+        window.onkeyup = function(e) { 
+            pressedKeys[e.keyCode] = false; 
+        }
+        window.onkeydown = function(e) {
+            pressedKeys[e.keyCode] = true; 
+            // delete object
+            if(e.keyCode == "46" && selectedTarget != null){
+                var localId =  selectedTarget.id
+                selectedTarget = null
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ' }';
+                console.log("delete sending msg: " + msg)
+                socket.emit('object_delete', JSON.parse(msg)); 
+            }
+            // scale up
+            else if(e.keyCode == "187" && selectedTarget != null){
+               
+                var localId =  selectedTarget.id
+                let scaleX = selectedTarget.scale.x * 1.1
+                let scaleY =  selectedTarget.scale.y * 1.1
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  selectedTarget.rotate + ' }}';
+                console.log("object_transform sending msg: " + msg)
+                socket.emit('object_transform', JSON.parse(msg)); 
+            }
+            // scale down
+            else if(e.keyCode == "189" && selectedTarget != null){
+                var localId =  selectedTarget.id
+                let scaleX = selectedTarget.scale.x * 0.9
+                let scaleY =  selectedTarget.scale.y * 0.9
+                if(scaleX < 0)
+                    scaleX = 0
+                if(scaleY < 0)
+                    scaleY = 0
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  selectedTarget.rotate + ' }}';
+                console.log("object_transform sending msg: " + msg)
+                socket.emit('object_transform', JSON.parse(msg)); 
+            }
+        }
         // stage
         this.app.stage = new Stage();
 
@@ -421,8 +463,23 @@ class PixiComponent extends React.Component {
                 }
             });
         });
-  
-       
+
+        socket.on("object_delete", data => {
+            console.log("socket.on(object_delete)")
+            console.log(data)
+            if(selectedTarget != null && selectedTarget.id == data.Id){
+                selectedTarget = null
+            }
+            this.removeObject(data.Id)
+        })
+
+        socket.on("object_transform", data => {
+            console.log("socket.on(object_transform)")
+            console.log(data)
+            this.setNewTransformation(data.Id, data.Transformation.scale_x, data.Transformation.scale_y, data.Transformation.rotation)
+        })
+
+
         var msg = '{"Room":"' + localStorage.getItem('roomID') + '"}';
         console.log("rander sending msg: " + msg)
         socket.emit('get_all_room_data', JSON.parse(msg)); 
