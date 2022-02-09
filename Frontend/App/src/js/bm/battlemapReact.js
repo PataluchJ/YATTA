@@ -47,6 +47,12 @@ class PixiComponent extends React.Component {
     componentWillUnmount() {
         console.log("componentWillUnmount")
         console.log(this)
+        socket.off("object_transform")
+        socket.off("object_delete")
+        socket.off("all_data")
+        socket.off("object_new")
+        socket.off("new_position")
+        socket.off("image_get")
         this.app.stop();
     }
     addObject = (id, textureId, x, y, z, level, layer, scale_x, scale_y, angle) => {
@@ -378,6 +384,30 @@ class PixiComponent extends React.Component {
             console.log("socket.on(all_data)")
             console.log(data)
             let self = this
+
+            // load images
+            for (const [item, inside] of Object.entries(data.Images)){
+
+                let image 
+                let image_extention
+                for (const [key, value] of Object.entries(inside)){
+                    
+                    if(key != 'Name'){
+                        image = value
+                        image_extention = key
+                    }
+                }
+    
+                var arrayBufferView = new Uint8Array( image );
+                var blob = new Blob( [ arrayBufferView ], { type: `image/${image_extention}`} );
+                var urlCreator = window.URL || window.webkitURL;
+                var imageUrl = urlCreator.createObjectURL( blob );
+    
+
+                self.addTexture(inside.Name, imageUrl)
+            }
+
+            // load objects
             data.Battlemap.Objects.forEach(function(item) {
 
                 //console.log(item)

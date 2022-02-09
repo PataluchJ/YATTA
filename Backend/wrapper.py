@@ -212,7 +212,7 @@ class Wrapper:
             if(a['Position']['Coords']['z_layer'] == -1):
                 delete_object['Id'] = a['Id']
                 self.dbc.delete_object(data['Room'], a['Id'])
-        self.dbc.add_object(data['Room'], data['Image'], new_object['Position'], new_object['Transformation'])
+        new_object = self.dbc.add_object(data['Room'], data['Image'], new_object['Position'], new_object['Transformation'])
         return {'Delete': delete_object, 'New': new_object}
 
     def bm_object_create(self, data):
