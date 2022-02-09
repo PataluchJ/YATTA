@@ -13,7 +13,8 @@
     background-color:#bfcde098;
     border:1px solid;
     border-color:#251e3b;
-    
+    overflow-y:auto;
+    overflow-x:hidden;
 }
 .f{
         display: block;
@@ -22,34 +23,45 @@
         text-align: center;
         height: fit-content;
         background-color: #7b838f98;
-        font-size:large;
+        font-size:1.5em;
         font-family: 'Work Sans';
         font:bolder;
     
 
 }
 .currChars{
-    
+    overflow-y:auto;
+    overflow-x:hidden;
     width: 20vw;
+    max-height: 100vh;
     background-color:#bfcde050;
     border:1px solid;
     border-color:#251e3b;
 }
 .currEq{
+    overflow-y:auto;
+    overflow-x:hidden;
     width: 20vw;
+    max-height: 100vh;
     background-color:#bfcde050;
     border:1px solid;
     border-color:#251e3b;
 }
 .currAb{
+    overflow-y:auto;
+    overflow-x:hidden;
     width: 20vw;
+    max-height: 100vh;
     border:1px solid;
     background-color:#bfcde050;
     border-color:#251e3b;
 }
 .currDesc{
     border:1px solid;
+    overflow-y:auto;
+    overflow-x:hidden;
     width: 20vw;
+    max-height: 100vh;
     background-color:#bfcde098;
     border-color:#251e3b;
 
@@ -69,8 +81,8 @@
     background-color:#5d5d81;
     border-radius: 100px;
     width:80%;
-    font-size: 1.2em;
-    height:2.5em;
+    font-size: auto;
+    height:5%;
     font-weight: bold;
     color: #bfcde0;
     display: flow-root;

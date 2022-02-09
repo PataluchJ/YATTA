@@ -1,8 +1,10 @@
 import { useState, useEffect,useContext } from "react";
 import React from "react";
+import {socket} from '../m/menu';
 import {SocketContext} from '../m/menu';
 import { Renderer } from "pixi.js";
 import "../../css/charSheets.css"
+import { Socket } from "socket.io-client";
 var colToken;
 var hTokens = [];
 var sheets = ["Wojownik","Mag","Łotrzyk","Bard","Kapłan","Paladyn"];
@@ -56,17 +58,20 @@ function setSh(i,setSheet){
     console.log(i);
     setSheet(i);
 }
+
 function SecondMenu({gameData}){
+    
     const [activeSheet, setSheet] = useState("Wojownik");
     const [activeItem, setItem] = useState("Woda Życia");
     const [gD,setGameData]= useState(" ");
-    const socket = useContext(SocketContext);
-    useEffect(() => {
-        socket.on("join", data => {setGameData(data);});
-    });
-
+    console.log("GAME DATA enter");
+    socket.on("join", data => {
+        setGameData(data);
         console.log("GAME DATA");
         console.log(gD);
+    });
+
+        
         
 
 return(

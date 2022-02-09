@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
-import {SocketContext} from '../m/menu';
+import { socket } from '../m/menu';
 import React, { useState, useEffect, useContext, useRef } from "react";
 
 function CharacterCreator({ username, roomID }){
-    const socket = useContext(SocketContext);
 
     const [user, setUser] = useState(username);
     const [room, setRoom] = useState(roomID);
@@ -47,7 +46,7 @@ function CharacterCreator({ username, roomID }){
             setCharEquipment({...charEquipment});
             setCharAbilities({...charAbilities});
             setCharItemsDescription({...charItemsDescription});
-
+            console.log("sheet_edit");
             var roomData = "{\"Room\":\""+room+"\"}";
             var jsonF = JSON.parse(roomData);                    
             socket.emit('sheets_get',jsonF);
@@ -59,12 +58,12 @@ function CharacterCreator({ username, roomID }){
                 id: id,
                 name: currentCharName
             });
+            console.log("sheet_new");
             id.current++;
-            setCharNames(prev => prev.concat(temp));
-
             var roomData = "{\"Room\":\""+room+"\"}";
             var jsonF = JSON.parse(roomData);                    
             socket.emit('sheets_get',jsonF);
+            setCharNames(prev => prev.concat(temp));
         });
 
         return () => {
@@ -79,35 +78,40 @@ function CharacterCreator({ username, roomID }){
             let tempEq = {};
             let tempAb = {};
             let tempDesc = {};
-            var tempTempEq = [];
-            var tempTempAb = [];
+          
+           
            
             data.forEach(function(item) {
+                console.log(item.Name);
                 tempNames.push({
                     id: item.Id,
                     name: item.Name
                 });
-
+                var tempTempEq = [];
                 item.Equipment.forEach(function(item2) {
+                    
                     var tempTempDc = [];
                     tempTempEq.push(item2.Name);
                     tempTempDc.push(item2.Description);
-                    tempEq[item.Name] = tempTempEq;
                     tempDesc[item2.Name] = tempTempDc;
-                    console.log("Name "+item2.Name+" "+tempDesc[item2.Name]);
+                    tempEq[item.Name] = tempTempEq;
+                    console.log("Name "+item2.Name+" "+item.Name);
                 });
-
+                
+                var tempTempAb = [];
                 item.Abilities.forEach(function(item2) {
+                    
                     var tempTempDc = [];
                     tempTempAb.push(item2.Name);
                     tempTempDc.push(item2.Description);
                     tempAb[item.Name] = tempTempAb;
                     tempDesc[item2.Name] = tempTempDc;
-                    console.log("Name "+item2.Name+" "+tempAb[item2.Name]);
+                    console.log("Name "+item2.Name+" "+item.Name);
                 });
             });
             id.current = data.length;
-            
+            console.log("eq ");
+            console.log(tempEq);
             setCharNames([...tempNames]);
             setCharEquipment({...tempEq});
             setCharAbilities({...tempAb});
@@ -246,15 +250,17 @@ return (
                 </Link>
             </tr>
             <tr className="currChars">
+            <div className="tabTitle">Created characters</div>
             {charNames.map((i) => { 
                 return(
-                    <tr className="f" onClick={() => {setActiveName(i);console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
+                    <tr className="f" onClick={() => {setActiveName(i);setActiveItem("");console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
                     {i.name} 
                     </tr>
                 );
             })}
             </tr>
             <tr className="currEq"> 
+            <div className="tabTitle" values={activeName}>Character {activeName?.name} equipment</div>
             {charEquipment[activeName?.name]?.map((i) => { 
                 return(
                     <tr className="f" onClick={() => setActiveItem(i)} classId={i}>
@@ -264,6 +270,7 @@ return (
             })}
             </tr>
             <tr className="currAb"> 
+            <div className="tabTitle" values={activeName}>Character {activeName?.name} abilities</div>
             {charAbilities[activeName?.name]?.map((i) => { 
                 return(
                     <tr className="f" onClick={() => setActiveItem(i)} classId={i}>
@@ -273,6 +280,7 @@ return (
             })}
             </tr>
             <tr className="currDesc"> 
+            <div  className="tabTitle" values={activeItem}>Description {activeItem}</div>
                     <tr className="f" classId={activeItem}>
                     {charItemsDescription[activeItem]} 
                     </tr>
