@@ -4,15 +4,7 @@ import { EventSystem } from '@pixi/events'
 import { Viewport } from 'pixi-viewport'
 import { Layer, Group, Stage } from '@pixi/layers'
 import  gridImage  from '../../img/squre.png'
-import  testbg  from '../../img/testbg.jpg'
 import  greenTexture  from '../../img/green.png'
-
-import  img_Bard  from '../../img/PZ icons/Bard.jpg'
-import  img_Kapłan  from '../../img/PZ icons/Kapłan.jpg'
-import  img_Łotrzyk  from '../../img/PZ icons/Łotrzyk.jpg'
-import  img_Mag  from '../../img/PZ icons/Mag.jpg'
-import  img_Paladyn  from '../../img/PZ icons/Paladyn.jpg'
-import  img_Woj  from '../../img/PZ icons/Woj.jpg'
 
 import { socket } from '../m/menu';
 delete PIXI.Renderer.__plugins.interaction
@@ -446,7 +438,7 @@ class PixiComponent extends React.Component {
 
         window.onkeydown = function(e) {
             pressedKeys[e.keyCode] = true; 
-            console.log(e.keyCode)
+            //console.log(e.keyCode)
             // delete object
             if(e.keyCode == "46" && selectedTarget != null){
                 var localId =  selectedTarget.id
@@ -495,7 +487,7 @@ class PixiComponent extends React.Component {
                 socket.emit('object_transform', JSON.parse(msg)); 
             }
             // scale up bm
-            else if(e.keyCode == "222"){
+            else if(e.keyCode == "222" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let scaleX = arrayItem.scale.x * 1.1
                     let scaleY =  arrayItem.scale.y * 1.1
@@ -505,7 +497,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // scale down bm
-            else if(e.keyCode == "186"){
+            else if(e.keyCode == "186" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let scaleX = arrayItem.scale.x * 0.9
                     let scaleY =  arrayItem.scale.y * 0.9
@@ -519,7 +511,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // objects up
-            else if(e.keyCode == "87"){
+            else if(e.keyCode == "87" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let y = arrayItem.y - 10
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + arrayItem.x  + ', "y":' + y + ', "z_layer":' + arrayItem.z + '}}}';
@@ -528,7 +520,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // objects down
-            else if(e.keyCode == "83"){
+            else if(e.keyCode == "83" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let y = arrayItem.y + 10
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + arrayItem.x  + ', "y":' + y + ', "z_layer":' + arrayItem.z + '}}}';
@@ -537,7 +529,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // objects left
-            else if(e.keyCode == "65"){
+            else if(e.keyCode == "65" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let x = arrayItem.x - 10
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x + ', "y":' + arrayItem.y + ', "z_layer":' + arrayItem.z + '}}}';
@@ -546,7 +538,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // objects right
-            else if(e.keyCode == "68"){
+            else if(e.keyCode == "68" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let x = arrayItem.x + 10
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x + ', "y":' + arrayItem.y + ', "z_layer":' + arrayItem.z + '}}}';
