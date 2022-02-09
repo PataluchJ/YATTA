@@ -22,7 +22,7 @@ class AddToken extends React.Component  {
                 }
                 else{
                     list[idx]['Type'] = key;
-                    list[idx]['Image'] = URL.createObjectURL(new Blob([value], { type: `image/png` }));
+                    list[idx]['Image'] = URL.createObjectURL(new Blob([value], { type: `image/${key}` }));
                 }
             }
             idx += 1;
