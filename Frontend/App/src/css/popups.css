@@ -17,4 +17,20 @@
     bottom: 25%;
     margin: auto;
     background: white;
+    color: black;
+  }
+  .text_input {
+    color: black;
+  }
+  .span_text{
+    color: black;
+  }
+  .image_list{
+
+  }
+  .image_box{
+
+  }
+  .image_box_choosen{
+    border: black solid 1px;
   }

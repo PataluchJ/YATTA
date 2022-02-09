@@ -1,16 +1,24 @@
 import React from 'react';
-import '../../css/uploadPopup.css'
-class PopUp extends React.Component {
+import '../../css/popups.css'
+import { socket } from '../m/menu';
+
+class ImageUpload extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       image: null,
       imageURL: null,
-      imageChoosed: false
+      imageChoosed: false,
+      name: ""
     };
 
     this.onImageChange = this.onImageChange.bind(this);
+    this.onNameChange = this.onNameChange.bind(this);
   }
+
+  onNameChange = event => {
+    this.setState({name: event.target.value});
+  };
 
   onImageChange = event => {
     if (event.target.files && event.target.files[0]){
@@ -19,7 +27,8 @@ class PopUp extends React.Component {
       this.setState({
         imageURL : URL.createObjectURL(img),
         image : img,
-        imageChoosed: true
+        imageChoosed: true,
+        name: img.name
       });
     }
   };
@@ -32,7 +41,9 @@ class PopUp extends React.Component {
         <h1>Select Image</h1>
         <input type="file" name="myImage" onChange={this.onImageChange} />
         <br></br>
-        <button onClick={() => {this.props.sendImage(this.state.image, this.state.image.name);} }>Send</button>
+        Nazwa pliku: <input className='text_input' type="text" name="imageName" onChange={this.onNameChange} value={this.state.name} />
+        <br></br>
+        <button onClick={() => {this.props.sendImage(this.state.image, this.state.name);} }>Send</button>
         <button onClick={() => {this.props.closePopup();}}>Go Back</button>
         </div>
       </div>
@@ -40,4 +51,4 @@ class PopUp extends React.Component {
   }
 }
 
-export default PopUp;
+export default ImageUpload;
