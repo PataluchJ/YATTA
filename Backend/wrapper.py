@@ -107,7 +107,7 @@ class Wrapper:
         if command[0] == '/add':
             temp = {
                     "Id":1,
-                    "Image_Id": 1,
+                    "Image_Id": command[2],
                     "Position": {
                         "Level": 0,
                         "Layer": -1,
@@ -124,57 +124,57 @@ class Wrapper:
                         }
                     }
             if command[1] == 'bard':
-                createdObject = self.dbc.add_object(data['Room'], 1, temp['Position'], temp['Transformation'])
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 temp_json = json.dumps(temp)    
                 return {'inner_json': temp_json, 'cmd': "add"}
             if command[1] == 'kaplan':
-                temp['Image_Id'] = 2
-                createdObject = self.dbc.add_object(data['Room'], 2, temp['Position'], temp['Transformation'])
+                #temp['Image_Id'] = 2
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"}
             if command[1] == 'lotrzyk':
-                temp['Image_Id'] = 3
+                #temp['Image_Id'] = 3
                 temp['Transformation']['scale_x'] = 0.07
                 temp['Transformation']['scale_y'] = 0.07
-                createdObject = self.dbc.add_object(data['Room'], 3, temp['Position'], temp['Transformation'])
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"}
             if command[1] == 'mag':
-                temp['Image_Id'] = 4
+                #temp['Image_Id'] = 4
                 temp['Transformation']['scale_x'] = 0.14
                 temp['Transformation']['scale_y'] = 0.14
-                createdObject = self.dbc.add_object(data['Room'], 4, temp['Position'], temp['Transformation'])
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"}
             if command[1] == 'paladyn':
-                temp['Image_Id'] = 5
+                #temp['Image_Id'] = 5
                 temp['Transformation']['scale_x'] = 0.05
                 temp['Transformation']['scale_y'] = 0.05
-                createdObject = self.dbc.add_object(data['Room'], 5, temp['Position'], temp['Transformation'])
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"}
             if command[1] == 'wojownik':   
-                temp['Image_Id'] = 6
+                #temp['Image_Id'] = 6
                 temp['Transformation']['scale_x'] = 0.11
                 temp['Transformation']['scale_y'] = 0.11
-                createdObject = self.dbc.add_object(data['Room'], 6, temp['Position'], temp['Transformation'])
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"} 
             if command[1] == "map":
-                temp['Image_Id'] = 0
+                #temp['Image_Id'] = 0
                 temp['Transformation']['scale_x'] = 1
                 temp['Transformation']['scale_y'] = 1
                 temp['Position']['Layer'] = 1
                 temp['Position']['Coords']['x'] = 600
                 temp['Position']['Coords']['y'] = 600
                 temp['Position']['Coords']['z_layer'] = -1
-                createdObject = self.dbc.add_object(data['Room'], 0, temp['Position'], temp['Transformation'])
+                createdObject = self.dbc.add_object(data['Room'], command[2], temp['Position'], temp['Transformation'])
                 temp['Id'] = createdObject['Id']
                 y = json.dumps(temp)    
                 return {'inner_json': y, 'cmd': "add"} 
@@ -236,8 +236,11 @@ class Wrapper:
         return {'Name': data['Name']}
     
     def img_get(self, data):
+        print(data)
         self.validate_json(data,['Room','Name'],[str,str])
-        return self.dbc.get_image_by_name(data['Room'],data['Name'])
+        temp = self.dbc.get_image_by_name(data['Room'], data['Name'])
+        temp['Name'] = data['Name']
+        return temp
 
     def img_get_all(self, data):
         self.validate_json(data, ['Room'], [str])
