@@ -95,7 +95,9 @@ function CharacterCreator({ username, roomID }){
         });
 
         socket.emit('sheet_edit', data => {
-
+            setCharEquipment({...charEquipment});
+            setCharAbilities({...charAbilities});
+            setCharItemsDescription({...charItemsDescription});
         });
     
         return () => {
@@ -137,6 +139,17 @@ return (
                         });
                         if (!Object.entries(charEquipment).includes(currentEqName)) {
                             eqString += '{"Name":"' + currentEqName + '","Description":"' + currentEqDesc + '"}';
+                            var temp = [];
+                            if (charEquipment[activeName?.name] !== null) {
+                                Object.values(charEquipment[activeName?.name]).forEach(function(item) {
+                                    temp.push(item);
+                                    charEquipment[activeName?.name] = temp;
+                                });
+                            }
+                            temp.push(currentEqName);
+                            charEquipment[activeName?.name] = temp;
+
+                            charItemsDescription[currentEqName] = currentEqDesc;
                         } else {
                             eqString.slice(0, -1);
                         }
@@ -154,13 +167,12 @@ return (
                             tempName = activeName.name;
                         }
 
-                        var msg = '{"Room":"' + room + '", "Name":"' + tempName + '", "Id":' + tempId + ', "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
+                        var msg = '{"Room":"' + room + '", "Id":' + tempId + ', "Name":"' + tempName + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         console.log(msg);
                         var jsonF = JSON.parse(msg);
+                        console.log(jsonF);
                         socket.emit("sheet_edit", jsonF);
-                        setCharEquipment(prev => Object.entries(prev).concat(currentEqName));
-                        setCharItemsDescription(prev => Object.entries(prev).concat(currentEqDesc));
-                        console.log(charEquipment);
+
                     }
                 }}>Add item</button>
                 <div className="tabTitle">Abilities</div>
@@ -175,12 +187,21 @@ return (
                             if (currentAbName !== charAbilities[item]) {
                                 abString += '{"Name":"' + charAbilities[item] + '","Description":"' + charItemsDescription[charAbilities[item]] + '"},';
                             } else {
-                                abString += '{"Name":"' + charAbilities[item] + '","Description":"' + currentEqDesc + '"},';
+                                abString += '{"Name":"' + charAbilities[item] + '","Description":"' + currentAbDesc + '"},';
                             }
                         });
 
                         if (!Object.entries(charAbilities).includes(currentAbName)) {
                             abString += '{"Name":"' + currentAbName + '","Description":"' + currentAbDesc + '"}';
+                            var temp = [];
+                            Object.values(charAbilities[activeName?.name]).forEach(function(item) {
+                                temp.push(item);
+                                charAbilities[activeName?.name] = temp;
+                            });
+                            temp.push(currentAbName);
+                            charAbilities[activeName?.name] = temp;
+                            
+                            charItemsDescription[currentAbName] = currentAbDesc;
                         } else {
                             abString.slice(0, -1);
                         }
@@ -190,6 +211,7 @@ return (
                             eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + charItemsDescription[charEquipment[item]] + '"},';
                         });
                         eqString.slice(0, -1);
+
                         var tempId = id;
                         var tempName = currentCharName;
                         if (activeName !== null) {
@@ -197,12 +219,10 @@ return (
                             tempName = activeName.name;
                         }
 
-                        var msg = '{"Room":"' + room + '", "Name":"' + tempName + '", "Id":' + tempId + ', "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
+                        var msg = '{"Room":"' + room + '", "Id":' + tempId + ', "Name":"' + tempName + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         var jsonF = JSON.parse(msg);
                         socket.emit("sheet_edit", jsonF);
 
-                        setCharAbilities(prev => Object.entries(prev).concat(currentAbName));
-                        setCharItemsDescription(prev => Object.entries(prev).concat(currentAbDesc));
                     }
                 }}>Add ability</button>
                 <button className="backBut">Back</button><br></br>
@@ -226,7 +246,7 @@ return (
             })}
             </tr>
             <tr className="currAb"> 
-            {charAbilities[activeName]?.map((i) => { 
+            {charAbilities[activeName?.name]?.map((i) => { 
                 return(
                     <tr className="e" onClick={() => setActiveItem(i)} classId={i}>
                     {i} 
