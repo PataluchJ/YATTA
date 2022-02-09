@@ -272,13 +272,9 @@ return (
             })}
             </tr>
             <tr className="currDesc"> 
-            {charItemsDescription[activeItem]?.map((i) => { 
-                return(
-                    <tr className="e" classId={i}>
-                    {i} 
+                    <tr className="e" classId={activeItem}>
+                    {charItemsDescription[activeItem]} 
                     </tr>
-                );
-            })}
             </tr>
         </table>
     </div>
