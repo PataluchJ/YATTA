@@ -113,8 +113,8 @@ class PixiComponent extends React.Component {
         tilingSprite.x = -56000+35
         tilingSprite.y = -56000+35
         tilingSprite.hitArea = new PIXI.Rectangle(0, 0, 0, 0)
-        tilingSprite.tileScale.x = 70.0/400.0
-        tilingSprite.tileScale.y = 70.0/400.0
+        tilingSprite.tileScale.x = 70.0/600.0
+        tilingSprite.tileScale.y = 70.0/600.0
 
         tilingSprite.parentGroup = this.GridGroup
         this.gridContainer.addChild(tilingSprite)
@@ -252,7 +252,9 @@ class PixiComponent extends React.Component {
             //else {
                 let room = localStorage.getItem('roomID')
                 console.log(room)
-                var msg = '{"Room":"' + room + '", "Id":'+ selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + selectedTarget.x  + ', "y":' + selectedTarget.y + ', "z_layer":' + selectedTarget.z + '}}}';
+                let x = Math.round(selectedTarget.x/70.0)*70
+                let y = Math.round(selectedTarget.y/70.0)*70
+                var msg = '{"Room":"' + room + '", "Id":'+ selectedTarget.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x  + ', "y":' + y + ', "z_layer":' + selectedTarget.z + '}}}';
                 console.log(msg)
                 var jsonF = JSON.parse(msg);
                 socket.emit('object_move', jsonF); 
