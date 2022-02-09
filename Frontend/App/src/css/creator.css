@@ -12,30 +12,46 @@
     width: 20vw;
     background-color:#bfcde098;
     border:1px solid;
-
+    border-color:#251e3b;
     
 }
+.f{
+        display: block;
+        min-width: 100%;
+        margin-top: 2vh;
+        text-align: center;
+        height: fit-content;
+        background-color: #7b838f98;
+        font-size:large;
+        font-family: 'Work Sans';
+        font:bolder;
+    
 
+}
 .currChars{
     
     width: 20vw;
-    background-color:#ff000098;
+    background-color:#bfcde050;
     border:1px solid;
+    border-color:#251e3b;
 }
 .currEq{
     width: 20vw;
-    background-color:#15ff0098;
+    background-color:#bfcde050;
     border:1px solid;
+    border-color:#251e3b;
 }
 .currAb{
     width: 20vw;
     border:1px solid;
-    background-color:#bb005798;
+    background-color:#bfcde050;
+    border-color:#251e3b;
 }
 .currDesc{
     border:1px solid;
     width: 20vw;
     background-color:#bfcde098;
+    border-color:#251e3b;
 
 }
 .tabTitle{
