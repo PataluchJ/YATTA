@@ -26,6 +26,8 @@ var pressedKeys = {};
 
 var selectedTarget = null;
 
+var copyOfthis = null
+
 class MyObject extends PIXI.Sprite {
     id;
     textureId;
@@ -55,7 +57,7 @@ class PixiComponent extends React.Component {
         console.log(this)
         this.app.stop();
     }
-    addObject = (id, textureId, x, y, z, level, layer, scale_x, scale_y, rotate) => {
+    addObject = (id, textureId, x, y, z, level, layer, scale_x, scale_y, angle) => {
 
         const sprite = MyObject.from(this.getTexture(textureId))
         sprite.anchor.set(0.5)
@@ -64,7 +66,7 @@ class PixiComponent extends React.Component {
         sprite.z = z
         sprite.scale.x = scale_x
         sprite.scale.y = scale_y
-        sprite.rotate = rotate
+        sprite.angle = angle
         sprite.id = id
         sprite.textureId = textureId
 
@@ -73,7 +75,7 @@ class PixiComponent extends React.Component {
         sprite.parentGroup = this.ObjectGroup
         this.ObjectContainer.addChild(sprite)
     }
-    addToken = (id, textureId, x, y, z, level, layer, scale_x, scale_y, rotate) => {
+    addToken = (id, textureId, x, y, z, level, layer, scale_x, scale_y, angle) => {
         
         //console.log(id, textureId, x, y, z, level, layer, scale_x, scale_y, rotate)
         const sprite = MyObject.from(this.getTexture(textureId))
@@ -83,7 +85,7 @@ class PixiComponent extends React.Component {
         sprite.z = z
         sprite.scale.x = scale_x
         sprite.scale.y = scale_y
-        sprite.rotate = rotate
+        sprite.angle = angle
         sprite.id = id
         sprite.textureId = textureId
     
@@ -164,19 +166,19 @@ class PixiComponent extends React.Component {
             }        
         });
     }
-    setNewTransformation(id, scale_x, scale_y, rotate){
+    setNewTransformation(id, scale_x, scale_y, angle){
         this.TokenContainer.children.forEach(function (arrayItem) {
             if(arrayItem.id === id){
                 arrayItem.scale.x = scale_x
                 arrayItem.scale.y = scale_y
-                arrayItem.rotate = rotate
+                arrayItem.angle = angle
             }        
         });
         this.ObjectContainer.children.forEach(function (arrayItem) {
             if(arrayItem.id === id){
                 arrayItem.scale.x = scale_x
                 arrayItem.scale.y = scale_y
-                arrayItem.rotate = rotate
+                arrayItem.angle = angle
             }        
         });
     }
@@ -269,44 +271,7 @@ class PixiComponent extends React.Component {
         this.app = new PIXI.Application({width: window.screen.width * 0.175, height: window.screen.height * 0.15, backgroundColor: '0x121212', antialias: false, resolution: 4})
         let component = this;
        
-        // keybord input
-        window.onkeyup = function(e) { 
-            pressedKeys[e.keyCode] = false; 
-        }
-        window.onkeydown = function(e) {
-            pressedKeys[e.keyCode] = true; 
-            // delete object
-            if(e.keyCode == "46" && selectedTarget != null){
-                var localId =  selectedTarget.id
-                selectedTarget = null
-                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ' }';
-                console.log("delete sending msg: " + msg)
-                socket.emit('object_delete', JSON.parse(msg)); 
-            }
-            // scale up
-            else if(e.keyCode == "187" && selectedTarget != null){
-               
-                var localId =  selectedTarget.id
-                let scaleX = selectedTarget.scale.x * 1.1
-                let scaleY =  selectedTarget.scale.y * 1.1
-                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  selectedTarget.rotate + ' }}';
-                console.log("object_transform sending msg: " + msg)
-                socket.emit('object_transform', JSON.parse(msg)); 
-            }
-            // scale down
-            else if(e.keyCode == "189" && selectedTarget != null){
-                var localId =  selectedTarget.id
-                let scaleX = selectedTarget.scale.x * 0.9
-                let scaleY =  selectedTarget.scale.y * 0.9
-                if(scaleX < 0)
-                    scaleX = 0
-                if(scaleY < 0)
-                    scaleY = 0
-                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  selectedTarget.rotate + ' }}';
-                console.log("object_transform sending msg: " + msg)
-                socket.emit('object_transform', JSON.parse(msg)); 
-            }
-        }
+      
         // stage
         this.app.stage = new Stage();
 
@@ -349,16 +314,6 @@ class PixiComponent extends React.Component {
         this.viewport.addChild(this.TokenContainer)
         this.viewport.addChild(this.ObjectContainer)
         this.viewport.addChild(this.gridContainer)
-
-        //textures
-        //this.addTexture(0, testbg)
-        //this.addTexture(1, img_Bard)
-        //this.addTexture(2, img_Kapłan)
-        //this.addTexture(3, img_Łotrzyk)
-        //this.addTexture(4, img_Mag)
-        //this.addTexture(5, img_Paladyn)
-        //this.addTexture(6, img_Woj)
-
 
         // socket listeners
         socket.on("image_get", data => {
@@ -480,25 +435,129 @@ class PixiComponent extends React.Component {
         })
 
 
+        copyOfthis = this
+
+        // keybord input
+        window.onkeyup = function(e) { 
+            pressedKeys[e.keyCode] = false; 
+        }
+
+        window.onkeydown = function(e) {
+            pressedKeys[e.keyCode] = true; 
+            console.log(e.keyCode)
+            // delete object
+            if(e.keyCode == "46" && selectedTarget != null){
+                var localId =  selectedTarget.id
+                selectedTarget = null
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ' }';
+                console.log("delete sending msg: " + msg)
+                socket.emit('object_delete', JSON.parse(msg)); 
+            }
+            // scale up
+            else if(e.keyCode == "187" && selectedTarget != null){
+               
+                var localId =  selectedTarget.id
+                let scaleX = selectedTarget.scale.x * 1.1
+                let scaleY =  selectedTarget.scale.y * 1.1
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  selectedTarget.angle + ' }}';
+                console.log("object_transform sending msg: " + msg)
+                socket.emit('object_transform', JSON.parse(msg)); 
+            }
+            // scale down
+            else if(e.keyCode == "189" && selectedTarget != null){
+                var localId =  selectedTarget.id
+                let scaleX = selectedTarget.scale.x * 0.9
+                let scaleY =  selectedTarget.scale.y * 0.9
+                if(scaleX < 0)
+                    scaleX = 0
+                if(scaleY < 0)
+                    scaleY = 0
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  selectedTarget.angle + ' }}';
+                console.log("object_transform sending msg: " + msg)
+                socket.emit('object_transform', JSON.parse(msg)); 
+            }
+            // rotate right
+            else if(e.keyCode == "221" && selectedTarget != null){
+                var localId =  selectedTarget.id
+                let angle = selectedTarget.angle + 10
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  selectedTarget.scale.x + ', "scale_y":' +  selectedTarget.scale.y + ', "rotation":' +  angle + ' }}';
+                console.log("object_transform sending msg: " + msg)
+                socket.emit('object_transform', JSON.parse(msg)); 
+            }
+            // rotate left
+            else if(e.keyCode == "219" && selectedTarget != null){
+                var localId =  selectedTarget.id
+                let angle = selectedTarget.angle - 10
+                var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + localId + ', "Transformation":{"scale_x":' +  selectedTarget.scale.x + ', "scale_y":' +  selectedTarget.scale.y + ', "rotation":' +  angle + ' }}';
+                console.log("object_transform sending msg: " + msg)
+                socket.emit('object_transform', JSON.parse(msg)); 
+            }
+            // scale up bm
+            else if(e.keyCode == "222"){
+                copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
+                    let scaleX = arrayItem.scale.x * 1.1
+                    let scaleY =  arrayItem.scale.y * 1.1
+                    var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  arrayItem.angle + ' }}';
+                    console.log("object_transform sending msg: " + msg)
+                    socket.emit('object_transform', JSON.parse(msg));    
+                });
+            }
+            // scale down bm
+            else if(e.keyCode == "186"){
+                copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
+                    let scaleX = arrayItem.scale.x * 0.9
+                    let scaleY =  arrayItem.scale.y * 0.9
+                    if(scaleX < 0)
+                        scaleX = 0
+                    if(scaleY < 0)
+                        scaleY = 0
+                    var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  arrayItem.angle + ' }}';
+                    console.log("object_transform sending msg: " + msg)
+                    socket.emit('object_transform', JSON.parse(msg)); 
+                });
+            }
+            // objects up
+            else if(e.keyCode == "87"){
+                copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
+                    let y = arrayItem.y - 10
+                    var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + arrayItem.x  + ', "y":' + y + ', "z_layer":' + arrayItem.z + '}}}';
+                    console.log("object_transform sending msg: " + msg)
+                    socket.emit('object_move', JSON.parse(msg));    
+                });
+            }
+            // objects down
+            else if(e.keyCode == "83"){
+                copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
+                    let y = arrayItem.y + 10
+                    var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + arrayItem.x  + ', "y":' + y + ', "z_layer":' + arrayItem.z + '}}}';
+                    console.log("object_transform sending msg: " + msg)
+                    socket.emit('object_move', JSON.parse(msg));    
+                });
+            }
+            // objects left
+            else if(e.keyCode == "65"){
+                copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
+                    let x = arrayItem.x - 10
+                    var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x + ', "y":' + arrayItem.y + ', "z_layer":' + arrayItem.z + '}}}';
+                    console.log("object_transform sending msg: " + msg)
+                    socket.emit('object_move', JSON.parse(msg));    
+                });
+            }
+            // objects right
+            else if(e.keyCode == "68"){
+                copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
+                    let x = arrayItem.x + 10
+                    var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x + ', "y":' + arrayItem.y + ', "z_layer":' + arrayItem.z + '}}}';
+                    console.log("object_transform sending msg: " + msg)
+                    socket.emit('object_move', JSON.parse(msg));    
+                });
+            }
+        }
+
         var msg = '{"Room":"' + localStorage.getItem('roomID') + '"}';
         console.log("rander sending msg: " + msg)
         socket.emit('get_all_room_data', JSON.parse(msg)); 
         
-      
-        
-        // temp for testing
-
-        //this.addToken(1, 1, 310, 190, -1, 0, -1, 0.05, 0.05, 0);
-        //this.addToken(2, 2, 310, 130, -1, 0, -1, 0.05, 0.05, 0);
-        //this.addToken(3, 3, 310, 250, -1, 0, -1, 0.07, 0.07, 0);
-
-        //this.addToken(4, 4, 490, 490, -1, 0, -1, 0.14, 0.14, 0);
-        //this.addToken(5, 5, 550, 490, -1, 0, -1, 0.05, 0.05, 0);
-        //this.addToken(6, 6, 310, 490, -1, 0, -1, 0.11, 0.11, 0);
-
-        //bg
-        //this.addObject(0, 0, 600, 600, 1, 0, 1, 1, 1, 0);
-
         // add grid
         this.addGrid()
 
