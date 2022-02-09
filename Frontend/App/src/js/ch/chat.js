@@ -2,8 +2,8 @@ import "../../css/chat.scss";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {SocketContext} from '../m/menu';
-import PopUp from './upload'
-import ReactDOM from 'react-dom'
+import ImageUpload from './image_upload'
+import AddToken from './add_token'
 import { Link } from "react-router-dom";
 import { TilingSprite } from "pixi.js";
 
@@ -17,6 +17,10 @@ function Chat({ username, roomID }) {
   const [newMess, setNewMess] = useState(0);
   const [logged, setLogged] = useState(false);
   const [showUpload, setShowUpload] = useState(false)
+  const [showAddObject, setShowAddObject] = useState(false)
+  const [isRequiringImages, setIsRequiringImages] = useState(false)
+  const [imagesReceived, setImagesReceived] = useState(false)
+  const [imageList, setImageList] = useState([])
   const id = useRef(0);
 
   if (user !== "") {
@@ -53,11 +57,6 @@ function Chat({ username, roomID }) {
       setMessages([...temp]);
     });
 
-    socket.on("image_new", data => {
-      let name = data['Name'];
-      console.log(name);
-    });
-
     socket.on("new_message", data => {
       console.log("Message")
       let temp = [];
@@ -86,11 +85,20 @@ function Chat({ username, roomID }) {
       setMessages(prev => prev.concat(temp));
     });
 
+    socket.on("image_get_all", data => {
+      if(isRequiringImages) {
+        setImageList(data);
+        setImagesReceived(true);
+        toggleAddTokenPopup();
+      }
+    });
+
     return () => {
       socket.off("join");
       socket.off("new_message");
       socket.off("exec_results");
       socket.off("image_new");
+      socket.off('image_get_all');
     }
   });
 
@@ -107,12 +115,44 @@ function Chat({ username, roomID }) {
   }
 
   const toggleUploadPopup = () => {
+    console.log("toggleUploadPopup");
     setShowUpload(!showUpload);
   }
 
   const uploadImage = (image,name) => {
-    const json = {'Room': room, 'Image': image, 'Name': name}
-    socket.emit('image_new', json)
+    const json = {'Room': room, 'Image': image, 'Name': name};
+    socket.emit('image_new', json);
+    toggleUploadPopup();
+  }
+
+  const toggleAddTokenPopup = () => {
+    console.log("toggleAddTokenPopup");
+    setShowAddObject(!showAddObject);
+    console.log("Set showAddObject to ", showAddObject)
+  }
+
+  const addToken = (name) => {
+    console.log("Add token with name ", name);
+    let json = {
+      'Image_Name': name,
+      'Room': room,
+      'Position':{
+          'Level': 0,
+          'Layer': 0,
+          'Coords':{
+            'x': 10.0,
+            'y': 10.0,
+            'z_layer': 0
+        }
+      }
+    };
+    socket.emit('object_new', json);
+   // toggleAddTokenPopup();
+  }
+
+  const askForAllImages = () => {
+    const json = {'Room': room};
+    socket.emit('image_get_all', json);
   }
 
   useEffect(() => {
@@ -188,19 +228,28 @@ function Chat({ username, roomID }) {
         socket.emit('sheets_get',jsonF);
       }}>Create new character sheet</button>
       </Link>
-      <button className="chatButtons">Add object</button>
-      <Link to={`/`}>
-      <button className="chatButtons" onClick={logOutButton}>Logout</button>
-      </Link>
-      <button className="chatButtons" onClick={toggleUploadPopup} >Upload image</button>
+      <button className="chatButtons" onClick={() => {setIsRequiringImages(true); askForAllImages();}}>Add object</button>
+      <button className="chatButtons" onClick={() => {logOutButton();}}>Logout</button>
+      <button className="chatButtons" onClick={() => {toggleUploadPopup();}} >Upload image</button>
     
           {showUpload ? 
-            <PopUp
+            <ImageUpload
             closePopup={toggleUploadPopup.bind(this)}
             sendImage={uploadImage.bind(this)}
-            
             />
             : null
+          }
+
+          {showAddObject ? 
+            <AddToken
+            closePopup={toggleAddTokenPopup.bind(this)}
+            addToken={addToken.bind(this)}
+            askForImages={askForAllImages.bind(this)}
+            setReqFlag={setIsRequiringImages.bind(this)}
+            imgRec = {imagesReceived}
+            imageList = {imageList}
+            />
+          : null
           }
     </div>
   );

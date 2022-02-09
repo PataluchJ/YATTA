@@ -13,7 +13,7 @@ function CharacterCreator({ username, roomID }){
     const [charAbilities, setCharAbilities] = useState({});
     const [charItemsDescription, setCharItemsDescription] = useState({});
 
-    const [activeName, setActiveName] = useState("");
+    const [activeName, setActiveName] = useState(null);
     const [activeItem, setActiveItem] = useState("");
 
     const [currentCharName, setCurrentCharName] = useState("");
@@ -34,21 +34,25 @@ function CharacterCreator({ username, roomID }){
         setRoom(localStorage.getItem('roomID'));
 
         var roomData = "{\"Room\":\""+room+"\"}";
-        console.log(roomData);
         var jsonF = JSON.parse(roomData);                    
         socket.emit('sheets_get',jsonF);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [room]);
+    useEffect(() => {
 
+
+
+    })
     useEffect(() => {
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
-            let tempEqDesc = {};
             let tempAb = {};
-            let tempAbDesc = {};
-
+            let tempDesc = {};
+            var tempTempEq = [];
+            var tempTempAb = [];
+           
             data.forEach(function(item) {
                 tempNames.push({
                     id: item.Id,
@@ -56,37 +60,54 @@ function CharacterCreator({ username, roomID }){
                 });
 
                 item.Equipment.forEach(function(item2) {
-                    tempEq[item.Name].push(item2.Name);
-                    tempEqDesc[item2.Name].push(item2.Description);
-
-                    setCharEquipment(temp => temp.concat(tempEq));
-                    setCharItemsDescription(temp => temp.concat(tempEqDesc));
-
-                    // tempEq[item.Name].push({
-                    //     name: item2.Name,
-                    //     description: item2.Description
-                    // });
+                    var tempTempDc = [];
+                    
+                    tempTempEq.push(item2.Name);
+                    tempTempDc.push(item2.Description);
+                    tempEq[item.Name] = tempTempEq;
+                    tempDesc[item2.Name] = tempTempDc;
+                    console.log("Name "+item2.Name+" "+tempDesc[item2.Name]);
                 });
 
                 item.Abilities.forEach(function(item2) {
-                    tempAb[item.Name].push(item2.Name);
-                    tempAbDesc[item2.Name].push(item2.Description);
-
-                    setCharAbilities(temp => temp.concat(tempAb));
-                    setCharItemsDescription(temp => temp.concat(tempAbDesc));
-                    
-                    // tempAb[item.Name].push({
-                    //     name: item2.Name,
-                    //     description: item2.Description
-                    // });
+                    var tempTempDc = [];
+                    tempTempAb.push(item2.Name);
+                    tempTempDc.push(item2.Description);
+                    tempAb[item.Name] = tempTempAb;
+                    tempDesc[item2.Name] = tempTempDc;
                 });
             });
             id.current = data.length;
+            
             setCharNames([...tempNames]);
+            setCharEquipment({...tempEq});
+            setCharAbilities({...tempAb});
+            setCharItemsDescription({...tempDesc});
+        });
+
+        socket.on("sheet_new", data => {
+            let temp = [];
+            temp.push({
+                id: id,
+                name: currentCharName
+            });
+            id.current++;
+            setCharNames(prev => prev.concat(temp));
+        });
+
+        socket.on('sheet_edit', data => {
+            setCharEquipment({...charEquipment});
+            setCharAbilities({...charAbilities});
+            setCharItemsDescription({...charItemsDescription});
+            var roomData = "{\"Room\":\""+room+"\"}";
+        var jsonF = JSON.parse(roomData);                    
+        socket.emit('sheets_get',jsonF);
         });
     
         return () => {
           socket.off("sheets_get");
+          socket.off("sheet_new");
+          socket.off("sheet_edit");
         }
     });
 
@@ -97,90 +118,146 @@ return (
             <tr className="creatorMenu"> 
                 <div className="tabTitle">Character</div>
                 <label className="tTitle">Character name</label><br></br>
-                <input className="tabInput" type="text" id="charNameInput" name ="charNameInput" value={currentCharName} onChange={(e) => setCurrentCharName(e.target.value)}></input><br></br>
+                <input className="tabInput" type="text" id="charNameInput" name ="charNameInput"  value={currentCharName} onChange={(e) => setCurrentCharName(e.target.value)}></input><br></br>
                 <button className="tabBut" onClick={() => {
-                    if (currentCharName !== "" && !charNames.includes(currentCharName)) {
+                    if (currentCharName !== "" && !charNames.some(e => e.name === currentCharName)) {
                         var msg = '{"Room":"' + room + '", "Name":"' + currentCharName + '","Equipment":[], "Abilities":[]}';
-                        console.log(msg);
                         var jsonF = JSON.parse(msg);
                         socket.emit('sheet_new', jsonF);
-
-                        setCharNames(prev => prev.concat(currentCharName));
                     }
-                }}>New character</button><br></br>
+                }}>New character</button>
                 <div className="tabTitle">Equipment</div>
                 <label className="tTitle">Item name</label><br></br>
                 <input className="tabInput" type="text" id="itemNameInput" name = "itemNameInput" value={currentEqName} onChange={(e) => setCurrentEqName(e.target.value)}></input><br></br>
                 <label className="tTitle">Item description</label><br></br>
                 <textarea  className="descInput" type="text" id="itemDInput" name = "itemDInput" value={currentEqDesc} onChange={(e) => setCurrentEqDesc(e.target.value)}></textarea ><br></br>
                 <button className="tabBut" onClick={() => {
-                    if (currentCharName !== "" && !charNames.includes(currentCharName) && currentEqName !== "" && currentEqDesc !== "") {
+
+                    console.log("ITEM NAME "+currentEqName+" "+document.getElementById("itemNameInput").value);
+                    console.log("ITEM DESC "+currentEqDesc);
+                    if ((currentCharName !== "" || activeName !== null) && !charNames.some(e => e.name === currentCharName) && currentEqName !== "" && currentEqDesc !== "") {
                         var eqString = "";
-                        Object.entries(charEquipment).forEach(function(item) {
-                            if (currentEqName !== item) {
-                                eqString += '{"Name":"' + item + '","Description":"' + charItemsDescription[item] + '"}';
+                        Object.keys(charEquipment).forEach(function(item) {
+                            console.log("Char name "+item);
+                            charEquipment[item].forEach(function(eq){
+                                console.log("eq name "+eq);
+                            if (currentEqName !== eq) {
+                                eqString += '{"Name":"' + eq + '","Description":"' + charItemsDescription[eq] + '"},';
                             } else {
-                                eqString += '{"Name":"' + item + '","Description":"' + currentEqDesc + '"}';
-                            }
+                                eqString += '{"Name":"' + eq + '","Description":"' + currentEqDesc + '"},';
+                            }});
                         });
+                        console.log(eqString);
+                        if (!Object.entries(charEquipment).includes(currentEqName)) {
+                         
+                            eqString += '{"Name":"' + currentEqName + '","Description":"' + currentEqDesc + '"}';
+                            
+                            var temp = [];
+
+                            if (charEquipment[activeName?.name]) {
+                                console.log(charEquipment[activeName?.name])
+                                Object.values(charEquipment[activeName?.name]).forEach(function(item) {
+                                    temp.push(item);
+                                    charEquipment[activeName?.name] = temp;
+                                });
+                            }
+                            temp.push(currentEqName);
+                            charEquipment[activeName?.name] = temp;
+
+                            charItemsDescription[currentEqName] = currentEqDesc;
+                        } else {
+                            eqString.slice(0, -1);
+                        }
 
                         var abString = "";
-                        Object.entries(charAbilities).forEach(function(item) {
-                            abString += '{"Name":"' + item + '","Description":"' + charItemsDescription[item] + '"}';
+                        Object.keys(charAbilities).forEach(function(item) {
+                            abString += '{"Name":"' + charAbilities[item] + '","Description":"' + charItemsDescription[charAbilities[item]] + '"},';
                         });
+                        abString.slice(0, -1);
 
-                        var msg = '{"Room":"' + room + '", "Name":"' + currentCharName + '","Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
+                        var tempId = id;
+                        var tempName = currentCharName;
+                        if (activeName !== null) {
+                            tempId = activeName.id;
+                            tempName = activeName.name;
+                        }
+
+                        var msg = '{"Room":"' + room + '", "Id":' + tempId + ', "Name":"' + tempName + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         console.log(msg);
                         var jsonF = JSON.parse(msg);
-                        socket.emit('sheet_edit', jsonF);
+                        console.log(jsonF);
+                        socket.emit("sheet_edit", jsonF);
 
-                        setCharEquipment(prev => Object.entries(prev).concat(currentEqName));
-                        setCharItemsDescription(prev => Object.entries(prev).concat(currentEqDesc));
                     }
                 }}>Add item</button>
                 <div className="tabTitle">Abilities</div>
                 <label className="tTitle">Ability name</label><br></br>
-                <input className="tabInput" type="text" id="abilityNameInput" name = "abilityNameInput" value={currentAbName} onChange={(e) => setCurrentAbName(e.target.value)}></input><br></br>
+                <input className="tabInput" type="text" id="abilityNameInput" name = "abilityNameInput" ></input><br></br>
                 <label className="tTitle">Ability description</label><br></br>
-                <textarea className="descInput" type="text" id="abilityDInput" name = "abilityDInput" value={currentAbDesc} onChange={(e) => setCurrentAbDesc(e.target.value)}></textarea ><br></br>
+                <textarea className="descInput" type="text" id="abilityDInput" name = "abilityDInput" ></textarea ><br></br>
                 <button className="tabBut" onClick={() => {
-                    if (currentCharName !== "" && !charNames.includes(currentCharName) && currentAbName !== "" && currentAbDesc !== "") {
+                    
+                    setCurrentAbName(document.getElementById("abilityNameInput").values);
+                    setCurrentAbDesc(document.getElementById("abilityDInput").values);
+                    if (currentCharName !== "" && !charNames.some(e => e.name === currentCharName) && currentAbName !== "" && currentAbDesc !== "") {
                         var abString = "";
-                        Object.entries(charAbilities).forEach(function(item) {
-                            if (currentAbName !== item) {
-                                abString += '{"Name":"' + item + '","Description":"' + charItemsDescription[item] + '"}';
+                        Object.keys(charAbilities).forEach(function(item) {
+                            if (currentAbName !== charAbilities[item]) {
+                                abString += '{"Name":"' + charAbilities[item] + '","Description":"' + charItemsDescription[charAbilities[item]] + '"},';
                             } else {
-                                abString += '{"Name":"' + item + '","Description":"' + currentEqDesc + '"}';
+                                abString += '{"Name":"' + charAbilities[item] + '","Description":"' + currentAbDesc + '"},';
                             }
                         });
 
+                        if (!Object.entries(charAbilities).includes(currentAbName)) {
+                            abString += '{"Name":"' + currentAbName + '","Description":"' + currentAbDesc + '"}';
+                            var temp = [];
+                            Object.values(charAbilities[activeName?.name]).forEach(function(item) {
+                                temp.push(item);
+                                charAbilities[activeName?.name] = temp;
+                            });
+                            temp.push(currentAbName);
+                            charAbilities[activeName?.name] = temp;
+                            
+                            charItemsDescription[currentAbName] = currentAbDesc;
+                        } else {
+                            abString.slice(0, -1);
+                        }
+
                         var eqString = "";
-                        Object.entries(charEquipment).forEach(function(item) {
-                            eqString += '{"Name":"' + item + '","Description":"' + charItemsDescription[item] + '"}';
+                        Object.keys(charEquipment).forEach(function(item) {
+                            eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + charItemsDescription[charEquipment[item]] + '"},';
                         });
+                        eqString.slice(0, -1);
 
-                        var msg = '{"Room":"' + room + '", "Name":"' + currentCharName + '","Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
-                        console.log(msg);
+                        var tempId = id;
+                        var tempName = currentCharName;
+                        if (activeName !== null) {
+                            tempId = activeName.id;
+                            tempName = activeName.name;
+                        }
+
+                        var msg = '{"Room":"' + room + '", "Id":' + tempId + ', "Name":"' + tempName + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         var jsonF = JSON.parse(msg);
-                        socket.emit('sheet_edit', jsonF);
+                        socket.emit("sheet_edit", jsonF);
 
-                        setCharAbilities(prev => Object.entries(prev).concat(currentAbName));
-                        setCharItemsDescription(prev => Object.entries(prev).concat(currentAbDesc));
                     }
                 }}>Add ability</button>
+                <Link to={"/battlemap"}>
                 <button className="backBut">Back</button><br></br>
+                </Link>
             </tr>
             <tr className="currChars">
             {charNames.map((i) => { 
                 return(
-                    <tr className="e" onClick={() => setActiveName(i.name)} classId={i}>
+                    <tr className="e" onClick={() => {setActiveName(i);console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
                     {i.name} 
                     </tr>
                 );
             })}
             </tr>
             <tr className="currEq"> 
-            {charEquipment[activeName]?.map((i) => { 
+            {charEquipment[activeName?.name]?.map((i) => { 
                 return(
                     <tr className="e" onClick={() => setActiveItem(i)} classId={i}>
                     {i} 
@@ -189,7 +266,7 @@ return (
             })}
             </tr>
             <tr className="currAb"> 
-            {charAbilities[activeName]?.map((i) => { 
+            {charAbilities[activeName?.name]?.map((i) => { 
                 return(
                     <tr className="e" onClick={() => setActiveItem(i)} classId={i}>
                     {i} 
