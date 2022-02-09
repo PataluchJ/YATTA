@@ -90,7 +90,6 @@ function CharacterCreator({ username, roomID }){
 
                 item.Equipment.forEach(function(item2) {
                     var tempTempDc = [];
-                    
                     tempTempEq.push(item2.Name);
                     tempTempDc.push(item2.Description);
                     tempEq[item.Name] = tempTempEq;
@@ -104,6 +103,7 @@ function CharacterCreator({ username, roomID }){
                     tempTempDc.push(item2.Description);
                     tempAb[item.Name] = tempTempAb;
                     tempDesc[item2.Name] = tempTempDc;
+                    console.log("Name "+item2.Name+" "+tempAb[item2.Name]);
                 });
             });
             id.current = data.length;
@@ -171,7 +171,7 @@ return (
                                 charEquipment[activeName?.name] = temp;
                                 charItemsDescription[currentEqName] = currentEqDesc;
                             } else {
-                                eqString.slice(0, -1);
+                                eqString =  eqString.slice(0, -1);
                             }
                         }
 
@@ -179,7 +179,7 @@ return (
                         Object.keys(charAbilities).forEach(function(item) {
                             abString += '{"Name":"' + charAbilities[item] + '","Description":"' + charItemsDescription[charAbilities[item]] + '"},';
                         });
-                        abString.slice(0, -1);
+                        abString = abString.slice(0, -1);
 
                         var msg = '{"Room":"' + room + '", "Id":' + activeName.id + ', "Name":"' + activeName.name + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         console.log(msg);
@@ -223,7 +223,7 @@ return (
                                 charAbilities[activeName?.name] = temp;
                                 charItemsDescription[currentAbName] = currentAbDesc;
                             } else {
-                                abString.slice(0, -1);
+                                abString = abString.slice(0, -1);
                             }
                         }
 
@@ -231,7 +231,7 @@ return (
                         Object.keys(charEquipment).forEach(function(item) {
                             eqString += '{"Name":"' + charEquipment[item] + '","Description":"' + charItemsDescription[charEquipment[item]] + '"},';
                         });
-                        eqString.slice(0, -1);
+                        eqString= eqString.slice(0, -1);
 
                         var msg = '{"Room":"' + room + '", "Id":' + activeName.id + ', "Name":"' + activeName.name + '", "Equipment":[' + eqString + '], "Abilities":[' + abString + ']}';
                         console.log(msg);
@@ -247,7 +247,7 @@ return (
             <tr className="currChars">
             {charNames.map((i) => { 
                 return(
-                    <tr className="e" onClick={() => {setActiveName(i);console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
+                    <tr className="f" onClick={() => {setActiveName(i);console.log(i);console.log(charEquipment[i.name]);}} classId={i}>
                     {i.name} 
                     </tr>
                 );
@@ -256,7 +256,7 @@ return (
             <tr className="currEq"> 
             {charEquipment[activeName?.name]?.map((i) => { 
                 return(
-                    <tr className="e" onClick={() => setActiveItem(i)} classId={i}>
+                    <tr className="f" onClick={() => setActiveItem(i)} classId={i}>
                     {i} 
                     </tr>
                 );
@@ -265,14 +265,14 @@ return (
             <tr className="currAb"> 
             {charAbilities[activeName?.name]?.map((i) => { 
                 return(
-                    <tr className="e" onClick={() => setActiveItem(i)} classId={i}>
+                    <tr className="f" onClick={() => setActiveItem(i)} classId={i}>
                     {i} 
                     </tr>
                 );
             })}
             </tr>
             <tr className="currDesc"> 
-                    <tr className="e" classId={activeItem}>
+                    <tr className="f" classId={activeItem}>
                     {charItemsDescription[activeItem]} 
                     </tr>
             </tr>

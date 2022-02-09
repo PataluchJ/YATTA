@@ -11,13 +11,12 @@ td{
 
 }
 .e{
-
     display: block;
     min-width: 100%;
-    margin-top: 1vh;
+    margin: 2px;
     text-align: center;
     height: fit-content;
-    background-color: #7b838f98;
+    background-color: rgba(0, 0, 255, 0.411);
     font-size:large;
     font-family: 'Work Sans';
     font:bolder;
