@@ -187,7 +187,7 @@ def sheet_add(json_data):
     generic_argument_call(wrapper.sheet_add,json_data)
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
     if result['Status'] == 200:
-        emit('sheets_get', result['Json'], to=json_data['Room'])
+        emit('sheets_get', result['Json'])
 
 @socketio.on('sheet_delete')
 def sheet_delete(json_data):
@@ -200,10 +200,8 @@ def sheet_delete(json_data):
 def sheet_edit(json_data):
     generic_argument_call(wrapper.sheet_edit, json_data)
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
-    print("edit")
-    print(json_data)
     if result['Status'] == 200:
-        emit('sheets_get', result['Json'], to=json_data['Room'])
+        emit('sheets_get', result['Json'])
 
 @socketio.on('set_background')
 def set_background(json_data):

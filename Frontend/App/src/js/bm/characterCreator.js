@@ -41,33 +41,15 @@ function CharacterCreator({ username, roomID }){
     }, [room]);
 
     useEffect(() => {
-        socket.on('sheet_edit', data => {
-            console.log("sheet_edit");
-            setCharEquipment({...charEquipment});
-            setCharAbilities({...charAbilities});
-            setCharItemsDescription({...charItemsDescription});
-           
-            
-        });
-            socket.on("sheet_new", data => {
-                let temp = [];
-                console.log("sheet_new");
-                temp.push({
-                    id: id,
-                    name: currentCharName
-                });
-              
-                id.current++;
-                setCharNames(prev => prev.concat(temp));
-                
-            });
+
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
             let tempAb = {};
             let tempDesc = {};
+            console.log("Get");
             data.forEach(function(item) {
-                console.log(item.Name);
+                
                 tempNames.push({
                     id: item.Id,
                     name: item.Name
@@ -103,10 +85,8 @@ function CharacterCreator({ username, roomID }){
             setCharItemsDescription({...tempDesc});});
             return () => {
                 socket.off("sheets_get");
-                socket.off("sheet_new");
-                socket.off("sheet_edit");
-              }
-            });
+            }
+            },[]);
 
     
 
@@ -124,7 +104,7 @@ return (
                         var jsonF = JSON.parse(msg);
                         setModified(prev => !prev);
                         socket.emit('sheet_new', jsonF);
-                        
+                        console.log("New sheet sent "+room);
                         console.log(isModified);
                     }
                 }}>New character</button>
@@ -135,7 +115,7 @@ return (
                 <textarea  className="descInput" type="text" id="itemDInput" name = "itemDInput" value={currentEqDesc} onChange={(e) => setCurrentEqDesc(e.target.value)}></textarea ><br></br>
                 <button className="tabBut" onClick={() => {
 
-                    if ((currentCharName !== "" || activeName !== null) && !charNames.some(e => e.name === currentCharName) && currentEqName !== "" && currentEqDesc !== "") {
+                    if (( activeName !== null) &&  currentEqName !== "" && currentEqDesc !== "") {
                         console.log("itemek dodawany");
                         var eqString = "";
                         var temp = [];
@@ -189,7 +169,7 @@ return (
                 <label className="tTitle">Ability description</label><br></br>
                 <textarea className="descInput" type="text" id="abilityDInput" name = "abilityDInput" value={currentAbDesc} onChange={(e) => setCurrentAbDesc(e.target.value)}></textarea ><br></br>
                 <button className="tabBut" onClick={() => {
-                    if ((currentCharName !== "" || activeName !== null) && !charNames.some(e => e.name === currentCharName) && currentAbName !== "" && currentAbDesc !== "") {
+                    if ((currentCharName !== "" || activeName !== null) && currentAbName !== "" && currentAbDesc !== "") {
                         var abString = "";
                         var temp = [];
                         var exists = false;
