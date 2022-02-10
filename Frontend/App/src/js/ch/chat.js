@@ -158,6 +158,24 @@ function Chat({ username, roomID }) {
     socket.emit('set_background', json);
   }
 
+  const deleteImage = (name) => {
+    let json = {
+      'Room' : room,
+      'Name': name
+    }
+    socket.emit('image_delete',json);
+    for (const [k, rec] of Object.entries(imageList)) {
+      for (const [key, value] of Object.entries(rec)){
+          if(key === 'Name'){             
+              if(value === name){
+                  console.log("Deleted ", k)
+                  delete imageList[k]
+              }
+          }
+      }
+  }
+  }
+
   const askForAllImages = () => {
     const json = {'Room': room};
     socket.emit('image_get_all', json);
@@ -237,7 +255,7 @@ function Chat({ username, roomID }) {
         socket.emit('sheets_get',jsonF);
       }}>Create new character sheet</button>
       </Link>
-      <button className="chatButtons" onClick={() => {setIsRequiringImages(true); askForAllImages();}}>Add object</button>
+      <button className="chatButtons" onClick={() => {setIsRequiringImages(true); askForAllImages();}}>Collection</button>
       
       <button className="chatButtons" onClick={() => {toggleUploadPopup();}} >Upload image</button>
       <Link to={`/`}>
@@ -258,6 +276,7 @@ function Chat({ username, roomID }) {
             setBackground={setBackground.bind(this)}
             askForImages={askForAllImages.bind(this)}
             setReqFlag={setIsRequiringImages.bind(this)}
+            deleteImage={deleteImage.bind(this)}
             imgRec = {imagesReceived}
             imageList = {imageList}
             />

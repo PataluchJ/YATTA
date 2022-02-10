@@ -73,10 +73,19 @@ class AddToken extends React.Component  {
         <button className='pop_button' onClick={() => {
             if(this.state.choosenImage !== '')
                 this.props.addToken(this.state.choosenImage);
-            }}>as Token</button>
+            }}>Add as Token</button>
         <button className='pop_button' onClick={() => {
-            this.props.setBackground(this.state.choosenImage);
-        }}>as Background</button>
+            if(this.state.choosenImage !== '')
+                this.props.setBackground(this.state.choosenImage);
+        }}>Add as Background</button>
+        <button className='pop_button' onClick={() => {
+            if(this.state.choosenImage !== ''){
+                this.props.deleteImage(this.state.choosenImage);
+                this.setState({
+                    choosenImage: ''
+                });
+            }
+        }}>Delete image</button>
         <button className='pop_button' onClick={() => {this.props.closePopup();}}>Go Back</button>
         </div>
         </div>
