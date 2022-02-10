@@ -21,10 +21,9 @@ function CharacterCreator({ username, roomID }){
     const [currentAbName, setCurrentAbName] = useState("");
     const [currentAbDesc, setCurrentAbDesc] = useState("");
     const id = useRef(0);
-
     const [isModified, setModified] = useState(false);
 
-    if (user !== "") {
+    if (user !== "" && room !=="") {
         localStorage.setItem('username', user);
         localStorage.setItem('roomID', room);
     }
@@ -32,22 +31,24 @@ function CharacterCreator({ username, roomID }){
     useEffect(() => {
         setUser(localStorage.getItem('username'));
         setRoom(localStorage.getItem('roomID'));
-
         var roomData = "{\"Room\":\""+room+"\"}";
-        var jsonF = JSON.parse(roomData);                    
+        var jsonF = JSON.parse(roomData);   
+   
         socket.emit('sheets_get',jsonF);
+
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [room]);
 
     useEffect(() => {
-
+        
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
             let tempAb = {};
             let tempDesc = {};
-            console.log("Get");
+            console.log(data);
+            console.log("GET");
             data.forEach(function(item) {
                 
                 tempNames.push({
@@ -86,7 +87,7 @@ function CharacterCreator({ username, roomID }){
             return () => {
                 socket.off("sheets_get");
             }
-            },[]);
+            });
 
     
 

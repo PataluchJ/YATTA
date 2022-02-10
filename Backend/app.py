@@ -177,13 +177,20 @@ def image_get_all(json_data):
 
 @socketio.on("sheets_get")
 def sheet_get_all(json_data):
-    generic_argument_call(wrapper.sheets_get_all,json_data)
+    print(json_data)
+    print("all")
+# generic_argument_call(wrapper.sheets_get_all,json_data)
+    print("gen")
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
+    print(json_data['Room'])
+    print( result['Json'])
     if result['Status'] == 200:
         emit('sheets_get', result['Json'])
 
+
 @socketio.on('sheet_new')
 def sheet_add(json_data):
+    print("new")
     generic_argument_call(wrapper.sheet_add,json_data)
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
     if result['Status'] == 200:
@@ -194,10 +201,12 @@ def sheet_delete(json_data):
     generic_argument_call(wrapper.sheet_delete, json_data)
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
     if result['Status'] == 200:
-        emit('sheets_get', result['Json'], to=json_data['Room'])
+        emit('sheets_get', result['Json'])
 
 @socketio.on('sheet_edit')
 def sheet_edit(json_data):
+    print("edit")
+    print(json_data['Room'])
     generic_argument_call(wrapper.sheet_edit, json_data)
     result = generic_argument_call(wrapper.sheets_get_all,json_data)
     if result['Status'] == 200:
