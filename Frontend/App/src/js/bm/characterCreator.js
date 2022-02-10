@@ -20,7 +20,6 @@ function CharacterCreator({ username, roomID }){
     const [currentEqDesc, setCurrentEqDesc] = useState("");
     const [currentAbName, setCurrentAbName] = useState("");
     const [currentAbDesc, setCurrentAbDesc] = useState("");
-
     const id = useRef(0);
 
     const [isModified, setModified] = useState(false);
@@ -43,33 +42,25 @@ function CharacterCreator({ username, roomID }){
 
     useEffect(() => {
         socket.on('sheet_edit', data => {
+            console.log("sheet_edit");
             setCharEquipment({...charEquipment});
             setCharAbilities({...charAbilities});
             setCharItemsDescription({...charItemsDescription});
-            console.log("sheet_edit");
-            var roomData = "{\"Room\":\""+room+"\"}";
-            var jsonF = JSON.parse(roomData);                    
-            socket.emit('sheets_get',jsonF);
-        });}, [isModified]);
-    useEffect(() => {
-        socket.on("sheet_new", data => {
-            let temp = [];
-            temp.push({
-                id: id,
-                name: currentCharName
-            });
-            console.log("sheet_new");
-            id.current++;
-            setCharNames(prev => prev.concat(temp));
-            var roomData = "{\"Room\":\""+room+"\"}";
-            var jsonF = JSON.parse(roomData);                    
-            socket.emit('sheets_get',jsonF);
+           
             
-        });}, [isModified]);
-
-
-    
-        useEffect(() => {
+        });
+            socket.on("sheet_new", data => {
+                let temp = [];
+                console.log("sheet_new");
+                temp.push({
+                    id: id,
+                    name: currentCharName
+                });
+              
+                id.current++;
+                setCharNames(prev => prev.concat(temp));
+                
+            });
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
@@ -109,7 +100,13 @@ function CharacterCreator({ username, roomID }){
             setCharNames([...tempNames]);
             setCharEquipment({...tempEq});
             setCharAbilities({...tempAb});
-            setCharItemsDescription({...tempDesc});})});
+            setCharItemsDescription({...tempDesc});});
+            return () => {
+                socket.off("sheets_get");
+                socket.off("sheet_new");
+                socket.off("sheet_edit");
+              }
+            });
 
     
 
@@ -125,8 +122,10 @@ return (
                     if (currentCharName !== "" && !charNames.some(e => e.name === currentCharName)) {
                         var msg = '{"Room":"' + room + '", "Name":"' + currentCharName + '","Equipment":[], "Abilities":[]}';
                         var jsonF = JSON.parse(msg);
+                        setModified(prev => !prev);
                         socket.emit('sheet_new', jsonF);
-                        setModified(!isModified);
+                        
+                        console.log(isModified);
                     }
                 }}>New character</button>
                 <div className="tabTitle">Equipment</div>
@@ -137,6 +136,7 @@ return (
                 <button className="tabBut" onClick={() => {
 
                     if ((currentCharName !== "" || activeName !== null) && !charNames.some(e => e.name === currentCharName) && currentEqName !== "" && currentEqDesc !== "") {
+                        console.log("itemek dodawany");
                         var eqString = "";
                         var temp = [];
                         var exists = false;
@@ -180,7 +180,7 @@ return (
                         console.log(msg);
                         var jsonF = JSON.parse(msg);
                         socket.emit("sheet_edit", jsonF);
-                        setModified(!isModified);
+                        setModified(prev => !prev);
                     }
                 }}>Add item</button>
                 <div className="tabTitle">Abilities</div>
@@ -243,7 +243,7 @@ return (
             <div className="tabTitle">Created characters</div>
             {charNames.map((i) => { 
                 return(
-                    <tr className="f" onClick={() => {setActiveName(i);}} classId={i}>
+                    <tr className="f" onClick={() => {setActiveName(i);setActiveItem("");}} classId={i}>
                     {i.name} 
                     </tr>
                 );
