@@ -59,8 +59,8 @@ class PixiComponent extends React.Component {
 
         const sprite = MyObject.from(this.getTexture(textureId))
         sprite.anchor.set(0.5)
-        sprite.x = Math.floor(x/70.0)*70
-        sprite.y = Math.floor(y/70.0)*70
+        sprite.x = x
+        sprite.y = y
         sprite.z = z
         sprite.scale.x = scale_x
         sprite.scale.y = scale_y
@@ -468,7 +468,7 @@ class PixiComponent extends React.Component {
 
         window.onkeydown = function(e) {
             pressedKeys[e.keyCode] = true; 
-            console.log(e.keyCode)
+           
             // delete object
             if(e.keyCode == "46" && selectedTarget != null){
                 var localId =  selectedTarget.id
@@ -519,8 +519,8 @@ class PixiComponent extends React.Component {
             // scale up bm
             else if(e.keyCode == "222" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
-                    let scaleX = arrayItem.scale.x * 1.1
-                    let scaleY =  arrayItem.scale.y * 1.1
+                    let scaleX = arrayItem.scale.x - (35 / arrayItem.texture.width)
+                    let scaleY = arrayItem.scale.y - (35 / arrayItem.texture.height)
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Transformation":{"scale_x":' +  scaleX + ', "scale_y":' +  scaleY + ', "rotation":' +  arrayItem.angle + ' }}';
                     console.log("object_transform sending msg: " + msg)
                     socket.emit('object_transform', JSON.parse(msg));    
@@ -529,8 +529,8 @@ class PixiComponent extends React.Component {
             // scale down bm
             else if(e.keyCode == "186" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
-                    let scaleX = arrayItem.scale.x * 0.9
-                    let scaleY =  arrayItem.scale.y * 0.9
+                    let scaleX = arrayItem.scale.x + (35 / arrayItem.texture.width)
+                    let scaleY = arrayItem.scale.y + (35 / arrayItem.texture.height)
                     if(scaleX < 0)
                         scaleX = 0
                     if(scaleY < 0)
