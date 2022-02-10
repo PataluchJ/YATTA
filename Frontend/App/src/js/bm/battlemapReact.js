@@ -527,7 +527,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // scale down bm
-            else if(e.keyCode == "59" && pressedKeys['16']){
+            else if(e.keyCode == "186" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let scaleX = arrayItem.scale.x * 0.9
                     let scaleY =  arrayItem.scale.y * 0.9
