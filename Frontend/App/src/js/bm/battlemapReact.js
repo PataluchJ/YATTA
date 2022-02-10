@@ -59,8 +59,8 @@ class PixiComponent extends React.Component {
 
         const sprite = MyObject.from(this.getTexture(textureId))
         sprite.anchor.set(0.5)
-        sprite.x = x
-        sprite.y = y
+        sprite.x = Math.floor(x/70.0)*70
+        sprite.y = Math.floor(y/70.0)*70
         sprite.z = z
         sprite.scale.x = scale_x
         sprite.scale.y = scale_y
@@ -543,7 +543,7 @@ class PixiComponent extends React.Component {
             // objects up
             else if(e.keyCode == "87" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
-                    let y = arrayItem.y - 10
+                    let y = arrayItem.y - 35
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + arrayItem.x  + ', "y":' + y + ', "z_layer":' + arrayItem.z + '}}}';
                     console.log("object_transform sending msg: " + msg)
                     socket.emit('object_move', JSON.parse(msg));    
@@ -552,7 +552,7 @@ class PixiComponent extends React.Component {
             // objects down
             else if(e.keyCode == "83" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
-                    let y = arrayItem.y + 10
+                    let y = arrayItem.y + 35
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + arrayItem.x  + ', "y":' + y + ', "z_layer":' + arrayItem.z + '}}}';
                     console.log("object_transform sending msg: " + msg)
                     socket.emit('object_move', JSON.parse(msg));    
@@ -561,7 +561,7 @@ class PixiComponent extends React.Component {
             // objects left
             else if(e.keyCode == "65" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
-                    let x = arrayItem.x - 10
+                    let x = arrayItem.x - 35
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x + ', "y":' + arrayItem.y + ', "z_layer":' + arrayItem.z + '}}}';
                     console.log("object_transform sending msg: " + msg)
                     socket.emit('object_move', JSON.parse(msg));    
@@ -570,7 +570,7 @@ class PixiComponent extends React.Component {
             // objects right
             else if(e.keyCode == "68" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
-                    let x = arrayItem.x + 10
+                    let x = arrayItem.x + 35
                     var msg = '{"Room":"' + localStorage.getItem('roomID') + '", "Id": ' + arrayItem.id + ', "Position":{"Level":1, "Layer":1, "Coords":{"x":' + x + ', "y":' + arrayItem.y + ', "z_layer":' + arrayItem.z + '}}}';
                     console.log("object_transform sending msg: " + msg)
                     socket.emit('object_move', JSON.parse(msg));    
