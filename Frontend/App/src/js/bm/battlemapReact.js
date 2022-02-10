@@ -468,7 +468,7 @@ class PixiComponent extends React.Component {
 
         window.onkeydown = function(e) {
             pressedKeys[e.keyCode] = true; 
-            //console.log(e.keyCode)
+            console.log(e.keyCode)
             // delete object
             if(e.keyCode == "46" && selectedTarget != null){
                 var localId =  selectedTarget.id
@@ -527,7 +527,7 @@ class PixiComponent extends React.Component {
                 });
             }
             // scale down bm
-            else if(e.keyCode == "186" && pressedKeys['16']){
+            else if(e.keyCode == "59" && pressedKeys['16']){
                 copyOfthis.ObjectContainer.children.forEach(function (arrayItem) {
                     let scaleX = arrayItem.scale.x * 0.9
                     let scaleY =  arrayItem.scale.y * 0.9

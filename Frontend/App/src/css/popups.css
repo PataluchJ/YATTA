@@ -28,6 +28,8 @@
     color: black;
   }
   .image_list{
+    overflow-y:auto;
+    overflow-x:hidden;
     padding: 10px;
     height:85%
   }
@@ -71,6 +73,6 @@
   }
   .select_image{
     align-items: center;
-    max-width: 90%;
-    max-height: 90%;
+    height: 70%;
+    width:auto;
   }

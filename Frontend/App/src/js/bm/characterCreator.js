@@ -50,8 +50,8 @@ function CharacterCreator({ username, roomID }){
             var roomData = "{\"Room\":\""+room+"\"}";
             var jsonF = JSON.parse(roomData);                    
             socket.emit('sheets_get',jsonF);
-        });
-
+        });}, [isModified]);
+    useEffect(() => {
         socket.on("sheet_new", data => {
             let temp = [];
             temp.push({
@@ -60,19 +60,16 @@ function CharacterCreator({ username, roomID }){
             });
             console.log("sheet_new");
             id.current++;
+            setCharNames(prev => prev.concat(temp));
             var roomData = "{\"Room\":\""+room+"\"}";
             var jsonF = JSON.parse(roomData);                    
             socket.emit('sheets_get',jsonF);
-            setCharNames(prev => prev.concat(temp));
-        });
+            
+        });}, [isModified]);
 
-        return () => {
-            socket.off("sheet_edit");
-            socket.off("sheet_new");
-        }
-    }, [isModified]);
+
     
-
+        useEffect(() => {
         socket.on("sheets_get", data => {
             let tempNames = [];
             let tempEq = {};
@@ -112,7 +109,7 @@ function CharacterCreator({ username, roomID }){
             setCharNames([...tempNames]);
             setCharEquipment({...tempEq});
             setCharAbilities({...tempAb});
-            setCharItemsDescription({...tempDesc});})
+            setCharItemsDescription({...tempDesc});})});
 
     
 
